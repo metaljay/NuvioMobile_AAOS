@@ -12,6 +12,8 @@
 
 </div>
 
+> **Custom AAOS fork:** This fork adapts Nuvio Mobile for Android Automotive OS, with the Polestar 3 as its target device. It keeps the fork's `com.JF_Nuvio` app identity and adds automotive-focused readability, touch-target and poster sizing, plus device-code sign-in with a trusted custom-server fallback. These customizations are specific to this fork and are not part of upstream Nuvio.
+
 ## Get Nuvio Mobile
 
 - [Android on Google Play](https://play.google.com/store/apps/details?id=com.JF_Nuvio)
