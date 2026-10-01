@@ -45,12 +45,15 @@ val releaseAppVersionCode = readXcconfigValue(appVersionConfigFile, "CURRENT_PRO
     ?.toIntOrNull()
     ?: error("CURRENT_PROJECT_VERSION is missing or invalid in ${appVersionConfigFile.path}")
 val requestedTaskNames = gradle.startParameter.taskNames.map { it.substringAfterLast(':') }
-val buildsReleaseApks = requestedTaskNames.any {
+val buildsReleaseBundle = requestedTaskNames.any {
+    it.startsWith("bundle", ignoreCase = true) && it.endsWith("Release", ignoreCase = true)
+}
+val buildsReleaseApks = !buildsReleaseBundle && requestedTaskNames.any {
     it.startsWith("assemble", ignoreCase = true) && it.endsWith("Release", ignoreCase = true)
 }
 
 android {
-    namespace = "com.nuvio.android"
+    namespace = "com.JF_Nuvio.android"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileSdkMinor = libs.versions.android.compileSdkMinor.get().toInt()
 
@@ -66,7 +69,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nuvio.app"
+        applicationId = "com.JF_Nuvio"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = releaseAppVersionCode
@@ -91,7 +94,14 @@ android {
 
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "META-INF/*.kotlin_module",
+                "**/META-INF/*.kotlin_module",
+                "META-INF/DEPENDENCIES",
+                "META-INF/INDEX.LIST",
+                "META-INF/*.version",
+            )
         }
         jniLibs {
             useLegacyPackaging = true
@@ -145,7 +155,7 @@ android {
 
 androidComponents {
     onVariants(selector().withBuildType("debug")) { variant ->
-        variant.applicationId.set("com.nuviodebug.com")
+        variant.applicationId.set("com.JF_Nuvio.debug")
     }
 }
 

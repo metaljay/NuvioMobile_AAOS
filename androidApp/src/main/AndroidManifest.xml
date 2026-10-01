@@ -8,8 +8,18 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
+    <uses-feature
+        android:name="android.hardware.type.automotive"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+
     <application
-        android:name="com.nuvio.app.NuvioApplication"
+        android:name="com.JF_Nuvio.NuvioApplication"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="false"
         android:icon="@mipmap/ic_launcher"
@@ -21,15 +31,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nuvio">
         <meta-data
+            android:name="distractionOptimized"
+            android:value="true" />
+        <meta-data
             android:name="io.sentry.auto-init"
             android:value="false" />
 
         <activity
             android:exported="true"
-            android:name="com.nuvio.app.MainActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.MainActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash">
+            android:theme="@style/Theme.Nuvio.Splash"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -71,14 +90,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconDefault"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconDefault"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash">
+            android:theme="@style/Theme.Nuvio.Splash"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -86,14 +111,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconArcticBlue"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconArcticBlue"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_arctic_blue"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash.ArcticBlue">
+            android:theme="@style/Theme.Nuvio.Splash.ArcticBlue"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -101,14 +132,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconEmerald"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconEmerald"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_emerald"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash.Emerald">
+            android:theme="@style/Theme.Nuvio.Splash.Emerald"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -116,14 +153,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconRoseGold"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconRoseGold"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_rose_gold"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash.RoseGold">
+            android:theme="@style/Theme.Nuvio.Splash.RoseGold"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -131,14 +174,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconCopper"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconCopper"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_copper"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash.Copper">
+            android:theme="@style/Theme.Nuvio.Splash.Copper"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -146,14 +195,20 @@
         </activity>
 
         <activity
-            android:name="com.nuvio.app.launcher.AppIconGraphite"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:name="com.JF_Nuvio.launcher.AppIconGraphite"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_graphite"
             android:label="@string/app_name"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Nuvio.Splash.Graphite">
+            android:theme="@style/Theme.Nuvio.Splash.Graphite"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges">
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -161,17 +216,17 @@
         </activity>
 
         <service
-            android:name="com.nuvio.app.features.player.PlayerNowPlayingService"
+            android:name="com.JF_Nuvio.features.player.PlayerNowPlayingService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
 
         <receiver
-            android:name="com.nuvio.app.features.player.PlayerNowPlayingActionReceiver"
+            android:name="com.JF_Nuvio.features.player.PlayerNowPlayingActionReceiver"
             android:exported="false" />
 
         <receiver
-            android:name="com.nuvio.app.features.downloads.DownloadsNotificationActionReceiver"
+            android:name="com.JF_Nuvio.features.downloads.DownloadsNotificationActionReceiver"
             android:exported="false" />
 
         <provider

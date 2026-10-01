@@ -50,11 +50,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
         localPropertiesFile.asFile.orNull?.takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
 
         val outDir = outputDir.get().asFile
-        outDir.resolve("com/nuvio/app/core/network").apply {
+        outDir.resolve("com/JF_Nuvio/core/network").apply {
             mkdirs()
             resolve("SupabaseConfig.kt").writeText(
                 """
-                |package com.nuvio.app.core.network
+                |package com.JF_Nuvio.core.network
                 |
                 |object SupabaseConfig {
                 |    const val URL = "${supabaseUrl.get()}"
@@ -65,11 +65,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/core/diagnostics").apply {
+        outDir.resolve("com/JF_Nuvio/core/diagnostics").apply {
             mkdirs()
             resolve("SentryConfig.kt").writeText(
                 """
-                |package com.nuvio.app.core.diagnostics
+                |package com.JF_Nuvio.core.diagnostics
                 |
                 |object SentryConfig {
                 |    const val DSN = "${sentryDsn.get()}"
@@ -79,11 +79,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/tmdb").apply {
+        outDir.resolve("com/JF_Nuvio/features/tmdb").apply {
             mkdirs()
             resolve("TmdbConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.tmdb
+                |package com.JF_Nuvio.features.tmdb
                 |
                 |object TmdbConfig {
                 |    const val API_KEY = "${tmdbApiKey.get()}"
@@ -92,11 +92,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/trakt").apply {
+        outDir.resolve("com/JF_Nuvio/features/trakt").apply {
             mkdirs()
             resolve("TraktConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.trakt
+                |package com.JF_Nuvio.features.trakt
                 |
                 |object TraktConfig {
                 |    const val CLIENT_ID = "${props.getProperty("TRAKT_CLIENT_ID", "")}" 
@@ -107,11 +107,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/simkl").apply {
+        outDir.resolve("com/JF_Nuvio/features/simkl").apply {
             mkdirs()
             resolve("SimklConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.simkl
+                |package com.JF_Nuvio.features.simkl
                 |
                 |object SimklConfig {
                 |    const val CLIENT_ID = "${props.getProperty("SIMKL_CLIENT_ID", "")}"
@@ -122,11 +122,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/mdblist").apply {
+        outDir.resolve("com/JF_Nuvio/features/mdblist").apply {
             mkdirs()
             resolve("MdbListConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.mdblist
+                |package com.JF_Nuvio.features.mdblist
                 |
                 |object MdbListConfig {
                 |    const val CLIENT_ID = "${props.getProperty("MDBLIST_CLIENT_ID", "")}"
@@ -135,11 +135,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/player/skip").apply {
+        outDir.resolve("com/JF_Nuvio/features/player/skip").apply {
             mkdirs()
             resolve("IntroDbConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.player.skip
+                |package com.JF_Nuvio.features.player.skip
                 |
                 |object IntroDbConfig {
                 |    const val URL = "${props.getProperty("INTRODB_API_URL", "")}" 
@@ -148,11 +148,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/details").apply {
+        outDir.resolve("com/JF_Nuvio/features/details").apply {
             mkdirs()
             resolve("ImdbEpisodeRatingsConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.details
+                |package com.JF_Nuvio.features.details
                 |
                 |object ImdbEpisodeRatingsConfig {
                 |    const val IMDB_RATINGS_API_BASE_URL = "${props.getProperty("IMDB_RATINGS_API_BASE_URL", "")}" 
@@ -162,11 +162,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/debrid").apply {
+        outDir.resolve("com/JF_Nuvio/features/debrid").apply {
             mkdirs()
             resolve("PremiumizeConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.debrid
+                |package com.JF_Nuvio.features.debrid
                 |
                 |object PremiumizeConfig {
                 |    const val CLIENT_ID = "${props.getProperty("PREMIUMIZE_CLIENT_ID", "")}"
@@ -175,11 +175,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/core/build").apply {
+        outDir.resolve("com/JF_Nuvio/core/build").apply {
             mkdirs()
             resolve("AppVersionConfig.kt").writeText(
                 """
-                |package com.nuvio.app.core.build
+                |package com.JF_Nuvio.core.build
                 |
                 |object AppVersionConfig {
                 |    const val VERSION_NAME = "${appVersionName.get()}"
@@ -189,11 +189,11 @@ abstract class GenerateRuntimeConfigsTask : DefaultTask() {
             )
         }
 
-        outDir.resolve("com/nuvio/app/features/settings").apply {
+        outDir.resolve("com/JF_Nuvio/features/settings").apply {
             mkdirs()
             resolve("CommunityConfig.kt").writeText(
                 """
-                |package com.nuvio.app.features.settings
+                |package com.JF_Nuvio.features.settings
                 |
                 |object CommunityConfig {
                 |    const val CONTRIBUTIONS_URL = "${props.getProperty("CONTRIBUTIONS_URL", "")}" 
@@ -318,7 +318,7 @@ val generateRuntimeConfigs = tasks.register<GenerateRuntimeConfigsTask>("generat
     localPropertiesFile.set(rootProject.layout.projectDirectory.file("local.properties"))
     appVersionName.set(releaseAppVersionName)
     appVersionCode.set(releaseAppVersionCode)
-    supabaseUrl.set(runtimeConfigValue("NUVIO_SUPABASE_URL"))
+    supabaseUrl.set(runtimeConfigValue("NUVIO_SUPABASE_URL", "https://api.nuvio.tv"))
     supabaseAnonKey.set(runtimeConfigValue("NUVIO_SUPABASE_ANON_KEY"))
     supabaseFallbackUrl.set(runtimeConfigValue("NUVIO_SUPABASE_FALLBACK_URL"))
     sentryDsn.set(runtimeConfigValue("SENTRY_DSN"))
@@ -338,7 +338,7 @@ tasks.withType<KotlinCompilationTask<*>>().configureEach {
 
 kotlin {
     android {
-        namespace = "com.nuvio.app"
+        namespace = "com.JF_Nuvio"
         compileSdk {
             version = release(libs.versions.android.compileSdk.get().toInt()) {
                 minorApiLevel = libs.versions.android.compileSdkMinor.get().toInt()
