@@ -1,6 +1,6 @@
 # NuvioMobile Custom Features Migration
 
-Updated: 2026-10-01
+Updated: 2026-10-02
 
 ## Start here: agent workflow
 
@@ -127,8 +127,9 @@ this fork-specific identity, installation guidance, and verified AAOS details.
 - AAOS readability restoration: reset poster defaults to the fork's 185×278dp with 14dp corners; restored 16dp shelf spacing and larger poster/shelf text; restored 32dp navigation icons and full vertical padding on Automotive, including compact layouts. Preserved upstream compact/regular navigation sizing and valid saved poster-width choices on non-automotive platforms. Verified `:composeApp:compileAndroidMain` and Play Store debug assembly succeeded.
 - Broader AAOS readability pass: added a 1.15 minimum text scale and larger shared icon tokens for Automotive; enlarged player header/control icons, action pills, seek hit areas, and timeline thickness. Fixed seek buttons using the play-icon measurement instead of their dedicated side-icon measurement. Kept all these overrides gated to Automotive. Added a metric regression test; Android compilation and Play Store debug assembly pass.
 - Search/navigation/details readability pass (2026-10-01): enlarged floating navigation icons and labels, increased the search field height and text size, capped Discover at four poster tiles per row, and enlarged the details back button plus play/resume action. The shared search input accepts an optional text style so other screens retain their existing sizing. Verified with `:composeApp:compileAndroidMain`; this was compile validation only, not an emulator visual check.
+- Search results spacing and upload version (2026-10-02): added 8dp of additional spacing under the search field and a 16dp trailing spacer for active queries, giving the result list clearer separation from the field and floating bottom navigation without changing Discover layout. Bumped the fork's Play upload candidate from code 141 / name 0.5.8 to code 142 / name 0.5.9. `git diff --check` passed. Android compilation remains unverified: the normal compile failed on generated `ic_launcher_background 2.xml` resource-name validation, and retrying with that validation task excluded did not complete within the available run.
 - Resume/source-selection behavior check (2026-10-01): a resume action passes its saved position into playback, but opens stream/source selection when autoplay is in `MANUAL` mode and **Reuse last link** is disabled. Those were the old defaults; they are now enabled for profiles without saved values. Existing saved per-profile values still win, so a profile that already stored `MANUAL`/disabled may continue to show source selection until those settings are changed.
-- Playback defaults and upload version (2026-10-01): profiles without saved values enable **Reuse last link** and use `FIRST_STREAM` autoplay across platforms. These are defaults, not forced overrides: any saved per-profile values (including an older `false`/`MANUAL`) continue to take precedence and must be changed in Playback settings if the user wants to override them. This also means the default stream selector can still appear when no reusable cached link exists and autoplay cannot select a playable stream. The next Android upload candidate is code 141 / name 0.5.8. `:composeApp:compileAndroidMain` and all 14 focused autoplay-policy tests passed with these defaults. The Play Console maximum still needs confirming before upload.
+- Playback defaults and upload version (2026-10-01): profiles without saved values enable **Reuse last link** and use `FIRST_STREAM` autoplay across platforms. These are defaults, not forced overrides: any saved per-profile values (including an older `false`/`MANUAL`) continue to take precedence and must be changed in Playback settings if the user wants to override them. This also means the default stream selector can still appear when no reusable cached link exists and autoplay cannot select a playable stream. At that time, the Android upload candidate was code 141 / name 0.5.8; it was superseded by 142 / 0.5.9 on 2026-10-02. `:composeApp:compileAndroidMain` and all 14 focused autoplay-policy tests passed with these defaults. The Play Console maximum still needs confirming before upload.
 - Common test sources compile with `:composeApp:compileTestKotlinIosSimulatorArm64`. Running the iOS simulator test task itself remains unavailable because the required Xcode simulator SDK is not installed.
 - The debug app was installed only on the Automotive emulator for these checks. It is not the release artifact and must not be installed on the Polestar 3.
 
@@ -172,7 +173,10 @@ this fork-specific identity, installation guidance, and verified AAOS details.
 - **Search and navigation:** Floating navigation icons/labels were increased in
   `core/ui/NavigationBar.kt`, `core/ui/jelly/JellyTabs.kt`, and
   `core/ui/FloatingNavigationBar.android.kt`. The search field is 64dp high with `titleMedium`
-  text, and Discover is capped at four columns in `features/search/SearchScreen.kt`.
+  text, search results have 8dp of additional clearance below the field and a 16dp trailing gap
+  above the floating navigation, and Discover is capped at four columns in
+  `features/search/SearchScreen.kt`. The additional gaps apply only to active search queries so
+  the Discover view retains its existing spacing.
 - **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
   on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
   `features/details/components/DetailFloatingHeader.kt`, and
@@ -197,7 +201,7 @@ this fork-specific identity, installation guidance, and verified AAOS details.
 - Android version code and name are sourced from `iosApp/Configuration/Version.xcconfig`.
 - Fork reference version: code 131 / name 0.4.15.
 - Upstream 0.5.5 uses code 137 / name 0.5.5, but that code belongs to upstream's different Android application ID and does not establish the highest code used by the fork's Play listing.
-- User-confirmed Play Store version for `com.JF_Nuvio`: code 139 / name 0.5.6. Current upload candidate: code 141 / name 0.5.8, which is greater than the confirmed live code. Recheck Play Console before each upload in case a newer release was submitted. Code 138 was rejected before packaging because of the bundle split conflict below; no artifact was produced at 138.
+- User-confirmed Play Store version for `com.JF_Nuvio`: code 139 / name 0.5.6. Current fork upload candidate: code 142 / name 0.5.9, greater than the confirmed live code. Recheck Play Console before each upload in case a newer release was submitted. Code 138 was rejected before packaging because of the bundle split conflict below; no artifact was produced at 138.
 
 ## Decisions and open questions
 
@@ -206,7 +210,7 @@ this fork-specific identity, installation guidance, and verified AAOS details.
 - Release target: update the existing Play listing ("custom features" build) by uploading the compatible, signed `com.JF_Nuvio` release AAB to Internal testing. The Play application ID must not change.
 - Branch strategy: `main` is the single active maintained branch on `origin/main`. Future parent updates from `upstream/cmp-rewrite` will be pulled into a temporary migration branch, verified against all custom AAOS invariants, applied to `main`, and pushed to `origin/main`. Temporary migration branches will be cleaned up after verification.
 - iOS bundle IDs: carry forward the fork's exact overridden identifiers and keep untouched upstream Release IDs as they were.
-- Play Store baseline confirmed by the user: `com.JF_Nuvio` code 139 / name 0.5.6. Current candidate 141 / 0.5.8 is above that baseline. Before each upload, check that no newer version has been submitted and keep the candidate code greater than the latest Play Console code.
+- Play Store baseline confirmed by the user: `com.JF_Nuvio` code 139 / name 0.5.6. Current candidate 142 / 0.5.9 is above that baseline. Before each upload, check that no newer version has been submitted and keep the candidate code greater than the latest Play Console code.
 
 ## Migration progress and validation checklist
 
@@ -232,8 +236,10 @@ this fork-specific identity, installation guidance, and verified AAOS details.
 - [x] Advance version code to 139 and marketing version to 0.5.6 before release work (Play Console maximum remains unconfirmed).
 - [x] Advance version code to 140 and marketing version to 0.5.7 for the next upload candidate; Play Console maximum remains unconfirmed.
 - [x] Advance version code to 141 and marketing version to 0.5.8 for the next upload candidate; Play Console maximum remains unconfirmed.
-- [x] Record the user-confirmed live Play Store baseline, code 139 / name 0.5.6; current candidate 141 is higher.
-- [ ] Before upload, check Play Console for any version newer than 139 and increase code 141 if needed.
+- [x] Advance version code to 142 and marketing version to 0.5.9 for the search-results spacing update; this supersedes candidate 141 / 0.5.8, and the Play Console maximum remains unconfirmed.
+- [x] Record the user-confirmed live Play Store baseline, code 139 / name 0.5.6; current candidate 142 is higher.
+- [x] Add active-query-only vertical spacing below the search field and after search results to separate them from the floating Home/Search/Profile navigation; Discover spacing remains unchanged.
+- [ ] Before upload, check Play Console for any version newer than 139 and increase code 142 if needed.
 - [ ] Build the signed Play Store **release** AAB for `com.JF_Nuvio` (not debug), then inspect the merged manifest, package/version, signature, and bundle contents.
 - [ ] Upload the release AAB to the existing Play Internal testing track and install it from Play on the Polestar 3.
 - [ ] Verify first-run sign-in/code generation and core AAOS behavior on the real car; record results before replacing the current custom-features release workflow.

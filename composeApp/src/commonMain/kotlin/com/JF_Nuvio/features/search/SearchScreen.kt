@@ -289,7 +289,9 @@ fun SearchScreen(
                             },
                         )
                     }
-                    androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(14.dp))
+                    androidx.compose.foundation.layout.Spacer(
+                        modifier = Modifier.height(if (query.isNotBlank()) 22.dp else 14.dp),
+                    )
                 }
             }
         }
@@ -395,6 +397,9 @@ fun SearchScreen(
                                 )
                             }
                         }
+                    }
+                    item(key = "search_results_bottom_spacing") {
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
