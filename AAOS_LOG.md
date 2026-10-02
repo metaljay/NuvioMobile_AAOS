@@ -11,6 +11,13 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-02: Reset stale MPVKit checkout
+
+- Android build search found no MPVKit use in `androidApp/`, `composeApp/src/androidMain`, `composeApp/src/androidPlaystore`, or any `build.gradle.kts` / `settings.gradle.kts` file.
+- MPVKit stays at the upstream-published commit; a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02.
+- The first `:composeApp:compileAndroidMain` attempt exposed an existing Kotlin syntax error in `SearchScreen.kt`; moved the active-search trailing spacer outside the `when` expression. The rerun succeeded.
+- Verified: `git submodule update --init MPVKit`; `./gradlew :composeApp:compileAndroidMain` succeeded. No emulator or vehicle verification.
+
 ## 2026-10-02: Docs restructure (no app code changed)
 
 - Replaced `CUSTOM_FEATURES_MIGRATION.md` with `AAOS_FORK.md`, `AAOS_UPSTREAM_SYNC.md`, `AAOS_RELEASE.md` and this log, identical in both fork repos.
@@ -120,6 +127,6 @@ Archived 2026-10-02: every item here is superseded by the main-only branch polic
 
 - The workspace contains pre-existing files under `androidApp/playstore/release/` (including an AAB and mapping files); leave them untouched. The ignore rules above keep these build outputs out of status.
 - The existing `androidApp/playstore/release/androidApp-playstore-release.aab` is a pre-existing artifact dated 2026-09-09. Do not treat it or the debug APK as a newly validated release candidate; build the final release AAB from accepted source and verify its signature before upload.
-- `MPVKit` is a submodule. The migration branch expects gitlink `bb1d0250`; the checked-out submodule is still at the fork's `d5cf091c`. Update it only when needed for a build, without changing the custom branch's recorded gitlink.
+- MPVKit stays at the upstream-published commit; a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02.
 - A `:androidApp:assembleFullDebug` APK was built and launched on `emulator-5554` before migration work began. It showed Nuvio's welcome/sign-in screen; device-link sign-in reported a network error in that emulator session.
 - The first release build compiled, passed release lint, and reached R8, but the combined bundle+APK invocation failed because ABI splits produced multiple shrunk-resource files for the AAB task. `androidApp/build.gradle.kts` now disables release ABI splits when a bundle task is requested; APK-only release builds keep their ABI splits. The version advanced from 138 to 139 before retrying, and no artifact was produced by the failed attempt.

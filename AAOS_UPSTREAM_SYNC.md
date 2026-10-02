@@ -23,7 +23,7 @@ Do this only when the owner asks, or before a release that needs parent fixes. `
 **Nuvio-only checks during the merge**
 - Re-apply the `com.nuvio.app` to `com.JF_Nuvio` rename to every new or changed upstream file. Do not do a blind search-and-replace; the Part 2 notes list store-config exceptions.
 - Check for stray ` 2` duplicate files (see AAOS_FORK.md section 9).
-- Leave the `MPVKit` pointer alone unless the build needs it.
+- MPVKit stays at the upstream-published commit; a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02. The `libass-android` reference is dangling; upstream has the same dangling reference.
 
 ## Restore after every merge
 

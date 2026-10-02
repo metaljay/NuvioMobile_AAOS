@@ -63,7 +63,7 @@ Details and file locations are in Part 2 below.
 - **Upstream store feature policy**: the Play Store build keeps upstream's disabled features, except custom-server connections (invariant 4). Do not delete policy files.
 - **Phone/tablet sizing**: stays upstream. AAOS values are gated to Automotive (the shared details-screen buttons and search-field style noted in Part 2 are the exceptions).
 - **Saved user preferences**: a saved poster width etc. always wins over our defaults.
-- **MPVKit submodule pointer**: leave it as is unless a build needs it. `git status` shows `M MPVKit` and `git submodule status` complains about `libass-android`; upstream has the same dangling reference. Known and harmless; do not "fix" or commit it.
+- **MPVKit submodule pointer**: MPVKit stays at the upstream-published commit; a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02. The `libass-android` reference is dangling; upstream has the same dangling reference.
 - **Android Auto**: out of scope.
 
 ## 7. README contract
