@@ -33,41 +33,11 @@ Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`
 - Migration branch: `migration/upstream-0.5.5`, based on that upstream tip.
 - The custom branch contains one broad commit, mostly a `com.nuvio.app` to `com.JF_Nuvio` namespace migration across Kotlin source sets, plus product and AAOS changes. Reapply the namespace mechanically to upstream files while retaining upstream code and package-specific store configuration.
 
-## Required product behavior
-
-### App, store, and platform identity
-
-- Android release/Play application ID: `com.JF_Nuvio` (the existing Play listing to receive Internal testing updates).
-- Android debug application ID: `com.JF_Nuvio.debug`; emulator-only, never install on or distribute to the Polestar 3.
-- Android namespace and Kotlin packages: `com.JF_Nuvio` / `com.JF_Nuvio.android`.
-- Android release signing uses the existing local `Key.jks` configuration. Do not replace the key or expose local passwords.
-- Target vehicle: the user's Polestar 3 running Android Automotive OS (AAOS). Delivery path is a signed release AAB uploaded to the existing Play listing's Internal testing track, then installed from Play on the car; do not sideload the debug APK.
-- The fork overrides the iOS app/debug and widget identifiers in `Config.xcconfig` and Xcode project settings. Those exact overrides are carried forward; the separate upstream identifiers in untouched Release configurations remain unchanged.
-
-### Android Automotive integration
-
-- Declare Automotive and portrait/landscape screen features as optional so phone/Play compatibility remains possible.
-- Keep `distractionOptimized=true` metadata on the application and all launcher activities.
-- Keep launcher/main activities resizable, `singleTask`, cutout-aware, PiP-capable, and configured for automotive keyboard, navigation, UI mode, density, and font changes.
-- Detect Automotive at runtime and initialize the platform with the Android context before UI creation.
-- On Automotive, automatically start official-server device-link sign-in and show the phone-based `nuvio.tv/link` instruction instead of opening a browser on the head unit. Keep the server menu available on the authentication screen so a user can switch to a compatible custom backend if official device-link login does not work.
-- Preserve the upstream Play Store feature policy except for custom-server connections, which the user explicitly wants enabled in the default Android build to support that sign-in fallback.
-
-### Device-code login and custom-server fallback
-
-#### Required behavior
-
-- The default Android build must expose **Connect to another server** on the authentication screen. This is needed when Android/the default backend path does not present or complete device-code login; the user enters `api.nuvio.tv`, reviews the discovered server, chooses **I trust this server**, and then device-code login must be available.
-- Enable `AppFeaturePolicy.customServerConnectionsEnabled` in `composeApp/src/androidPlaystore/kotlin/com/JF_Nuvio/core/build/AppFeaturePolicy.android.kt`. Keep the existing custom server discovery, trust/review confirmation, persisted selection, server-switch reset, and TV-login capability gating; do not bypass the trust screen or force the server globally.
-- The canonical official API (`https://api.nuvio.tv`) is intentionally allowed through server discovery so it can be explicitly reviewed and selected. `ServerDiscoveryPolicy.isOfficial` must not reject this canonical host, even if it is also the configured official backend. Retain rejection of a distinct configured backend URL as appropriate.
-- The live `https://api.nuvio.tv/.well-known/nuvio` document was checked on 2026-10-01 and reported service `nuvio`, version 1, `self_hosted: true`, backend `https://api.nuvio.tv`, and both `email_password_auth` and `tv_login` capabilities enabled. Do not record or copy its publishable key into notes.
-- `https://api.nuvio.tv` is also the built-in official backend default when `NUVIO_SUPABASE_URL` is unset. If the build has no publishable key, device-link sign-in resolves it at runtime from the canonical API discovery document and validates the returned backend before use.
-- Regression coverage: `composeApp/src/commonTest/kotlin/com/JF_Nuvio/core/network/ServerDiscoveryPolicyTest.kt` asserts that the canonical API discovery URL is not rejected as already-official.
-
-#### Emulator and release validation history (2026-10-01)
+## Emulator and release validation history (2026-10-01)
 
 **Initial server fallback**
 
+- The live `https://api.nuvio.tv/.well-known/nuvio` document was checked on 2026-10-01 and reported service `nuvio`, version 1, `self_hosted: true`, backend `https://api.nuvio.tv`, and both `email_password_auth` and `tv_login` capabilities enabled. Do not record or copy its publishable key into notes.
 - Validation on 2026-10-01: the resulting Play Store debug APK was installed on the freshly wiped `Automotive_Large_Portrait` AVD and launched. This was an emulator-only debug install, not a Play release install.
 - On that clean emulator, automatic official-server device-link sign-in initially failed because the built app attempted `https://localhost/rest/v1/rpc/start_device_login_session`. The authentication menu exposed the custom-server connection option; entering `api.nuvio.tv` successfully discovered `https://api.nuvio.tv`, displayed the expected trust/review dialog, and accepting it generated a device code and reached “Waiting for approval”. The code itself is intentionally not recorded.
 - Follow-up default-server fix: when `NUVIO_SUPABASE_URL` is not configured, generated runtime config and `officialConfiguration()` now default to `https://api.nuvio.tv` rather than an empty URL (which Supabase interpreted as localhost). If the publishable key is absent, device-link sign-in loads it from the canonical server's discovery document and verifies the returned backend before using it. The emulator's next direct request targeted `https://api.nuvio.tv/rest/v1/rpc/start_device_login_session`, confirming the default URL is fixed; code generation could not be reverified on that boot because emulator networking was unavailable (`Network is unreachable` / DNS failure). The prior manual trusted-server test successfully generated a code.
@@ -83,7 +53,7 @@ Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`
 - AAOS readability visual check (2026-10-01): installed the latest Play Store debug APK on the Automotive emulator, cleared only its debug-app data, and confirmed the app opened without a crash, displayed larger sign-in text, and generated a device code with “Waiting for approval”.
 - AAOS home/player navigation sizing (2026-10-01): set Automotive bottom navigation icons to 40dp and enlarged player/source-screen back buttons and arrows. Set home catalog/folder and poster-style continue-watching cards to a 230dp minimum; added a regression test verifying five cards fit and six do not in a 1280dp viewport. A sizing follow-up ensures this home width does not alter landscape Continue Watching card proportions. The signed release APK was installed and launched on the Automotive emulator; visual capture showed five full catalog posters with the next card peeking into view. Android host tests, compile, signed release assembly, and `git diff --check` passed. This was emulator-only validation: nothing has been uploaded to Play or installed on the Polestar.
 
-#### Build and source cleanup
+## Build and source cleanup
 
 - Duplicate-source cleanup (2026-10-01): the default agent identified and removed 347 duplicate `* 2.kt` files, duplicate `* 2` directories, and duplicate release mapping outputs. They are now absent from the source sets. A normal build no longer needs temporary source-file moves; this session independently verified `:composeApp:compileAndroidMain`, `:androidApp:assembleDebug -Pnuvio.android.distribution=full`, and `:androidApp:assembleDebug -Pnuvio.android.distribution=playstore` all succeed.
 - AAOS readability restoration: reset poster defaults to the fork's 185×278dp with 14dp corners; restored 16dp shelf spacing and larger poster/shelf text; restored 32dp navigation icons and full vertical padding on Automotive, including compact layouts. Preserved upstream compact/regular navigation sizing and valid saved poster-width choices on non-automotive platforms. Verified `:composeApp:compileAndroidMain` and Play Store debug assembly succeeded.
@@ -94,69 +64,6 @@ Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`
 - Playback defaults and upload version (2026-10-01): profiles without saved values enable **Reuse last link** and use `FIRST_STREAM` autoplay across platforms. These are defaults, not forced overrides: any saved per-profile values (including an older `false`/`MANUAL`) continue to take precedence and must be changed in Playback settings if the user wants to override them. This also means the default stream selector can still appear when no reusable cached link exists and autoplay cannot select a playable stream. At that time, the Android upload candidate was code 141 / name 0.5.8; it was superseded by 142 / 0.5.9 on 2026-10-02. `:composeApp:compileAndroidMain` and all 14 focused autoplay-policy tests passed with these defaults. The Play Console maximum still needs confirming before upload.
 - Common test sources compile with `:composeApp:compileTestKotlinIosSimulatorArm64`. Running the iOS simulator test task itself remains unavailable because the required Xcode simulator SDK is not installed.
 - The debug app was installed only on the Automotive emulator for these checks. It is not the release artifact and must not be installed on the Polestar 3.
-
-### UI behavior
-
-#### Typography and touch targets
-
-- **Player sizing:** The fork makes player controls and labels substantially larger at wide layouts
-  (including 768dp, 1024dp, and 1440dp breakpoints) and enlarges slider touch targets. It also
-  enlarges header hit areas, progress pills, and player action icons/text. Preserve these changes
-  while adapting values to the upstream player layout.
-- **Shared AAOS readability:** Apply a 1.15 minimum font scale and larger shared icon tokens to
-  Automotive screens without changing phone/tablet sizing.
-- **Player-specific controls:** Enlarge player header, seek/skip, play/pause, action-pill, and
-  timeline icons/touch targets. Use the dedicated side-icon metric for seek controls rather than
-  the play-icon size, and keep trailer playback on the same responsive metrics.
-- **Back controls:** Enlarge the player exit arrow beyond adjacent header icons. Use 44dp arrows in
-  the Automotive source selector, player toolbar, and opening overlay.
-
-#### Home posters and browsing density
-
-- **Defaults:** Restore 185×278dp default poster cards with 14dp corners, 16dp shelf spacing, and
-  larger shelf/poster typography (`headlineSmall` shelf headings, `titleMedium` poster titles,
-  `bodySmall` detail text). Upstream had reduced these to 126×189dp cards, 10dp spacing, and
-  smaller text.
-- **Automotive navigation:** Use 40dp home navigation icons and the larger vertical hit area on
-  AAOS, including compact layouts. Keep upstream's 24/28dp compact/regular sizing off Automotive.
-- **Home density:** Use a 230dp minimum width for AAOS home poster/catalog/folder tiles so a
-  1280dp viewport fits five standard tiles instead of six or more. Apply this to poster-style
-  Continue Watching cards and loading skeletons, not landscape cards, library/detail rails, global
-  poster settings, or non-AAOS layouts.
-- **Saved preferences:** Treat 230dp as a minimum and preserve a user's larger saved poster width.
-  Keep loading placeholders at the content width to prevent a resize when content loads. Calculate
-  landscape Continue Watching metrics from the user's configured poster width so home density
-  does not distort those cards.
-- **Regression coverage:** `HomePosterCardSizingTest.kt` covers five-versus-six cards at 1280dp
-  and non-AAOS behavior.
-
-#### Search, details, and implementation map
-
-- **Search and navigation:** Floating navigation icons/labels were increased in
-  `core/ui/NavigationBar.kt`, `core/ui/jelly/JellyTabs.kt`, and
-  `core/ui/FloatingNavigationBar.android.kt`. The search field is 64dp high with `titleMedium`
-  text, search results have 8dp of additional clearance below the field and a 16dp trailing gap
-  above the floating navigation, and Discover is capped at four columns in
-  `features/search/SearchScreen.kt`. The additional gaps apply only to active search queries so
-  the Discover view retains its existing spacing.
-- **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
-  on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
-  `features/details/components/DetailFloatingHeader.kt`, and
-  `features/details/components/DetailActionButtons.kt`. These are shared changes, not
-  Automotive-only overrides.
-- **Home sizing files:** `HomePosterCardSizing.kt`, `HomePosterCard.kt`,
-  `HomeCatalogSection.kt`, `HomeCollectionRowSection.kt`, `HomeContinueWatchingSection.kt`,
-  `HomeScreen.kt`, and `HomeSkeletonLoading.kt`.
-- **Navigation/player files:** 40dp AAOS bottom-navigation icons are in
-  `core/ui/NavigationBar.kt`; player exit controls are in `features/player/PlayerControls.kt`;
-  the 68dp source-selector back target with a 44dp arrow is in `features/streams/StreamsScreen.kt`;
-  player toolbar/opening-overlay back arrows are in `PlayerControlActions.kt` and
-  `OpeningOverlay.kt`. Keep these platform-gated so phone/tablet sizing remains upstream.
-- **Saved-width compatibility:** Do not apply the fork's `>=160dp` reload cutoff; it conflicts
-  with valid 104–140dp size presets. The larger fork default applies only when no saved preference
-  exists.
-- The historical custom commit contains other edits entangled with namespace moves. Port only
-  behavior changes supported by clear intent; record unresolved product choices here.
 
 ## Historical release version and distribution state
 
@@ -175,6 +82,8 @@ Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`
 - Play Store baseline confirmed by the user: `com.JF_Nuvio` code 139 / name 0.5.6. Current candidate 142 / 0.5.9 is above that baseline. Before each upload, check that no newer version has been submitted and keep the candidate code greater than the latest Play Console code.
 
 ## Migration progress and validation checklist
+
+Archived 2026-10-02: every item here is superseded by the main-only branch policy; unchecked boxes are NOT tasks.
 
 - [x] Inspect remotes, branches, repository guidance, and version configuration.
 - [x] Review the README against the AAOS fork-identity and distribution contract; retain its banner,
