@@ -398,9 +398,9 @@ fun SearchScreen(
                             }
                         }
                     }
-                    item(key = "search_results_bottom_spacing") {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                }
+                item(key = "search_results_bottom_spacing") {
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
