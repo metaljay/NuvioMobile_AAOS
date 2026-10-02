@@ -1,6 +1,6 @@
 <div align="center">
 
-<strong>🚘 Android Automotive OS (AAOS) Fork</strong>
+<strong>🚗 Android Automotive OS (AAOS) Fork</strong>
 
 <br><br>
 
@@ -20,7 +20,7 @@ Larger, more readable screens and comfortable controls for Nuvio on a vehicle di
 
 <br>
 
-[AAOS customization guide](CUSTOM_FEATURES_MIGRATION.md) · [Upstream Nuvio](https://github.com/NuvioMedia/NuvioMobile) · [License](LICENSE)
+[AAOS fork rules, invariants and inventory](AAOS_FORK.md) · [Release steps](AAOS_RELEASE.md) · [Upstream Nuvio](https://github.com/NuvioMedia/NuvioMobile) · [License](LICENSE)
 
 </div>
 
@@ -50,7 +50,7 @@ different platform.
 The AAOS-specific sizing is intended to improve legibility and reachability in the vehicle; it does
 not imply that every screen or action is appropriate while driving. For implementation details,
 the rationale behind each customization, and requirements to preserve during upstream updates, see
-the **[Custom Features Migration Guide](CUSTOM_FEATURES_MIGRATION.md)**.
+the **[AAOS fork rules, invariants and inventory](AAOS_FORK.md)**.
 
 ## 🧭 Internal testing and installation
 
@@ -76,8 +76,9 @@ signed `com.JF_Nuvio` release variant for that workflow.
 
 ## 📚 Project references
 
-- **[Custom Features Migration Guide](CUSTOM_FEATURES_MIGRATION.md)** — AAOS behavior, feature
-  inventory, implementation notes, validation history, and upstream migration requirements.
+- **[AAOS fork rules, invariants and inventory](AAOS_FORK.md)** — the required AAOS behavior,
+  product rules, and implementation inventory for this fork.
+- **[AAOS release steps](AAOS_RELEASE.md)** — the versioning and Play release workflow for this fork.
 - **[Upstream NuvioMobile](https://github.com/NuvioMedia/NuvioMobile)** — the parent project this
   fork is based on.
 
