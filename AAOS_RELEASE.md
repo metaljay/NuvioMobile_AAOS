@@ -8,7 +8,7 @@
 | **Last uploaded to Play** | **141 (0.5.8)**, confirmed by the owner from Play Console on 2026-10-02 |
 | Code in the repo now | 142 (0.5.9), ready for the next upload |
 | Version file | `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the name; Android reads this file) |
-| Release key | `/Users/jordanfern/Documents/AAOS/Key.jks` (outside the repo; keep a backup) |
+| Release key | `Key.jks` in the AAOS folder containing both repos (outside the repo; keep a backup) |
 | Who signs and uploads | The owner, with Android Studio and Play Console. Agents prepare and verify. |
 
 ## The version-code rule (hard rule)
@@ -24,7 +24,7 @@ Play Console rejects any upload whose version code was already used, so every bu
 
 1. **Agent: prepare.** On `main`, work verified. Apply the version-code rule above and confirm the values in `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the name; Android reads this file).
 2. **Agent: check the build.** `./gradlew :androidApp:bundlePlaystoreRelease`. Nuvio's git-ignored `local.properties` also points Gradle at the key (`NUVIO_RELEASE_STORE_FILE=../Key.jks`), so Gradle can sign too. The wizard is still the standard path so both apps are released the same way. Never print, copy or commit the passwords in `local.properties`. Inspect the merged release manifest: application ID `com.JF_Nuvio`, version code/name, min/target SDK, automotive and camera features optional.
-3. **Owner: sign in Android Studio.** Build menu, Generate Signed App Bundle / APK, choose Android App Bundle. Module `androidApp`. Key store `/Users/jordanfern/Documents/AAOS/Key.jks` (enter alias and passwords yourself). Build variant `playstoreRelease` (a *release* variant, never debug). Finish. The `.aab` appears in the module's `release` build folder.
+3. **Owner: sign in Android Studio.** Build menu, Generate Signed App Bundle / APK, choose Android App Bundle. Module `androidApp`. Key store `Key.jks` in the AAOS folder containing both repos (enter alias and passwords yourself). Build variant `playstoreRelease` (a *release* variant, never debug). Finish. The `.aab` appears in the module's `release` build folder.
 4. **Owner or agent: sanity check the file.** `jarsigner -verify <file>.aab` should say "jar verified". Confirm the file name and date are the new ones, not an old bundle.
 5. **Owner: upload.** Play Console, the Nuvio app, Test and release, Testing, **Internal testing**, Create new release, upload the `.aab`, review, roll out.
 6. **Owner: install on the car** from the Play Store on the Polestar 3 (internal testing invitation). The debug build uses `com.JF_Nuvio.debug`; it is emulator-only and must never be installed on, or distributed to, the car.

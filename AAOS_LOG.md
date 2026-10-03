@@ -11,6 +11,8 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-02: Docs anonymised: removed personal identifiers from fork-owned docs.
+
 ## 2026-10-02: Search spacing compile fix
 
 - Commit `61cf0ec1` (search results spacing for AAOS, also bumped the version to 142 / 0.5.9) introduced a syntax error in `SearchScreen.kt`; commit `a1cfd08c` fixed it by moving the 16 dp bottom spacer outside the `when` expression. The 16 dp gap now applies in all search states. Version 142 has not been uploaded to Play.
