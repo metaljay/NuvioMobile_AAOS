@@ -64,8 +64,9 @@ The owner copy-pastes messages between chats and has little or no coding experie
 4. **Custom-server fallback**: the default Android/Play build offers "Connect to another server"; `AppFeaturePolicy.customServerConnectionsEnabled` is true in the `androidPlaystore` policy; `api.nuvio.tv` is not rejected by `ServerDiscoveryPolicy`; the trust screen is never bypassed; the built-in backend default is `https://api.nuvio.tv`; the auth-observer rebinding and saved-session fixes stay.
 5. **AAOS readability (Automotive-gated)**: 1.15 minimum text scale and larger icon tokens; 40 dp bottom-nav icons; 185 x 278 dp default posters with 14 dp corners; 230 dp minimum home tile width (five full posters at 1280 dp); 64 dp search field; Discover capped at four columns; enlarged player, source-selector and details back/play controls. Phone and tablet sizing stays upstream.
 6. **Playback defaults**: profiles with no saved value default to Reuse last link on and FIRST_STREAM autoplay; saved values always win.
-7. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
-8. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
+7. **Playback lifecycle**: Android playback pauses when the app leaves the foreground, even if its now-playing media session is active. Picture-in-picture playback may continue; finishing the activity always pauses.
+8. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
+9. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
 
 Details and file locations are in Part 2 below.
 
@@ -167,10 +168,15 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
 - **Search and navigation:** Floating navigation icons/labels were increased in
   `core/ui/NavigationBar.kt`, `core/ui/jelly/JellyTabs.kt`, and
   `core/ui/FloatingNavigationBar.android.kt`. The search field is 64dp high with `titleMedium`
-  text, search results have 8dp of additional clearance below the field and a 16dp trailing gap
-  above the floating navigation, and Discover is capped at four columns in
-  `features/search/SearchScreen.kt`. The additional gaps apply only to active search queries so
-  the Discover view retains its existing spacing.
+  text, and Discover is capped at four columns in `features/search/SearchScreen.kt`. On
+  Automotive, Search has 30dp of clearance below the field and 64dp at the end of the list so
+  content stays separated from the floating navigation, including on the initial Discover view.
+  Search-result and Discover spacing on non-Automotive layouts remain unchanged.
+- **AAOS System Media Card / Now Playing Session:** `PlayerNowPlayingController.android.kt` retains
+  the current media item's metadata (title, subtitle, artwork) and transitions `MediaSession` to
+  `PlaybackState.STATE_PAUSED` when player views unbind (instead of clearing metadata to `null` and
+  setting `STATE_NONE`). This keeps the Polestar 3 / Android Automotive OS system home screen
+  Current-Media Card widget populated with the last-watched item details, progress, and paused play button.
 - **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
   on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
   `features/details/components/DetailFloatingHeader.kt`, and

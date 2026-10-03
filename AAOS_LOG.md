@@ -11,6 +11,21 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Retained AAOS system media card session on player exit
+
+- Updated `PlayerNowPlayingController.android.kt` so that when player controls unbind (e.g. user exits the player screen to return to the home screen), `MediaSession` retains the current item's metadata (`title`, `subtitle`, `artwork`) and transitions to `PlaybackState.STATE_PAUSED` at the current progress position instead of clearing metadata to `null` and setting `STATE_NONE`.
+- This ensures the Polestar 3 / Android Automotive OS system home screen Current-Media Card widget displays the last-watched item details, progress, and paused play button instead of turning blank when returning to the home screen.
+- Commands run and results: `./gradlew :composeApp:compileAndroidMain` passed; `./gradlew :composeApp:testAndroidHostTest --tests com.JF_Nuvio.features.player.PlayerNowPlayingServiceTest` passed (100%); `./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore` passed; `./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full` passed.
+- Verified: Android compilation, unit tests, and Play Store + Full debug APK assembly. No emulator visual check or real-car check.
+
+## 2026-10-03: Increased AAOS search clearance and paused playback when leaving the app
+
+- Increased Automotive search-field spacing to 30dp and added 64dp of end-of-list clearance on both Discover and active search results. Non-Automotive spacing stays unchanged.
+- Android playback now pauses when the app leaves the foreground instead of continuing because its now-playing media session is active. Playback in picture-in-picture may continue; finishing the activity always pauses. Advanced the next release candidate to 143 / 0.5.10 because 142 / 0.5.9 was confirmed uploaded.
+- Investigated the CarPlay-style AAOS home media card: the app already publishes an Android `MediaSession` with title, artwork and playback state, but the Play build does not provide a `MediaBrowserService`/`MediaLibraryService`. Android Automotive renders the media-browser content in its own UI; Media3 `MediaSessionService` is the documented route for background playback. Video apps have separate parked-video and audio-while-driving requirements. Official guidance: `https://developer.android.com/training/cars/media/automotive-os`, `https://developer.android.com/training/cars/parked/video`, and `https://developer.android.com/media/media3/session/background-playback`. A native AAOS home-card result still needs emulator/car verification; no media-service integration was added.
+- Commands run and results: `./gradlew :composeApp:compileAndroidMain :composeApp:testAndroidHostTest --tests com.JF_Nuvio.features.player.PlaybackLifecyclePolicyTest` passed; `git diff --check` passed. Android SDK device tools were unavailable, so no emulator visual check was possible.
+- Verified: Android source compilation and the focused lifecycle-policy test only. No emulator or real-car check.
+
 ## 2026-10-03: Signed bundles now collected in a standard For upload to Play Console folder.
 
 - Updated the release instructions and fork documentation to collect signed bundles in one shared folder.

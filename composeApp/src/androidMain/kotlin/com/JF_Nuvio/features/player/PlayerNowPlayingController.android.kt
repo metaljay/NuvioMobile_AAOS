@@ -97,9 +97,6 @@ internal class AndroidPlayerNowPlayingController(
     private var lastPublishedEnded: Boolean? = null
     private var lastPublishedSpeed = Float.NaN
 
-    val isActive: Boolean
-        get() = !released && metadata != null
-
     init {
         if (AppFeaturePolicy.mediaPlaybackForegroundServiceEnabled) {
             createNotificationChannel(appContext)
@@ -166,10 +163,14 @@ internal class AndroidPlayerNowPlayingController(
         runOnMain {
             if (released) return@runOnMain
             released = true
-            clearInternal()
             AndroidNowPlayingActionDispatcher.unregister(this)
-            mediaSession.release()
-            artworkExecutor.shutdownNow()
+            // Pause playback state and hide status bar notification, but retain media session metadata
+            // so the AAOS System Home Screen Current-Media Card displays the last-watched item.
+            snapshot = snapshot.copy(isPlaying = false, isLoading = false)
+            resetPublishedPlaybackState()
+            publishPlaybackState(force = true)
+            mediaSession.isActive = true
+            PlayerNowPlayingService.hide(appContext)
         }
     }
 
@@ -185,20 +186,10 @@ internal class AndroidPlayerNowPlayingController(
 
     private fun clearInternal() {
         artworkGeneration.incrementAndGet()
-        metadata = null
-        snapshot = PlayerPlaybackSnapshot()
-        artworkArt = null
-        artworkAlbumArt = null
-        artworkDisplayIcon = null
-        artworkNotificationIcon = null
+        snapshot = snapshot.copy(isPlaying = false, isLoading = false)
         resetPublishedPlaybackState()
-        mediaSession.setMetadata(null)
-        mediaSession.setPlaybackState(
-            PlaybackState.Builder()
-                .setState(PlaybackState.STATE_NONE, 0L, 0f)
-                .build(),
-        )
-        mediaSession.isActive = false
+        publishPlaybackState(force = true)
+        mediaSession.isActive = metadata != null
         PlayerNowPlayingService.hide(appContext)
     }
 

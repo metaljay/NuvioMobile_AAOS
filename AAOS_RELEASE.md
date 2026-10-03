@@ -6,7 +6,7 @@
 | --- | --- |
 | Release application ID | `com.JF_Nuvio` |
 | **Last uploaded to Play** | **142 (0.5.9)**, confirmed by the owner from Play Console on 2026-10-03 |
-| Code in the repo now | 142 (0.5.9), equals the last upload and must be raised before the next release |
+| Code in the repo now | 143 (0.5.10), ready for the next release |
 | Version file | `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the name; Android reads this file) |
 | Release key | `Key.jks` in the AAOS folder containing both repos (outside the repo; keep a backup) |
 | Signed bundles for upload | The folder named `For upload to Play Console` in the AAOS folder (next to both repos, outside git). Files are named `<App>-<code>-<name>.aab`, for example `Flow-33-2.2.14.aab`. |

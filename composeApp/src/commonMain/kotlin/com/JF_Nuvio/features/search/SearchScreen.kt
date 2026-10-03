@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.JF_Nuvio.core.network.NetworkCondition
 import com.JF_Nuvio.core.network.NetworkStatusRepository
+import com.JF_Nuvio.getPlatform
 import com.JF_Nuvio.core.ui.NuvioInputField
 import com.JF_Nuvio.core.ui.NuvioScreen
 import com.JF_Nuvio.core.ui.NuvioNetworkOfflineCard
@@ -231,11 +232,17 @@ fun SearchScreen(
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
     ) {
+        val isAutomotive = getPlatform().isAutomotive
         val discoverColumns = remember(maxWidth) {
             posterGridColumnCountForWidth(maxWidth).coerceAtMost(4)
         }
         val homeSectionPadding = remember(maxWidth) {
             homeSectionHorizontalPaddingForWidth(maxWidth.value)
+        }
+        val searchBottomSpacing = when {
+            isAutomotive -> 64.dp
+            query.isNotBlank() -> 16.dp
+            else -> 0.dp
         }
         val headerTitle = when {
             query.isNotBlank() -> stringResource(Res.string.compose_nav_search)
@@ -290,7 +297,9 @@ fun SearchScreen(
                         )
                     }
                     androidx.compose.foundation.layout.Spacer(
-                        modifier = Modifier.height(if (query.isNotBlank()) 22.dp else 14.dp),
+                        modifier = Modifier.height(
+                            if (isAutomotive) 30.dp else if (query.isNotBlank()) 22.dp else 14.dp,
+                        ),
                     )
                 }
             }
@@ -399,8 +408,10 @@ fun SearchScreen(
                         }
                     }
                 }
+            }
+            if (searchBottomSpacing > 0.dp) {
                 item(key = "search_results_bottom_spacing") {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(searchBottomSpacing))
                 }
             }
         }
