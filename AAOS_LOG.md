@@ -11,6 +11,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Added the aaos-log-change recipe (record changes and bug fixes) and README step 4
+
+- Documented the `aaos-log-change` recipe across README.md, AGENTS.md, AAOS_FORK.md, and AAOS_LOG.md.
+- Commands run and results: `git diff --check` passed.
+- Verified: documentation-only update; no build or app code touched.
+
 ## 2026-10-03: Retained AAOS system media card session on player exit
 
 - Updated `PlayerNowPlayingController.android.kt` so that when player controls unbind (e.g. user exits the player screen to return to the home screen), `MediaSession` retains the current item's metadata (`title`, `subtitle`, `artwork`) and transitions to `PlaybackState.STATE_PAUSED` at the current progress position instead of clearing metadata to `null` and setting `STATE_NONE`.
