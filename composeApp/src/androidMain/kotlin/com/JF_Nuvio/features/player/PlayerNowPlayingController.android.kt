@@ -168,6 +168,7 @@ internal class AndroidPlayerNowPlayingController(
             // so the AAOS System Home Screen Current-Media Card displays the last-watched item.
             snapshot = snapshot.copy(isPlaying = false, isLoading = false)
             resetPublishedPlaybackState()
+            publishMetadata()
             publishPlaybackState(force = true)
             mediaSession.isActive = true
             PlayerNowPlayingService.hide(appContext)
@@ -201,7 +202,14 @@ internal class AndroidPlayerNowPlayingController(
 
         currentMetadata.subtitle?.let { subtitle ->
             builder.putString(MediaMetadata.METADATA_KEY_ARTIST, subtitle)
+            builder.putString(MediaMetadata.METADATA_KEY_ALBUM, subtitle)
             builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE, subtitle)
+            builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_DESCRIPTION, subtitle)
+        }
+        currentMetadata.artworkUrl?.let { url ->
+            builder.putString(MediaMetadata.METADATA_KEY_ART_URI, url)
+            builder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, url)
+            builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, url)
         }
         snapshot.durationMs.takeIf { it > 0L }?.let { durationMs ->
             builder.putLong(MediaMetadata.METADATA_KEY_DURATION, durationMs)
@@ -298,7 +306,7 @@ internal class AndroidPlayerNowPlayingController(
                 .getOrNull()
 
             mainHandler.post {
-                if (released || generation != artworkGeneration.get() || metadata?.artworkUrl != urlString) {
+                if (generation != artworkGeneration.get() || metadata?.artworkUrl != urlString) {
                     return@post
                 }
                 artworkArt = bitmap
@@ -306,7 +314,7 @@ internal class AndroidPlayerNowPlayingController(
                 artworkDisplayIcon = bitmap?.let(::copyArtwork)
                 artworkNotificationIcon = bitmap?.let(::copyArtwork)
                 publishMetadata()
-                publishNotification()
+                if (!released) publishNotification()
             }
         }
     }

@@ -11,6 +11,13 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Added top navigation clearance for Search screen and enriched AAOS System Media Card metadata
+
+- Added 68dp top clearance above the SearchScreen header on tablet and Automotive layouts (`isTabletLayout || isAutomotive`) so the search header and search bar sit comfortably below the top floating navigation pill bar.
+- Enriched `PlayerNowPlayingController.android.kt` MediaMetadata keys (`METADATA_KEY_ALBUM`, `METADATA_KEY_DISPLAY_DESCRIPTION`, artwork URIs) and fixed artwork updates so downloading artwork completes and updates `MediaMetadata` even when exiting the player screen. This ensures the Polestar 3 AAOS home screen media widget renders title, album, and artwork properly.
+- Commands run and results: `./gradlew :composeApp:compileAndroidMain` passed.
+- Verified: Android compilation. No emulator visual check or real-car check.
+
 ## 2026-10-03: Added the aaos-log-change recipe (record changes and bug fixes) and README step 4
 
 - Documented the `aaos-log-change` recipe across README.md, AGENTS.md, AAOS_FORK.md, and AAOS_LOG.md.

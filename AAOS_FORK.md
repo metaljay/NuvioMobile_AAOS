@@ -169,14 +169,12 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
   `core/ui/NavigationBar.kt`, `core/ui/jelly/JellyTabs.kt`, and
   `core/ui/FloatingNavigationBar.android.kt`. The search field is 64dp high with `titleMedium`
   text, and Discover is capped at four columns in `features/search/SearchScreen.kt`. On
-  Automotive, Search has 30dp of clearance below the field and 64dp at the end of the list so
-  content stays separated from the floating navigation, including on the initial Discover view.
+  Automotive and tablet layouts, Search includes 68dp of top clearance above the search header so the field sits comfortably below the top floating navigation bar pill, with 30dp of clearance below the field and 64dp at the end of the list.
   Search-result and Discover spacing on non-Automotive layouts remain unchanged.
 - **AAOS System Media Card / Now Playing Session:** `PlayerNowPlayingController.android.kt` retains
   the current media item's metadata (title, subtitle, artwork) and transitions `MediaSession` to
   `PlaybackState.STATE_PAUSED` when player views unbind (instead of clearing metadata to `null` and
-  setting `STATE_NONE`). This keeps the Polestar 3 / Android Automotive OS system home screen
-  Current-Media Card widget populated with the last-watched item details, progress, and paused play button.
+  setting `STATE_NONE`). `MediaMetadata` publishes rich keys (`METADATA_KEY_ALBUM`, `METADATA_KEY_DISPLAY_DESCRIPTION`, artwork URIs) and allows background artwork loading to update metadata even when exiting the player, ensuring the Polestar 3 / Android Automotive OS system home screen Current-Media Card widget displays the last-watched item details, progress, artwork, and paused play button.
 - **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
   on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
   `features/details/components/DetailFloatingHeader.kt`, and

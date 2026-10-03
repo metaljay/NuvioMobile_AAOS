@@ -233,6 +233,8 @@ fun SearchScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         val isAutomotive = getPlatform().isAutomotive
+        val isTabletLayout = maxWidth >= 768.dp
+        val topNavClearance = if (isTabletLayout || isAutomotive) 68.dp else 0.dp
         val discoverColumns = remember(maxWidth) {
             posterGridColumnCountForWidth(maxWidth).coerceAtMost(4)
         }
@@ -266,6 +268,9 @@ fun SearchScreen(
                 androidx.compose.foundation.layout.Column(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
+                    if (topNavClearance > 0.dp) {
+                        Spacer(modifier = Modifier.height(topNavClearance))
+                    }
                     NuvioScreenHeader(
                         title = headerTitle,
                         modifier = Modifier.padding(horizontal = 16.dp),
