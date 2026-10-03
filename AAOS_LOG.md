@@ -11,6 +11,13 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Prepared release bundle candidate version 143 (0.5.10)
+
+- Built and verified release App Bundle task `:androidApp:bundlePlaystoreRelease` for application ID `com.JF_Nuvio` with version code 143 and version name 0.5.10.
+- Merged manifest verified: min SDK 24, target SDK 36, automotive/portrait/landscape features optional, distractionOptimized enabled.
+- Commands run and results: `./gradlew :androidApp:bundlePlaystoreRelease` passed.
+- Verified: Gradle release bundle build and merged manifest inspection. No emulator or real-car check.
+
 ## 2026-10-03: Added top navigation clearance for Search screen and enriched AAOS System Media Card metadata
 
 - Added 68dp top clearance above the SearchScreen header on tablet and Automotive layouts (`isTabletLayout || isAutomotive`) so the search header and search bar sit comfortably below the top floating navigation pill bar.
