@@ -11,6 +11,17 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Confirmed upload to Play for version 144 (0.5.11)
+
+- Owner confirmed Google Play Internal testing accepted version code 144 and version name 0.5.11 for the `com.JF_Nuvio` app.
+- The release-state table in `AAOS_RELEASE.md` was updated to record the confirmed Play upload and the repo's next release candidate must be raised above 144 before the next upload.
+- Commands run and results:
+  - `git --no-pager status --short` -> clean working tree before the documentation update.
+  - `git add AAOS_RELEASE.md AAOS_LOG.md` -> docs staged for the release record.
+  - `git commit -m "docs(release): record confirmed Play upload"` -> committed.
+  - `git push origin main` -> pushed.
+- Verified: documentation-only update only. No emulator, build, or real-car verification was claimed.
+
 ## 2026-10-03: Raised the Play upload candidate for a safety buffer
 
 - Increased the repo’s release candidate from 143 / 0.5.10 to 144 / 0.5.11 to keep a one-code safety buffer above the owner-confirmed Play upload of 142 / 0.5.9.
