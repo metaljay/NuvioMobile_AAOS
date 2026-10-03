@@ -11,6 +11,11 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-02: Search spacing compile fix
+
+- Commit `61cf0ec1` (search results spacing for AAOS, also bumped the version to 142 / 0.5.9) introduced a syntax error in `SearchScreen.kt`; commit `a1cfd08c` fixed it by moving the 16 dp bottom spacer outside the `when` expression. The 16 dp gap now applies in all search states. Version 142 has not been uploaded to Play.
+- Verified: `./gradlew --stop`; `./gradlew --status` (no Gradle daemons were running); `./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore` (passed). Emulator and real-car behaviour NOT verified.
+
 ## 2026-10-02: Reset stale MPVKit checkout
 
 - Android build search found no MPVKit use in `androidApp/`, `composeApp/src/androidMain`, `composeApp/src/androidPlaystore`, or any `build.gradle.kts` / `settings.gradle.kts` file.
