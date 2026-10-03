@@ -11,6 +11,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Play upload confirmed by the owner
+
+- Owner confirmed the Google Play Internal testing upload for version code 142 / name 0.5.9. The release-state table in `AAOS_RELEASE.md` was updated to record it.
+- Commands run: `git status --short` (clean before the docs edit); `git add AAOS_RELEASE.md AAOS_LOG.md`; `git commit -m "docs(release): record confirmed Play upload"`; `git push origin main` (after the commit). The tag `play-142` was created and pushed if the repo accepts it.
+- Verified: documentation-only update only; no build, emulator, or real-car verification was claimed. The owner did not state any emulator or vehicle verification, so it is not recorded here.
+
 ## 2026-10-03: Instructions rewritten for a non-coder owner: communication rules, approval gate in the sync procedure, click-by-click release steps, prompt-based README how-to.
 
 ## 2026-10-03: README gained a 'Keeping this fork up to date' how-to.
