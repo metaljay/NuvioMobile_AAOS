@@ -11,6 +11,11 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: README gained a 'Keeping this fork up to date' how-to.
+
+- Updated the README and its contract to document the upstream sync and release procedures.
+- Verified: `git diff --check` passed. No build run (documentation-only change).
+
 ## 2026-10-02: Docs anonymised: removed personal identifiers from fork-owned docs.
 
 ## 2026-10-02: Search spacing compile fix
