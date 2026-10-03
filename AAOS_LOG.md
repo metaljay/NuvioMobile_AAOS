@@ -11,6 +11,11 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Signed bundles now collected in a standard For upload to Play Console folder.
+
+- Updated the release instructions and fork documentation to collect signed bundles in one shared folder.
+- Verified: `git diff --check` passed. No builds run (docs-only change).
+
 ## 2026-10-03: Play upload confirmed by the owner
 
 - Owner confirmed the Google Play Internal testing upload for version code 142 / name 0.5.9. The release-state table in `AAOS_RELEASE.md` was updated to record it.

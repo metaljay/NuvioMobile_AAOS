@@ -88,6 +88,7 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
 ## 9. Environment notes (one Mac, Android Studio)
 
 - Builds run on the owner's Mac. Both apps sit in the AAOS folder containing both repos; the release key `Key.jks` is in that folder, outside both repos.
+- Signed bundles for upload go in the `For upload to Play Console` folder in the AAOS folder, next to both repos (outside git).
 - Emulator used for checks: `Automotive_Large_Portrait` (1280 x 1606). It does not prove every Polestar 3 configuration. If `adb` or the emulator is unavailable, say so; never claim device verification from a compile.
 - macOS Finder copies create stray duplicates named `* 2.kt`, `* 2.xml` or `* 2` folders (347 had to be removed once). They break builds. Never leave files with a ` 2` suffix; check for them after any copy/merge.
 - Common iOS test sources compile, but the iOS simulator tests cannot run on this Mac (simulator SDK not installed).

@@ -90,6 +90,7 @@ In GitHub Copilot you can type `/aaos-sync` instead. The agent tells you whether
 Follow the instructions in .github/skills/aaos-release/SKILL.md exactly.
 ```
 The agent builds and checks the release bundle, then gives you the exact clicks to sign it in Android Studio and upload it to Google Play Internal testing. Every Play upload needs a higher version code than the last one, whatever the parent's version says; the agent handles this.
+The finished file ends up in a folder called For upload to Play Console next to both repos.
 
 ### 3. Record the upload
 After Play accepts the upload, paste this (replace 33 with the version code you uploaded):
