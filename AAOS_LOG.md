@@ -31,7 +31,7 @@ Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`
 - Owner-confirmed from Play Console: last uploaded 141 (0.5.8); the repo is at 142 (0.5.9) for the next upload.
 - Owner-confirmed: the app runs on the Polestar 3 from Play Internal testing. Not re-verified by an agent.
 - Branch policy: `main` only, with temporary `sync/upstream-<date>` branches for upstream updates.
-- Finding: `origin/cmp-rewrite` has one commit not on `main` (`766737e0`, README edit by the owner, 2026-09-09), superseded by `main`'s README. The GitHub default branch was switched to `main` on 2026-10-02 (done); `cmp-rewrite` is intentionally kept for now.
+- The superseded cmp-rewrite branch (one old README commit) was deleted on 2026-10-03; main is the only branch.
 - Finding: `libass-android` is a dangling submodule reference that upstream has too; harmless.
 
 ## Archived history
