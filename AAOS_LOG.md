@@ -11,6 +11,17 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-03: Raised the Play upload candidate for a safety buffer
+
+- Increased the repo’s release candidate from 143 / 0.5.10 to 144 / 0.5.11 to keep a one-code safety buffer above the owner-confirmed Play upload of 142 / 0.5.9.
+- This is a conservative release-prep step before the next bundle upload and does not change product behavior.
+- Commands run and results:
+  - `./gradlew --no-daemon --console=plain :composeApp:compileAndroidMain` -> passed.
+  - `./gradlew --no-daemon --console=plain :composeApp:testAndroidHostTest --tests "com.JF_Nuvio.features.home.HomePosterCardSizingTest" --tests "com.JF_Nuvio.core.network.ServerDiscoveryPolicyTest"` -> passed.
+  - `git --no-pager diff --check` -> passed.
+- Verified: Android compilation and the focused regression tests for Search and media-card behavior remained green.
+- NOT verified: emulator visual checks and real-car validation were not run.
+
 ## 2026-10-03: Logged the current AAOS verification state for Search and media-card changes
 
 - Reviewed the recent AAOS changes in the repo: the Search screen now keeps extra top clearance on Automotive/tablet layouts, and the media-card flow retains session metadata while pausing playback when the player leaves the foreground.
