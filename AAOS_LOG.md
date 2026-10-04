@@ -11,6 +11,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-04: Workflow simplified to two jobs (parent update, tweak), both ending in a release that raises the version automatically; aaos-log-change replaced by aaos-tweak
+
+- Updated AAOS documentation (README, AGENTS, AAOS_FORK, AAOS_RELEASE, AAOS_UPSTREAM_SYNC) to document the simplified two-job workflow and automatic version bump.
+- Commands run and results: `git diff --check` passed.
+- Verified: documentation-only update; no build or app code touched.
+
 ## 2026-10-03: Confirmed upload to Play for version 144 (0.5.11)
 
 - Owner confirmed Google Play Internal testing accepted version code 144 and version name 0.5.11 for the `com.JF_Nuvio` app.

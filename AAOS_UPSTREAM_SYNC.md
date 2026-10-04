@@ -11,10 +11,10 @@ Do this only when the owner asks, or before a release that needs parent fixes. `
 4. **Resolve conflicts** using the hotspot table below. Rule: take upstream's new code, then re-apply our customisation on top. Never choose "ours" or "theirs" wholesale on a hotspot file. Also review hotspot files that merged *without* conflict, because upstream can change behaviour near our changes silently.
 5. **Restore fork-owned values** (list below).
 6. **Verify.** Run the checks below, walk the invariants in `AAOS_FORK.md` section 5, and inspect the merged **release** manifest (application ID, version, min/target SDK, automotive and camera features, every launcher activity/alias, MediaBrowser entry). Use the emulator if available.
-7. **Approval gate.** Stop. Do not merge into main. Give the owner a plain-English review of the update (see AAOS_FORK.md section 4b) and ask them to reply with exactly `approve sync` or `cancel sync`. On `cancel sync`, delete the sync branch (see "Abort or roll back"); main stays untouched. If the owner returns in a new chat, find the open sync/ branch, re-run the checks quickly, then continue.
+7. **Approval gate.** Before asking, build the debug app and give the owner the Automotive emulator test steps (see `.github/skills/aaos-sync/SKILL.md` step 3); the owner may also reply `problem: <what you saw>`. Stop. Do not merge into main. Give the owner a plain-English review of the update (see AAOS_FORK.md section 4b) and ask them to reply with exactly `approve sync` or `cancel sync`. On `cancel sync`, delete the sync branch (see "Abort or roll back"); main stays untouched. If the owner returns in a new chat, find the open sync/ branch, re-run the checks quickly, then continue.
 8. **Land it.** `git switch main && git merge --ff-only sync/upstream-<date>`. If that refuses because `main` moved, merge `main` into the sync branch, re-verify, retry. Then `git push origin main`.
 9. **Clean up.** `git branch -d sync/upstream-<date>`; if it was pushed, `git push origin --delete sync/upstream-<date>`. Never leave sync branches behind.
-10. **Record.** Add an `AAOS_LOG.md` entry (upstream SHA, conflicts, verification, limits). If releasing, continue with `AAOS_RELEASE.md`.
+10. **Record.** Add an `AAOS_LOG.md` entry (upstream SHA, conflicts, verification, limits). Continue with the release stage (`.github/skills/aaos-release/SKILL.md`).
 
 ## Abort or roll back
 
@@ -28,7 +28,7 @@ Do this only when the owner asks, or before a release that needs parent fixes. `
 
 ## Restore after every merge
 
-- The Play version code/name in `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the name; Android reads this file) must be **above the last uploaded code** in `AAOS_RELEASE.md`. Upstream's value is irrelevant; never keep a lower number.
+- Keep OUR version code and name in the version file (take ours on any conflict); never copy the parent's. The release stage raises them.
 - Release `applicationId` is exactly `com.JF_Nuvio`.
 - Package namespace `com.JF_Nuvio` everywhere; iOS identifier overrides.
 - `AppFeaturePolicy.customServerConnectionsEnabled` is true for the Play Store policy.
@@ -50,7 +50,7 @@ Run the focused tests for the area touched (for example `HomePosterCardSizingTes
 | --- | --- | --- |
 | All Kotlin packages | upstream `com.nuvio.app` renamed to `com.JF_Nuvio` | Re-apply the rename to new/changed upstream files; respect the store-config exceptions in Part 2 |
 | `androidApp/build.gradle.kts` | applicationId, signing properties, ABI-split workaround | Keep ours for those; take upstream for the rest |
-| `iosApp/Configuration/Version.xcconfig` | Play version code/name | After the merge set the code above the last uploaded one (AAOS_RELEASE.md) |
+| `iosApp/Configuration/Version.xcconfig` | Play version code/name | keep ours |
 | iOS `Config.xcconfig` and Xcode project | fork's iOS identifier overrides | Keep the overrides (Appendix) |
 | Android manifest(s) | AAOS flags, activity settings | Keep every AAOS entry |
 | `composeApp/src/androidPlaystore/.../AppFeaturePolicy.android.kt` | custom server connections enabled | Keep enabled |
