@@ -72,6 +72,7 @@ The owner copy-pastes messages between chats and has little or no coding experie
 5. **AAOS readability (Automotive-gated)**: 1.15 minimum text scale and larger icon tokens; 40 dp bottom-nav icons; 185 x 278 dp default posters with 14 dp corners; 230 dp minimum home tile width (five full posters at 1280 dp); 64 dp search field; Discover capped at four columns; enlarged player, source-selector and details back/play controls. Phone and tablet sizing stays upstream.
 6. **Playback defaults**: profiles with no saved value default to Reuse last link on and FIRST_STREAM autoplay; saved values always win.
 7. **Playback lifecycle**: Android playback pauses when the app leaves the foreground, even if its now-playing media session is active. Picture-in-picture playback may continue; finishing the activity always pauses.
+7b. **Car media card after the app is closed**: `NuvioCarMediaBrowserService` stays declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter and `androidx.car.app.launchable=true` meta-data, plus the `NuvioCarMediaArtworkProvider` provider; the player and that service share one `MediaSession` (`NuvioCarMediaSession`); the last item is saved to disk and restored as paused.
 8. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
 9. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
 
@@ -182,6 +183,24 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
   the current media item's metadata (title, subtitle, artwork) and transitions `MediaSession` to
   `PlaybackState.STATE_PAUSED` when player views unbind (instead of clearing metadata to `null` and
   setting `STATE_NONE`). `MediaMetadata` publishes rich keys (`METADATA_KEY_ALBUM`, `METADATA_KEY_DISPLAY_DESCRIPTION`, artwork URIs) and allows background artwork loading to update metadata even when exiting the player, ensuring the Polestar 3 / Android Automotive OS system home screen Current-Media Card widget displays the last-watched item details, progress, artwork, and paused play button.
+- **Car media card after the app is closed (2026-10-04):** AAOS only treats an app as a media
+  source if it exposes a `MediaBrowserService`, and the home screen card reads the session token
+  that service hands out. On the Google car launcher an app that also has a launcher activity must
+  opt in with `androidx.car.app.launchable=true` on that service, otherwise the card shows the app
+  name with no text. `features/player/NuvioCarMediaBrowserService.android.kt` (declared in
+  `androidApp/src/main/AndroidManifest.xml`) and `features/player/NuvioCarMediaSession.android.kt`
+  provide one process-wide `MediaSession` that `PlayerNowPlayingController.android.kt` publishes
+  to. The last title, subtitle, artwork URL, artwork image, position and duration are saved
+  (shared preferences `nuvio_car_media_card` and `files/car_media_card_artwork.png`). When the car
+  binds the service with no player running, the session is refilled from disk as `STATE_PAUSED`
+  (never `STATE_NONE`, which hides the card). Video cannot play without the app and Android blocks
+  a background app from opening itself, so pressing play while the app is closed shows the AAOS
+  error-resolution prompt "Open Nuvio to continue watching" with an "Open Nuvio" button, then
+  returns to paused after 15 s. The car's media screen shows a "Continue watching" tab with the
+  last item. Artwork: AAOS only shows artwork from a local `content://` URI (Google "Display media
+  artwork"), so the saved poster is served read-only by `NuvioCarMediaArtworkProvider`
+  (authority `${applicationId}.carmediaart`) and the controller publishes that URI once the poster
+  is saved. Side effect: the car app grid lists Nuvio twice (the app and its media entry).
 - **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
   on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
   `features/details/components/DetailFloatingHeader.kt`, and

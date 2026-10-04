@@ -221,6 +221,26 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
 
+        <!-- AAOS fork: media source for the car's media card; keeps the last item shown after the app is closed. -->
+        <service
+            android:name="com.JF_Nuvio.features.player.NuvioCarMediaBrowserService"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+            <!-- Opts this service in as a car media source even though the app also has a launcher activity. -->
+            <meta-data
+                android:name="androidx.car.app.launchable"
+                android:value="true" />
+        </service>
+
+        <!-- AAOS fork: read-only artwork for the car media card (AAOS needs a content:// URI). -->
+        <provider
+            android:name="com.JF_Nuvio.features.player.NuvioCarMediaArtworkProvider"
+            android:authorities="${applicationId}.carmediaart"
+            android:exported="true" />
+
         <receiver
             android:name="com.JF_Nuvio.features.player.PlayerNowPlayingActionReceiver"
             android:exported="false" />

@@ -11,6 +11,14 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-04: Car media card keeps showing the last item after Nuvio is closed
+
+- Why: on AAOS the home screen media card only follows apps that expose a `MediaBrowserService`, reads the session handed out by that service, and (on the Google car launcher) skips apps with a launcher activity unless the service opts in with `androidx.car.app.launchable`. Nuvio had no such service, so the card emptied when the app closed. Sources: Google "Build media apps for cars", "Configure manifest", "Media controls / playback resumption" pages; AOSP `CarMediaService.java` and car-media-common `PlaybackViewModel.java`; emulator launcher log ("Skipping MBS ... belonging to non media template app").
+- Added `NuvioCarMediaBrowserService` + `NuvioCarMediaSession` (one shared session, last item saved to disk, restored as paused, "Open Nuvio" prompt on play while closed, "Continue watching" browse tab) and `NuvioCarMediaArtworkProvider` (serves the saved poster as a content:// URI, which AAOS requires for artwork). `PlayerNowPlayingController` now uses the shared session and publishes the content:// artwork URI. Manifest declares the service (with the opt-in meta-data) and the provider.
+- Commands run and results: `./gradlew :composeApp:compileAndroidMain` passed; `./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore` passed; `./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full` passed; `./gradlew :composeApp:testAndroidHostTest --tests '*PlayerNowPlaying*'` passed; `git diff --check` passed.
+- Verified (emulator `Automotive_Large_Portrait`, Android 15, playstore debug build): with a hand-seeded saved item and the app force-stopped, the home card showed the title, subtitle and play button; after an emulator reboot with Nuvio as the last media source the session was restored as paused; pressing play showed the "Open Nuvio" prompt in the car media screen and its button opened Nuvio (which then auto-resumed a real episode). That real playback replaced the saved item (title, episode, poster, position); after force-stopping Nuvio the home card showed that episode with its poster. Before the opt-in meta-data the card showed only "Nuvio Debug" with no text; before the content:// artwork it showed a music-note placeholder.
+- NOT verified: the real Polestar 3 (its launcher may differ from the emulator's Google car launcher); a real car restart.
+
 ## 2026-10-04: Workflow simplified to two jobs (parent update, tweak), both ending in a release that raises the version automatically; aaos-log-change replaced by aaos-tweak
 
 - Updated AAOS documentation (README, AGENTS, AAOS_FORK, AAOS_RELEASE, AAOS_UPSTREAM_SYNC) to document the simplified two-job workflow and automatic version bump.

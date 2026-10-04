@@ -53,6 +53,7 @@ Run the focused tests for the area touched (for example `HomePosterCardSizingTes
 | `iosApp/Configuration/Version.xcconfig` | Play version code/name | keep ours |
 | iOS `Config.xcconfig` and Xcode project | fork's iOS identifier overrides | Keep the overrides (Appendix) |
 | Android manifest(s) | AAOS flags, activity settings | Keep every AAOS entry |
+| `features/player/PlayerNowPlayingController.android.kt`, `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt`, `NuvioCarMediaArtworkProvider.android.kt` | shared session, car media card restore, content:// artwork | Keep the controller on `NuvioCarMediaSession` (no private `MediaSession`) and publishing the content:// artwork URI; keep the service (with its `androidx.car.app.launchable` meta-data) and the provider in the manifest |
 | `composeApp/src/androidPlaystore/.../AppFeaturePolicy.android.kt` | custom server connections enabled | Keep enabled |
 | `core/network/ServerDiscoveryPolicy*`, auth / official-config code | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
 | `core/ui/NavigationBar.kt`, `jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt` | larger nav icons/labels | Re-apply Automotive-gated sizes |

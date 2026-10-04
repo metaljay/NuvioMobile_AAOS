@@ -59,28 +59,20 @@ internal class AndroidPlayerNowPlayingController(
         Thread(runnable, "NuvioNowPlayingArtwork").apply { isDaemon = true }
     }
     private val artworkGeneration = AtomicInteger(0)
-    private val mediaSession = MediaSession(appContext, NOW_PLAYING_TAG).apply {
-        setFlags(
-            MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or
-                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS,
-        )
-        setCallback(
-            object : MediaSession.Callback() {
-                override fun onPlay() = controls.play()
+    // AAOS fork: the session is shared with NuvioCarMediaBrowserService (see NuvioCarMediaSession).
+    private val mediaSession = NuvioCarMediaSession.get(appContext)
+    private val sessionCallback = object : MediaSession.Callback() {
+        override fun onPlay() = controls.play()
 
-                override fun onPause() = controls.pause()
+        override fun onPause() = controls.pause()
 
-                override fun onStop() = controls.pause()
+        override fun onStop() = controls.pause()
 
-                override fun onSeekTo(pos: Long) = controls.seekTo(pos.coerceAtLeast(0L))
+        override fun onSeekTo(pos: Long) = controls.seekTo(pos.coerceAtLeast(0L))
 
-                override fun onFastForward() = controls.seekBy(SEEK_INTERVAL_MS)
+        override fun onFastForward() = controls.seekBy(SEEK_INTERVAL_MS)
 
-                override fun onRewind() = controls.seekBy(-SEEK_INTERVAL_MS)
-            },
-            mainHandler,
-        )
-        buildContentIntent(appContext)?.let(::setSessionActivity)
+        override fun onRewind() = controls.seekBy(-SEEK_INTERVAL_MS)
     }
 
     private var metadata: AndroidNowPlayingMetadata? = null
@@ -102,6 +94,7 @@ internal class AndroidPlayerNowPlayingController(
             createNotificationChannel(appContext)
         }
         AndroidNowPlayingActionDispatcher.register(this)
+        runOnMain { NuvioCarMediaSession.attachPlayer(appContext, this, sessionCallback) }
     }
 
     fun updateMetadata(info: PlayerNowPlayingInfo) {
@@ -120,6 +113,7 @@ internal class AndroidPlayerNowPlayingController(
 
             val artworkChanged = metadata?.artworkUrl != normalized.artworkUrl
             metadata = normalized
+            NuvioCarMediaSession.saveItem(appContext, normalized.title, normalized.subtitle, normalized.artworkUrl)
             mediaSession.isActive = true
 
             if (artworkChanged) {
@@ -145,6 +139,12 @@ internal class AndroidPlayerNowPlayingController(
             val loadingChanged = snapshot.isLoading != nextSnapshot.isLoading
             val endedChanged = snapshot.isEnded != nextSnapshot.isEnded
             snapshot = nextSnapshot
+            NuvioCarMediaSession.savePlayback(
+                appContext,
+                nextSnapshot.positionMs,
+                nextSnapshot.durationMs,
+                force = playingChanged || durationChanged,
+            )
 
             if (durationChanged) publishMetadata()
             publishPlaybackState(force = false)
@@ -171,6 +171,10 @@ internal class AndroidPlayerNowPlayingController(
             publishMetadata()
             publishPlaybackState(force = true)
             mediaSession.isActive = true
+            if (metadata != null) {
+                NuvioCarMediaSession.savePlayback(appContext, snapshot.positionMs, snapshot.durationMs, force = true)
+            }
+            NuvioCarMediaSession.detachPlayer(appContext, this)
             PlayerNowPlayingService.hide(appContext)
         }
     }
@@ -207,9 +211,11 @@ internal class AndroidPlayerNowPlayingController(
             builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_DESCRIPTION, subtitle)
         }
         currentMetadata.artworkUrl?.let { url ->
-            builder.putString(MediaMetadata.METADATA_KEY_ART_URI, url)
-            builder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, url)
-            builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, url)
+            // AAOS fork: the car only shows artwork from a local content:// URI, so prefer the saved copy.
+            val artworkUri = NuvioCarMediaSession.artworkContentUri(appContext)?.toString() ?: url
+            builder.putString(MediaMetadata.METADATA_KEY_ART_URI, artworkUri)
+            builder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, artworkUri)
+            builder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, artworkUri)
         }
         snapshot.durationMs.takeIf { it > 0L }?.let { durationMs ->
             builder.putLong(MediaMetadata.METADATA_KEY_DURATION, durationMs)
@@ -304,6 +310,7 @@ internal class AndroidPlayerNowPlayingController(
             val bitmap = runCatching { downloadArtwork(urlString) }
                 .onFailure { error -> Log.w(NOW_PLAYING_TAG, "Failed to load artwork", error) }
                 .getOrNull()
+            bitmap?.let { NuvioCarMediaSession.saveArtwork(appContext, it) }
 
             mainHandler.post {
                 if (generation != artworkGeneration.get() || metadata?.artworkUrl != urlString) {
