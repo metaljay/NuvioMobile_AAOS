@@ -3,12 +3,6 @@
 Newest entry first. One entry per verified change, upstream sync or upload. Format:
 
 ```
-## 2026-10-04: Release prepared for version 145 (0.5.12)
-- Contains the car media card change logged below. Version raised by the release recipe and pushed on its own.
-- Commands run and results: `./gradlew :androidApp:bundlePlaystoreRelease` passed.
-- Merged release manifest checked: application ID `com.JF_Nuvio`, version code 145, name 0.5.12, min SDK 24, target SDK 36, automotive feature optional; `NuvioCarMediaBrowserService` (with `androidx.car.app.launchable`) and the `com.JF_Nuvio.carmediaart` provider present.
-- NOT verified: signing (done by the owner in Android Studio), Play upload, the real car.
-
 ## YYYY-MM-DD: short title
 - What changed and why
 - Commands run and results
@@ -16,6 +10,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 ```
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
+
+## 2026-10-04: Release prepared for version 145 (0.5.12)
+- Contains the car media card change logged below. Version raised by the release recipe and pushed on its own.
+- Commands run and results: `./gradlew :androidApp:bundlePlaystoreRelease` passed.
+- Merged release manifest checked: application ID `com.JF_Nuvio`, version code 145, name 0.5.12, min SDK 24, target SDK 36, automotive feature optional; `NuvioCarMediaBrowserService` (with `androidx.car.app.launchable`) and the `com.JF_Nuvio.carmediaart` provider present.
+- NOT verified: signing (done by the owner in Android Studio), Play upload, the real car.
 
 ## 2026-10-04: Car media card keeps showing the last item after Nuvio is closed
 
