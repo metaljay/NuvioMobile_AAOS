@@ -72,7 +72,7 @@ The owner copy-pastes messages between chats and has little or no coding experie
 5. **AAOS readability (Automotive-gated)**: 1.15 minimum text scale and larger icon tokens; 40 dp bottom-nav icons; 185 x 278 dp default posters with 14 dp corners; 230 dp minimum home tile width (five full posters at 1280 dp); 64 dp search field; Discover capped at four columns; enlarged player, source-selector and details back/play controls. Phone and tablet sizing stays upstream.
 6. **Playback defaults**: profiles with no saved value default to Reuse last link on and FIRST_STREAM autoplay; saved values always win.
 7. **Playback lifecycle**: Android playback pauses when the app leaves the foreground, even if its now-playing media session is active. Picture-in-picture playback may continue; finishing the activity always pauses.
-7b. **Car media card after the app is closed**: `NuvioCarMediaBrowserService` stays declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter and `androidx.car.app.launchable=true` meta-data, plus the `NuvioCarMediaArtworkProvider` provider; the player and that service share one `MediaSession` (`NuvioCarMediaSession`); the last item is saved to disk and restored as paused.
+7b. **Car media card after the app is closed**: `NuvioCarMediaBrowserService` stays declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter, plus the `NuvioCarMediaArtworkProvider` provider; Do NOT add `androidx.car.app.launchable` to it: on the Polestar launcher (one icon per app) that makes the app icon open the car's media screen ("Continue watching") with no way into the app (owner report 2026-10-05). The player and that service share one `MediaSession` (`NuvioCarMediaSession`); the last item is saved to disk and restored as paused.
 8. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
 9. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
 
@@ -185,9 +185,11 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
   setting `STATE_NONE`). `MediaMetadata` publishes rich keys (`METADATA_KEY_ALBUM`, `METADATA_KEY_DISPLAY_DESCRIPTION`, artwork URIs) and allows background artwork loading to update metadata even when exiting the player, ensuring the Polestar 3 / Android Automotive OS system home screen Current-Media Card widget displays the last-watched item details, progress, artwork, and paused play button.
 - **Car media card after the app is closed (2026-10-04):** AAOS only treats an app as a media
   source if it exposes a `MediaBrowserService`, and the home screen card reads the session token
-  that service hands out. On the Google car launcher an app that also has a launcher activity must
-  opt in with `androidx.car.app.launchable=true` on that service, otherwise the card shows the app
-  name with no text. `features/player/NuvioCarMediaBrowserService.android.kt` (declared in
+  that service hands out. On the emulator's Google car launcher an app that also has a launcher activity
+  must opt in with `androidx.car.app.launchable=true` on that service, otherwise the card shows the
+  app name with no text. That opt-in was removed on 2026-10-05 because the Polestar launcher then
+  opened the car's media screen instead of Nuvio; whether the Polestar card follows the service
+  without it is to be confirmed on the car. `features/player/NuvioCarMediaBrowserService.android.kt` (declared in
   `androidApp/src/main/AndroidManifest.xml`) and `features/player/NuvioCarMediaSession.android.kt`
   provide one process-wide `MediaSession` that `PlayerNowPlayingController.android.kt` publishes
   to. The last title, subtitle, artwork URL, artwork image, position and duration are saved
