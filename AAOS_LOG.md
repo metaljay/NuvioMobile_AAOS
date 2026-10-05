@@ -11,6 +11,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-05: Release prepared for version 146 (0.5.13)
+- Contains the app icon fix logged below (car media opt-in removed). Version raised by the release recipe and pushed on its own.
+- Commands run and results: `./gradlew :androidApp:bundlePlaystoreRelease` passed.
+- Merged release manifest checked: application ID `com.JF_Nuvio`, version code 146, name 0.5.13, min SDK 24, target SDK 36, automotive feature optional; car media service and artwork provider present, without `androidx.car.app.launchable`.
+- NOT verified: signing (done by the owner in Android Studio), Play upload, the real car.
+
 ## 2026-10-05: App icon opens Nuvio again (car media opt-in removed)
 - Removed `androidx.car.app.launchable` from `NuvioCarMediaBrowserService` in the manifest. Why: on the Polestar 3 (one icon per app) the app icon opened the car's media screen ("Continue watching") instead of the app, with no way in; the owner could only open the app from the Play Store's Open button. The car launcher source (AOSP `AppGridRepository`) adds a separate media entry for any opted-in media service; the Polestar keeps one entry per app and picks that one. The rest of the media card code (shared session, saved last item, artwork provider) is kept.
 - Commands run and results: `./gradlew :composeApp:compileAndroidMain`, `:androidApp:assembleDebug -Pnuvio.android.distribution=playstore`, `:androidApp:assembleDebug -Pnuvio.android.distribution=full`, `git diff --check` and `:composeApp:testAndroidHostTest --tests '*PlayerNowPlaying*'` passed.
