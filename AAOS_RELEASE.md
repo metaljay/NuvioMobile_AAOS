@@ -5,7 +5,7 @@
 | Item | Value |
 | --- | --- |
 | Release application ID | `com.JF_Nuvio` |
-| **Last uploaded to Play** | **144 (0.5.11)**, confirmed by the owner from Play Console on 2026-10-03 |
+| **Last uploaded to Play** | **146 (0.5.13)**, reported installed on the car by the owner on 2026-10-05 |
 | Code in the repo now | Informational (the release recipe raises it on every release) |
 | Version file | `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the name; Android reads this file) |
 | Release key | `Key.jks` in the AAOS folder containing both repos (outside the repo; keep a backup) |

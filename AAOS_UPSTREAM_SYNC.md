@@ -2,6 +2,8 @@
 
 Do this only when the owner asks, or before a release that needs parent fixes. `main` is not touched until the sync branch is verified. Parent changes only flow in; nothing is ever pushed to upstream.
 
+**Last merged parent commit:** `d667f4324b5f8fbcb5954dae6ee6b82885f9a9c4 (2026-09-30)` on `upstream/cmp-rewrite`. Step 1 lists everything newer than this; step 10 updates this line.
+
 ## Steps
 
 0. **Safety.** `git status` must be clean (apart from known items in `AAOS_FORK.md` section 6). Then `git switch main && git pull origin main` and mark the last good state with `git tag pre-sync-$(date +%F)`.
@@ -14,7 +16,7 @@ Do this only when the owner asks, or before a release that needs parent fixes. `
 7. **Approval gate.** Before asking, build the debug app and give the owner the Automotive emulator test steps (see `.github/skills/aaos-sync/SKILL.md` step 3); the owner may also reply `problem: <what you saw>`. Stop. Do not merge into main. Give the owner a plain-English review of the update (see AAOS_FORK.md section 4b) and ask them to reply with exactly `approve sync` or `cancel sync`. On `cancel sync`, delete the sync branch (see "Abort or roll back"); main stays untouched. If the owner returns in a new chat, find the open sync/ branch, re-run the checks quickly, then continue.
 8. **Land it.** `git switch main && git merge --ff-only sync/upstream-<date>`. If that refuses because `main` moved, merge `main` into the sync branch, re-verify, retry. Then `git push origin main`.
 9. **Clean up.** `git branch -d sync/upstream-<date>`; if it was pushed, `git push origin --delete sync/upstream-<date>`. Never leave sync branches behind.
-10. **Record.** Add an `AAOS_LOG.md` entry (upstream SHA, conflicts, verification, limits). Continue with the release stage (`.github/skills/aaos-release/SKILL.md`).
+10. **Record.** Update **Last merged parent commit** at the top of this file, and add an `AAOS_LOG.md` entry (upstream SHA, conflicts, verification, limits). Continue with the release stage (`.github/skills/aaos-release/SKILL.md`).
 
 ## Abort or roll back
 
@@ -42,7 +44,7 @@ Do this only when the owner asks, or before a release that needs parent fixes. `
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full
 git diff --check
 ```
-Run the focused tests for the area touched (for example `HomePosterCardSizingTest`, `ServerDiscoveryPolicyTest`).
+If a test run reports "Unsupported class file major version 71", rerun it with `JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"` in front (wrong Java, not real failures). Run the focused tests for the area touched (for example `HomePosterCardSizingTest`, `ServerDiscoveryPolicyTest`).
 
 ## Hotspots: files where our changes live
 
@@ -60,3 +62,4 @@ Run the focused tests for the area touched (for example `HomePosterCardSizingTes
 | `Home*` files (`HomePosterCardSizing.kt`, `HomePosterCard.kt`, `HomeCatalogSection.kt`, ...) | poster density and typography | Re-apply; re-run `HomePosterCardSizingTest` |
 | `features/search/SearchScreen.kt`, details, `features/player/*`, `features/streams/StreamsScreen.kt` | larger controls and spacing | Re-apply Automotive-gated sizes |
 | `README.md`, `AGENTS.md` | fork banner/contract; AGENTS file | Keep ours |
+| `CLAUDE.md`, `.claude/skills` (link to `.github/skills`), `AAOS_CAR_NOTES.md`, `AAOS_LOG_ARCHIVE.md` | fork-owned agent entry point and docs | Keep ours |

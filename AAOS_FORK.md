@@ -37,7 +37,8 @@ The release stage (`.github/skills/aaos-release`) always raises the version auto
 4. Port, don't replay: adapt each required behaviour into the current upstream code instead of cherry-picking old commits.
 5. Keep edits to upstream-owned files as small as possible (fewer merge conflicts). Fork-only additions go in clearly separate places or files.
 6. Every release build raises the version automatically (see `AAOS_RELEASE.md`); the parent's version numbers are ignored.
-7. If a product decision is unclear (for example removing a customisation), ask the owner instead of guessing.
+7. Before touching the manifest, the media card, how the app launches, or anything near the screen edges, read `AAOS_CAR_NOTES.md` (facts learned on the real car).
+8. If a product decision is unclear (for example removing a customisation), ask the owner instead of guessing.
 
 ## 4. Permissions and safety rails
 
@@ -70,12 +71,12 @@ The owner copy-pastes messages between chats and has little or no coding experie
 3. **Device-link sign-in**: on Automotive, official-server device-link sign-in starts automatically and shows the phone-based `nuvio.tv/link` instruction (no browser on the car).
 4. **Custom-server fallback**: the default Android/Play build offers "Connect to another server"; `AppFeaturePolicy.customServerConnectionsEnabled` is true in the `androidPlaystore` policy; `api.nuvio.tv` is not rejected by `ServerDiscoveryPolicy`; the trust screen is never bypassed; the built-in backend default is `https://api.nuvio.tv`; the auth-observer rebinding and saved-session fixes stay.
 5. **AAOS readability (Automotive-gated)**: 1.15 minimum text scale and larger icon tokens; 40 dp bottom-nav icons; 185 x 278 dp default posters with 14 dp corners; 230 dp minimum home tile width (five full posters at 1280 dp); 64 dp search field; Discover capped at four columns; enlarged player, source-selector and details back/play controls. Phone and tablet sizing stays upstream.
-5b. **Display safe area (Polestar 3)**: the car screen's rounded corners and bezel cover the outer edge of the app window, so anything tappable must sit well inside it. Keep every touch target (not just the icon) at least 16 dp from the left and right edges of the app window, and icons about 24-28 dp in; check new or moved top bars, side buttons and player controls against this. Same rule as Flow, where the top bar settings cog was only partly tappable at 4 dp from the edge (owner report 2026-10-05); Nuvio has not been audited against it yet.
-6. **Playback defaults**: profiles with no saved value default to Reuse last link on and FIRST_STREAM autoplay; saved values always win.
-7. **Playback lifecycle**: Android playback pauses when the app leaves the foreground, even if its now-playing media session is active. Picture-in-picture playback may continue; finishing the activity always pauses.
-7b. **Car media card after the app is closed**: `NuvioCarMediaBrowserService` stays declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter, plus the `NuvioCarMediaArtworkProvider` provider; Do NOT add `androidx.car.app.launchable` to it: on the Polestar launcher (one icon per app) that makes the app icon open the car's media screen ("Continue watching") with no way into the app (owner report 2026-10-05). The player and that service share one `MediaSession` (`NuvioCarMediaSession`); the last item is saved to disk and restored as paused.
-8. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
-9. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
+6. **Display safe area (Polestar 3)**: the car screen's rounded corners and bezel cover the outer edge of the app window, so anything tappable must sit well inside it. Keep every touch target (not just the icon) at least 16 dp from the left and right edges of the app window, and icons about 24-28 dp in; check new or moved top bars, side buttons and player controls against this. Same rule as Flow, where the top bar settings cog was only partly tappable at 4 dp from the edge (owner report 2026-10-05); Nuvio has not been audited against it yet.
+7. **Playback defaults**: profiles with no saved value default to Reuse last link on and FIRST_STREAM autoplay; saved values always win.
+8. **Playback lifecycle**: Android playback pauses when the app leaves the foreground, even if its now-playing media session is active. Picture-in-picture playback may continue; finishing the activity always pauses.
+9. **Car media card after the app is closed**: `NuvioCarMediaBrowserService` stays declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter, plus the `NuvioCarMediaArtworkProvider` provider; Do NOT add `androidx.car.app.launchable` to it (see `AAOS_CAR_NOTES.md`): on the Polestar it makes the app icon open the car's media screen instead of the app. Known limit: after a full car restart the card stays blank. The player and that service share one `MediaSession` (`NuvioCarMediaSession`); the last item is saved to disk and restored as paused.
+10. **Bundle packaging**: ABI splits are disabled when a bundle task is requested (`androidApp/build.gradle.kts`).
+11. **Fork docs**: the README banner/contract and the `AAOS_*.md` files.
 
 Details and file locations are in Part 2 below.
 
@@ -94,6 +95,10 @@ Details and file locations are in Part 2 below.
 ## 8. Keeping these docs current
 
 After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, commands run, what was and was not verified); update Part 2 if behaviour changed; update the release-state table in `AAOS_RELEASE.md` after any version bump or confirmed upload. The `AAOS_*.md` files are the memory that survives between agent chats; if it is not written here, the next agent will not know it. After any change or bug fix, run the `.github/skills/aaos-tweak` recipe, which makes all of these updates.
+
+- **Car facts go in both repos.** Flow and Nuvio share the same car. Anything learned about the car, the launcher, the media card, Play or the display goes into `AAOS_CAR_NOTES.md` in **both** repos in the same change (the file is identical in both). The same applies to a workflow or recipe improvement: make it in both repos.
+- **Keep the log short.** `AAOS_LOG.md` keeps the newest 15 entries. When adding an entry would make more, move the oldest entries (unchanged) to the top of `AAOS_LOG_ARCHIVE.md`. A release-preparation entry is at most three lines.
+- **Never leave docs contradicting each other.** When a number or a rule changes, search `README.md`, `AGENTS.md` and every `AAOS_*.md` file for the old wording and update every mention.
 
 ## 9. Environment notes (one Mac, Android Studio)
 
@@ -186,11 +191,9 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
   setting `STATE_NONE`). `MediaMetadata` publishes rich keys (`METADATA_KEY_ALBUM`, `METADATA_KEY_DISPLAY_DESCRIPTION`, artwork URIs) and allows background artwork loading to update metadata even when exiting the player, ensuring the Polestar 3 / Android Automotive OS system home screen Current-Media Card widget displays the last-watched item details, progress, artwork, and paused play button.
 - **Car media card after the app is closed (2026-10-04):** AAOS only treats an app as a media
   source if it exposes a `MediaBrowserService`, and the home screen card reads the session token
-  that service hands out. On the emulator's Google car launcher an app that also has a launcher activity
-  must opt in with `androidx.car.app.launchable=true` on that service, otherwise the card shows the
-  app name with no text. That opt-in was removed on 2026-10-05 because the Polestar launcher then
-  opened the car's media screen instead of Nuvio; whether the Polestar card follows the service
-  without it is to be confirmed on the car. `features/player/NuvioCarMediaBrowserService.android.kt` (declared in
+  that service hands out. The `androidx.car.app.launchable`
+  opt-in is deliberately NOT used (it broke the Polestar app icon; after a full restart the card
+  therefore stays blank; see `AAOS_CAR_NOTES.md`). `features/player/NuvioCarMediaBrowserService.android.kt` (declared in
   `androidApp/src/main/AndroidManifest.xml`) and `features/player/NuvioCarMediaSession.android.kt`
   provide one process-wide `MediaSession` that `PlayerNowPlayingController.android.kt` publishes
   to. The last title, subtitle, artwork URL, artwork image, position and duration are saved
@@ -203,7 +206,7 @@ After every verified change: add a dated entry to `AAOS_LOG.md` (what changed, c
   last item. Artwork: AAOS only shows artwork from a local `content://` URI (Google "Display media
   artwork"), so the saved poster is served read-only by `NuvioCarMediaArtworkProvider`
   (authority `${applicationId}.carmediaart`) and the controller publishes that URI once the poster
-  is saved. Side effect: the car app grid lists Nuvio twice (the app and its media entry).
+  is saved. No `androidx.car.app.launchable` opt-in (see `AAOS_CAR_NOTES.md`), so the car app list shows one icon that opens the app.
 - **Details actions:** Back controls are 48dp with 28dp arrows; play/resume actions are 56dp (60dp
   on tablets) with `titleMedium` text. See `features/details/MetaDetailsScreen.kt`,
   `features/details/components/DetailFloatingHeader.kt`, and
