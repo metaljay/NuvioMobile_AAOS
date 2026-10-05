@@ -2,6 +2,14 @@
 
 Older `AAOS_LOG.md` entries, newest first, moved here unchanged to keep the main log short. New entries always go in `AAOS_LOG.md`; when it passes 15 entries, move the oldest to the top of this file.
 
+## 2026-10-03: Increased AAOS search clearance and paused playback when leaving the app
+
+- Increased Automotive search-field spacing to 30dp and added 64dp of end-of-list clearance on both Discover and active search results. Non-Automotive spacing stays unchanged.
+- Android playback now pauses when the app leaves the foreground instead of continuing because its now-playing media session is active. Playback in picture-in-picture may continue; finishing the activity always pauses. Advanced the next release candidate to 143 / 0.5.10 because 142 / 0.5.9 was confirmed uploaded.
+- Investigated the CarPlay-style AAOS home media card: the app already publishes an Android `MediaSession` with title, artwork and playback state, but the Play build does not provide a `MediaBrowserService`/`MediaLibraryService`. Android Automotive renders the media-browser content in its own UI; Media3 `MediaSessionService` is the documented route for background playback. Video apps have separate parked-video and audio-while-driving requirements. Official guidance: `https://developer.android.com/training/cars/media/automotive-os`, `https://developer.android.com/training/cars/parked/video`, and `https://developer.android.com/media/media3/session/background-playback`. A native AAOS home-card result still needs emulator/car verification; no media-service integration was added.
+- Commands run and results: `./gradlew :composeApp:compileAndroidMain :composeApp:testAndroidHostTest --tests com.JF_Nuvio.features.player.PlaybackLifecyclePolicyTest` passed; `git diff --check` passed. Android SDK device tools were unavailable, so no emulator visual check was possible.
+- Verified: Android source compilation and the focused lifecycle-policy test only. No emulator or real-car check.
+
 ## 2026-10-03: Signed bundles now collected in a standard For upload to Play Console folder.
 
 - Updated the release instructions and fork documentation to collect signed bundles in one shared folder.

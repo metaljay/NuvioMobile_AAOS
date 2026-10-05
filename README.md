@@ -4,13 +4,11 @@
 
 <br><br>
 
-<img src="composeApp/src/commonMain/composeResources/drawable/app_icon_original.png" alt="Nuvio app icon" width="112">
+<img src="composeApp/src/commonMain/composeResources/drawable/app_icon_original.png" alt="Nuvio logo" width="112">
 
-# Nuvio for Android Automotive
+# Nuvio for AAOS
 
-### An AAOS-focused adaptation of Nuvio, designed with the Polestar 3 in mind
-
-Larger, more readable screens and comfortable controls for Nuvio on a vehicle display.
+### Nuvio, the film and TV app, adapted for the Polestar 3's built-in Android Automotive screen
 
 <br>
 
@@ -18,99 +16,122 @@ Larger, more readable screens and comfortable controls for Nuvio on a vehicle di
 [![Forked from Nuvio](https://img.shields.io/badge/Forked_from-Nuvio-4285F4?style=for-the-badge&logo=github&logoColor=white)](https://github.com/NuvioMedia/NuvioMobile)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange?style=for-the-badge&logo=gnu&logoColor=white)](LICENSE)
 
-<br>
-
-[AAOS fork rules, invariants and inventory](AAOS_FORK.md) · [Release steps](AAOS_RELEASE.md) · [Upstream Nuvio](https://github.com/NuvioMedia/NuvioMobile) · [License](LICENSE)
+[Original Nuvio project](https://github.com/NuvioMedia/NuvioMobile) · [Car customisations](AAOS_FORK.md#part-2-customisation-details) · [License](LICENSE)
 
 </div>
 
 ---
 
-## 🚘 About this fork
+## 🚘 What this is
 
-This is an independent fork of [NuvioMobile](https://github.com/NuvioMedia/NuvioMobile), adapted
-for **Android Automotive OS (AAOS)** with the user's Polestar 3 as its primary target. It preserves
-Nuvio's upstream feature policies while carrying focused changes for the vehicle display,
-automotive sign-in, and the fork's existing Google Play app identity.
+Nuvio is a film and TV streaming app. This is a personal copy of it (a "fork"), changed to work well on the screen of a Polestar 3, which runs **Android Automotive OS** (AAOS): Android built into the car itself. It is not an Android Auto app (Android Auto mirrors a phone onto the car screen).
 
-AAOS is the operating system built into compatible vehicles; Android Auto projection is a
-different platform.
+Changes from the original Nuvio project (the "parent") are brought into this copy from time to time, and the car changes are redone on top each time, so the app stays up to date without losing them.
 
-## ✨ What’s different
+## ✨ What's different in the car
 
-| | Automotive-focused changes |
-| --- | --- |
-| 👀 | **Easier to read at a glance**, with larger typography and shared icons on AAOS screens. |
-| 👆 | **More comfortable touch controls**, including enlarged navigation, player, seek, and back-button targets. |
-| 🖼️ | **Roomier home browsing**, with larger posters, clearer shelf labels, and spacing tuned for the car display. |
-| 🧭 | **A more focused browsing layout**, with larger search controls and Discover limited to four columns. |
-| 🔐 | **Device-code sign-in for the head unit**, with an optional trusted-server flow—including `api.nuvio.tv`—if the default sign-in path needs a fallback. |
-| 📱 | **Dedicated Android app identity** (`com.JF_Nuvio`) to update the existing fork listing. |
+| | Change | Details |
+| --- | --- | --- |
+| 👀 | **Bigger text, icons, posters, search and player controls** on the car, easy to read and tap at a glance. Phones and tablets keep the normal sizes. | [More](AAOS_FORK.md#c5-aaos-readability-automotive-only) |
+| 🔐 | **Sign in without a browser**: the car shows a code and you finish signing in on your phone at nuvio.tv/link. | [More](AAOS_FORK.md#c3-device-link-sign-in) |
+| 🛟 | **A backup way to sign in** ("Connect to another server", then `api.nuvio.tv`) if the normal one fails. | [More](AAOS_FORK.md#c4-custom-server-fallback) |
+| ▶️ | **Starts playing quickly**: new profiles reuse the last link and auto-play the first stream. | [More](AAOS_FORK.md#c7-playback-defaults) |
+| ⏸️ | **Pauses when you leave the app**, so sound doesn't carry on behind other screens. | [More](AAOS_FORK.md#c8-playback-lifecycle) |
+| 🎵 | **The car's home screen media card** shows what Nuvio last played, even after you close it. | [More](AAOS_FORK.md#c9-car-media-card) |
+| 🚗 | **Works as a car app**: it appears in the car's app list and runs well in the car's window. | [More](AAOS_FORK.md#c2-aaos-manifest-and-runtime) |
+| 📦 | **Updates come through your own Play Store listing**, so they reach the car. | [More](AAOS_FORK.md#c1-play-identity-and-package-rename) |
 
-The AAOS-specific sizing is intended to improve legibility and reachability in the vehicle; it does
-not imply that every screen or action is appropriate while driving. For implementation details,
-the rationale behind each customization, and requirements to preserve during upstream updates, see
-the **[AAOS fork rules, invariants and inventory](AAOS_FORK.md)**.
+**Known limit:** after a full restart of the car, the home screen media card stays blank. That is the price of the app icon opening the app properly; see the [car notes](AAOS_CAR_NOTES.md).
 
-## 🧭 Internal testing and installation
+## 📲 Getting it on the car
 
-**This fork does not publish public GitHub release downloads.** Its intended distribution path is a
-signed Android release App Bundle uploaded to the existing Google Play **Internal testing** track.
-Invited testers can then install or update the app from Google Play on a compatible AAOS vehicle.
-It is not a public Play Store listing.
+There are no public downloads. The app reaches the car only through **Google Play Internal testing** (a private test track on your own Play listing):
 
-The Android debug build uses the separate application ID `com.JF_Nuvio.debug` and is for emulator
-development and testing only. It is not the release package for the Polestar 3.
+1. Accept the internal test invitation for Nuvio with the Google account used in the car.
+2. Open the Play Store in the car and install or update Nuvio.
 
-## 🛠️ Building from source
+The car's Play Store may show a temporary name ending in "(unreviewed)" and a placeholder icon. That is normal for an internal test, and installs and updates still work.
 
-To build the Play Store release bundle locally:
+## 🛠️ What do you want to do?
 
-```bash
-./gradlew :androidApp:bundlePlaystoreRelease
+Everything is done by an AI assistant (Claude Code, GitHub Copilot, Codex or Gemini). Open it in the **NuvioMobile** folder (this app's folder), paste the prompt for your job, and follow what it tells you. It explains everything in plain English, runs the commands itself, and only asks you to do the steps only you can do: approving, signing in Android Studio, uploading to Play and testing in the car. Each prompt only affects this app; do the other app separately in its own folder.
+
+In Claude Code or GitHub Copilot you can type the short command shown instead of pasting the prompt.
+
+### 1. Check whether the original app has something new
+
+Nothing gets changed. You get a plain-English summary of what's new and which car changes it would affect.
+
+```
+Follow the instructions in .github/skills/aaos-sync/SKILL.md, but only check for parent updates. Do not change anything.
 ```
 
-A successful local build is not a published release. Uploading to Play requires the authorized
-release-signing configuration and access to the Play Console internal testing track. Use the
-signed `com.JF_Nuvio` release variant for that workflow.
+### 2. Update from the original app (`/aaos-sync`)
 
-## 🔄 Keeping this fork up to date and improving it
-
-This fork follows [NuvioMobile](https://github.com/NuvioMedia/NuvioMobile). `main` holds the parent's code plus the AAOS customisations. There are only two jobs, and you do both by pasting one short message to an AI agent (Claude Code, GitHub Copilot, Codex or Gemini) opened in this repository. The agent does the work, reports in plain English, and finishes by preparing the Google Play release. No git knowledge is needed, and nothing is ever pushed to the parent.
-
-### Job 1: update from the parent
 ```
 Follow the instructions in .github/skills/aaos-sync/SKILL.md exactly.
 ```
-The agent merges the parent's changes on a temporary branch, re-applies the car customisations, builds a test version, and tells you how to try it in the Automotive emulator. It **stops until you reply** `approve sync` (or `cancel sync`, or `problem: ...`). Only then does it update `main` and prepare the release.
 
-### Job 2: tweak or fix something
+What happens next:
+
+1. The assistant brings in the parent's changes on a temporary copy and redoes every car change in the new code.
+2. It builds a test version and sends you a report with four parts: **what's new for you**, **how each of your car changes was kept or adapted** (or if any is at risk), **risks with a recommendation**, and **what to test**.
+3. Nothing reaches the real app until you reply with one of these:
+   - `approve sync`: it goes ahead and prepares a release (step 4 below).
+   - `cancel sync`: everything is thrown away and nothing changes.
+   - `problem: ` followed by what you saw: it fixes that and reports again.
+
+### 3. Change or fix something for the car (`/aaos-tweak`)
+
 ```
-Follow the instructions in .github/skills/aaos-tweak/SKILL.md exactly. The tweak: [describe what you want changed, in plain English].
+Follow the instructions in .github/skills/aaos-tweak/SKILL.md exactly. The tweak: [describe what you want changed, or what is wrong on the car, in plain English].
 ```
-The agent makes the change, checks the app builds, records it (log and customisation list), pushes it, then prepares the release.
 
-### The release (both jobs end here)
-The agent raises the version number automatically (version numbers only have to go up; they drift from the parent's and that is fine), builds the bundle, and gives you the exact clicks to sign it in Android Studio and upload it to Google Play Internal testing. Say `Bundle built` when it is signed and the agent collects the file into a folder called For upload to Play Console. To run only this stage: `Follow the instructions in .github/skills/aaos-release/SKILL.md exactly.`
+The assistant makes the change, checks the app still builds, records what it did, and then prepares a release (step 4 below).
 
-In Claude Code or GitHub Copilot you can type `/aaos-sync`, `/aaos-tweak` or `/aaos-release` instead. An optional `/aaos-uploaded` records what you uploaded.
+### 4. Release it to the car (`/aaos-release`)
 
-### What protects the car customisations
-- `AAOS_FORK.md`: rules, safety rails and the customisations that must survive every merge.
-- `AAOS_UPSTREAM_SYNC.md`: the step-by-step procedure, the files most likely to conflict, and how to roll back.
-- `AAOS_CAR_NOTES.md`: facts learned on the real car (app icon, media card, screen edges, Play), identical in both forks.
-- `AAOS_RELEASE.md`: release steps and the version rule. `AAOS_LOG.md`: dated history of what changed and what was verified (older entries in `AAOS_LOG_ARCHIVE.md`).
-- `AGENTS.md` is the entry point for AI agents (`CLAUDE.md` and `GEMINI.md` point to it); the recipes live in `.github/skills/`.
+Updates and tweaks end here automatically. To run this step on its own:
 
-## 📚 Project references
+```
+Follow the instructions in .github/skills/aaos-release/SKILL.md exactly.
+```
 
-- **[AAOS fork rules, invariants and inventory](AAOS_FORK.md)** — the required AAOS behavior,
-  product rules, and implementation inventory for this fork.
-- **[AAOS release steps](AAOS_RELEASE.md)** — the versioning and Play release workflow for this fork.
-- **[Upstream NuvioMobile](https://github.com/NuvioMedia/NuvioMobile)** — the parent project this
-  fork is based on.
+1. The assistant raises the version number (it must go up for every upload) and checks the build.
+2. It gives you click-by-click steps to sign the file in Android Studio. When that's done, reply `Bundle built`.
+3. It puts the file in the **For upload to Play Console** folder, opens that folder, and gives you the clicks for Google Play Console. When Play accepts it, reply `Uploaded` and it records the upload.
+4. Install or update the app from the Play Store in the car.
+
+### 5. Tell the assistant something you learned about the car
+
+```
+I learned this about the car: [what you saw]. Add it to AAOS_CAR_NOTES.md in both the Flow and NuvioMobile folders, following AAOS_FORK.md section 10.
+```
+
+### If something goes wrong
+
+- **A chat ended halfway through a job:** open a new chat in the same folder and paste:
+  ```
+  Read AGENTS.md, then check AAOS_LOG.md, git status and any sync/ branch, and tell me in plain English where the last job got to and what's next. Do not change anything yet.
+  ```
+- **Play says the version code was already used:** tell the assistant `Play says the version code was already used.` It raises the number and you sign and upload again.
+- **The assistant stops with an error:** it gives you one message to paste back to it, or to another AI assistant. You never need to fix code yourself.
+
+## 🗂️ Behind the scenes
+
+You don't need to read these files. They are the instructions that keep any AI assistant on track between chats.
+
+| File | What it holds |
+| --- | --- |
+| `README.md` | This page |
+| [`AAOS_FORK.md`](AAOS_FORK.md) | Rules for AI assistants, and the full list of car customisations with technical detail |
+| [`AAOS_UPSTREAM_SYNC.md`](AAOS_UPSTREAM_SYNC.md) | How parent updates are done, and the report you get before approving |
+| [`AAOS_RELEASE.md`](AAOS_RELEASE.md) | Release steps, the version number rule, and the last version uploaded |
+| [`AAOS_CAR_NOTES.md`](AAOS_CAR_NOTES.md) | Things learned on the real Polestar 3 (the same in both apps) |
+| [`AAOS_LOG.md`](AAOS_LOG.md) | A diary of every change and what was checked (older entries in `AAOS_LOG_ARCHIVE.md`) |
+| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | Where AI assistants start reading |
+| `.github/skills/` | The step-by-step recipes that the prompts above run |
 
 ## 📄 License
 
-Nuvio is distributed under the [GNU General Public License v3.0](LICENSE). See the license file
-for the terms that apply to this fork and its upstream project.
+Nuvio is distributed under the [GNU General Public License v3.0](LICENSE). The license applies to this fork and to the original project.
