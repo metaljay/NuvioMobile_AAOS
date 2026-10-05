@@ -11,6 +11,12 @@ Newest entry first. One entry per verified change, upstream sync or upload. Form
 
 Agents read this file only when they need evidence. Rules live in `AAOS_FORK.md`.
 
+## 2026-10-05: Display safe-area rule added; card-after-restart finding (no app change)
+- Added a "Display safe area" invariant (5b) to `AAOS_FORK.md` after Flow's top bar cog was found only partly tappable at the Polestar 3 screen edge. Nuvio has not been audited against it yet.
+- Car media card after a full restart (owner test on the Polestar 3, reproduced on the emulator): the card works during use (it followed Flow and then Nuvio), but after a full system restart it shows only the Flow or Nuvio icon and stays blank, even after playing in either app. The app's session does hold the right item; the car launcher (car-media-common `MediaSource.isMediaTemplate`, read from the emulator launcher's code) only accepts a media service if it has `androidx.car.app.launchable=true` or the app has no launcher activity, so after a restart it rejects the remembered source ("No opt-in info found ... Skipping MBS"). The opt-in is what broke the app icon on the Polestar, so a card that refills after a restart and an icon that opens the app cannot both be had with a normal app; no code change for this.
+- Commands run and results: `git diff --check` passed. Documentation only; no build needed.
+- Verified: the owner's car test (photos) and the emulator reproduction. NOT verified: any Nuvio layout against the new rule.
+
 ## 2026-10-05: Release prepared for version 146 (0.5.13)
 - Contains the app icon fix logged below (car media opt-in removed). Version raised by the release recipe and pushed on its own.
 - Commands run and results: `./gradlew :androidApp:bundlePlaystoreRelease` passed.
