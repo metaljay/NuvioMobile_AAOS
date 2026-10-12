@@ -8,8 +8,8 @@ import kotlin.test.assertTrue
 class PlayerLayoutMetricsTest {
     @Test
     fun automotivePlayerControlsUseLargerIconsAndHitAreas() {
-        val standard = PlayerLayoutMetrics.fromWidth(1280.dp)
-        val automotive = PlayerLayoutMetrics.fromWidth(1280.dp, isAutomotive = true)
+        val standard = PlayerLayoutMetrics.aaosFromWidth(1280.dp, isAutomotive = false)
+        val automotive = PlayerLayoutMetrics.aaosFromWidth(1280.dp, isAutomotive = true)
 
         assertEquals(standard.headerIconSize + 12.dp, automotive.headerIconSize)
         assertEquals(standard.sideIconSize + 16.dp, automotive.sideIconSize)

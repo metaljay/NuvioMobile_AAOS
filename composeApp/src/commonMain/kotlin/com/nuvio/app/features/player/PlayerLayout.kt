@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nuvio.app.getPlatform
 import com.nuvio.app.isIos
 import nuvio.composeapp.generated.resources.Res
 import nuvio.composeapp.generated.resources.compose_player_resize_fill
@@ -41,96 +40,83 @@ internal data class PlayerLayoutMetrics(
     val playIconSize: Dp,
 ) {
     companion object {
-        fun fromWidth(width: Dp, isAutomotive: Boolean = false): PlayerLayoutMetrics {
-            val metrics = when {
+        fun fromWidth(width: Dp): PlayerLayoutMetrics =
+            when {
                 width >= 1440.dp -> PlayerLayoutMetrics(
-                    horizontalPadding = 32.dp,
-                    verticalPadding = 28.dp,
-                    titleSize = 32.dp.value.sp,
-                    episodeInfoSize = 20.dp.value.sp,
-                    metadataSize = 16.dp.value.sp,
-                    centerGap = 120.dp,
-                    centerLift = 24.dp,
-                    sliderBottomOffset = 32.dp,
-                    sliderTouchHeight = 44.dp,
-                    sliderScaleY = 0.72f,
-                    timeSize = 18.dp.value.sp,
-                    headerIconSize = 36.dp,
-                    sideButtonPadding = 24.dp,
-                    sideIconSize = 56.dp,
-                    playButtonPadding = 32.dp,
-                    playIconSize = 76.dp,
-                )
-                width >= 1024.dp -> PlayerLayoutMetrics(
                     horizontalPadding = 28.dp,
                     verticalPadding = 24.dp,
                     titleSize = 28.dp.value.sp,
-                    episodeInfoSize = 18.dp.value.sp,
-                    metadataSize = 15.dp.value.sp,
-                    centerGap = 100.dp,
-                    centerLift = 20.dp,
-                    sliderBottomOffset = 28.dp,
-                    sliderTouchHeight = 40.dp,
-                    sliderScaleY = 0.74f,
-                    timeSize = 17.dp.value.sp,
-                    headerIconSize = 32.dp,
-                    sideButtonPadding = 22.dp,
-                    sideIconSize = 50.dp,
-                    playButtonPadding = 28.dp,
-                    playIconSize = 68.dp,
-                )
-                width >= 768.dp -> PlayerLayoutMetrics(
-                    horizontalPadding = 24.dp,
-                    verticalPadding = 20.dp,
-                    titleSize = 26.dp.value.sp,
-                    episodeInfoSize = 17.dp.value.sp,
-                    metadataSize = 14.dp.value.sp,
-                    centerGap = 84.dp,
-                    centerLift = 16.dp,
-                    sliderBottomOffset = 24.dp,
-                    sliderTouchHeight = 38.dp,
-                    sliderScaleY = 0.78f,
-                    timeSize = 16.dp.value.sp,
-                    headerIconSize = 30.dp,
-                    sideButtonPadding = 20.dp,
-                    sideIconSize = 46.dp,
-                    playButtonPadding = 24.dp,
-                    playIconSize = 60.dp,
-                )
-                else -> PlayerLayoutMetrics(
-                    horizontalPadding = 22.dp,
-                    verticalPadding = 18.dp,
-                    titleSize = 22.dp.value.sp,
                     episodeInfoSize = 16.dp.value.sp,
                     metadataSize = 14.dp.value.sp,
-                    centerGap = 64.dp,
-                    centerLift = 12.dp,
+                    centerGap = 112.dp,
+                    centerLift = 24.dp,
+                    sliderBottomOffset = 28.dp,
+                    sliderTouchHeight = 28.dp,
+                    sliderScaleY = 0.72f,
+                    timeSize = 14.dp.value.sp,
+                    headerIconSize = 24.dp,
+                    sideButtonPadding = 14.dp,
+                    sideIconSize = 34.dp,
+                    playButtonPadding = 18.dp,
+                    playIconSize = 44.dp,
+                )
+                width >= 1024.dp -> PlayerLayoutMetrics(
+                    horizontalPadding = 24.dp,
+                    verticalPadding = 20.dp,
+                    titleSize = 24.dp.value.sp,
+                    episodeInfoSize = 15.dp.value.sp,
+                    metadataSize = 13.dp.value.sp,
+                    centerGap = 88.dp,
+                    centerLift = 18.dp,
+                    sliderBottomOffset = 24.dp,
+                    sliderTouchHeight = 26.dp,
+                    sliderScaleY = 0.74f,
+                    timeSize = 13.dp.value.sp,
+                    headerIconSize = 22.dp,
+                    sideButtonPadding = 13.dp,
+                    sideIconSize = 32.dp,
+                    playButtonPadding = 16.dp,
+                    playIconSize = 42.dp,
+                )
+                width >= 768.dp -> PlayerLayoutMetrics(
+                    horizontalPadding = 20.dp,
+                    verticalPadding = 16.dp,
+                    titleSize = 22.dp.value.sp,
+                    episodeInfoSize = 14.dp.value.sp,
+                    metadataSize = 12.dp.value.sp,
+                    centerGap = 72.dp,
+                    centerLift = 14.dp,
                     sliderBottomOffset = 20.dp,
-                    sliderTouchHeight = 36.dp,
+                    sliderTouchHeight = 24.dp,
+                    sliderScaleY = 0.78f,
+                    timeSize = 12.dp.value.sp,
+                    headerIconSize = 20.dp,
+                    sideButtonPadding = 12.dp,
+                    sideIconSize = 30.dp,
+                    playButtonPadding = 15.dp,
+                    playIconSize = 38.dp,
+                )
+                else -> PlayerLayoutMetrics(
+                    horizontalPadding = 20.dp,
+                    verticalPadding = 16.dp,
+                    titleSize = 18.dp.value.sp,
+                    episodeInfoSize = 14.dp.value.sp,
+                    metadataSize = 12.dp.value.sp,
+                    centerGap = 56.dp,
+                    centerLift = 10.dp,
+                    sliderBottomOffset = 16.dp,
+                    sliderTouchHeight = 22.dp,
                     sliderScaleY = 0.82f,
-                    timeSize = 15.dp.value.sp,
-                    headerIconSize = 28.dp,
-                    sideButtonPadding = 18.dp,
-                    sideIconSize = 42.dp,
-                    playButtonPadding = 22.dp,
-                    playIconSize = 56.dp,
+                    timeSize = 12.dp.value.sp,
+                    headerIconSize = 20.dp,
+                    sideButtonPadding = 10.dp,
+                    sideIconSize = 26.dp,
+                    playButtonPadding = 13.dp,
+                    playIconSize = 34.dp,
                 )
             }
-            if (!isAutomotive) return metrics
-            return metrics.copy(
-                headerIconSize = metrics.headerIconSize + 12.dp,
-                sideButtonPadding = metrics.sideButtonPadding + 4.dp,
-                sideIconSize = metrics.sideIconSize + 16.dp,
-                playButtonPadding = metrics.playButtonPadding + 4.dp,
-                playIconSize = metrics.playIconSize + 16.dp,
-            )
-        }
     }
 }
-
-@Composable
-internal fun automotivePlayerLayoutMetrics(width: Dp): PlayerLayoutMetrics =
-    PlayerLayoutMetrics.fromWidth(width, isAutomotive = getPlatform().isAutomotive)
 
 @Composable
 internal fun playerHorizontalSafePadding(): Dp {

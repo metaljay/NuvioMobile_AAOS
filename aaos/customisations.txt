@@ -1,0 +1,73 @@
+# Which customisation (AAOS_FORK.md section 7) each fork change belongs to.
+# Read by aaos/report.sh. One line per file: IDs (comma-separated), then the path (shell wildcards allowed).
+# Files named Aaos*.kt or NuvioCar*.kt, the tests listed here and everything under aaos/ are fork-only.
+# When a change adds, moves or removes a fork file, update this list in the same commit.
+
+C1,C10  androidApp/build.gradle.kts
+C1      iosApp/Configuration/Version.xcconfig
+
+C2,C9   androidApp/src/main/AndroidManifest.xml
+C2      composeApp/src/androidMain/kotlin/com/nuvio/app/MainActivity.kt
+C2      composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt
+C2      composeApp/src/commonMain/kotlin/com/nuvio/app/Platform.kt
+
+C3,C4   composeApp/src/commonMain/kotlin/com/nuvio/app/core/auth/DeviceLinkAuthRepository.kt
+C3      composeApp/src/commonMain/kotlin/com/nuvio/app/features/auth/AuthScreen.kt
+C3      composeApp/src/commonMain/kotlin/com/nuvio/app/features/auth/DeviceLinkAuthSection.kt
+
+C4      composeApp/build.gradle.kts
+C4      composeApp/src/androidPlaystore/kotlin/com/nuvio/app/core/build/AppFeaturePolicy.android.kt
+C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/auth/AuthRepository.kt
+C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/network/ServerConfiguration.kt
+C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/network/ServerDiscovery.kt
+C4      composeApp/src/commonTest/kotlin/com/nuvio/app/core/network/ServerDiscoveryPolicyTest.kt
+
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/AaosTheme.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/Theme.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/Components.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/NavigationBar.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/PosterCardStyleRepository.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/ShelfComponents.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/MainTabsDestination.kt
+C5      composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/FloatingNavigationBar.android.kt
+C5      composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/jelly/JellyTabs.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/HomeScreen.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/components/Home*.kt
+C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/home/HomePosterCardSizingTest.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/search/SearchScreen.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/MetaDetailsScreen.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/components/DetailActionButtons.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/components/DetailFloatingHeader.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/AaosPlayerLayout.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/OpeningOverlay.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControlActions.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControls.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerScreenContent.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerTimeline.kt
+C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/PlayerLayoutMetricsTest.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/streams/StreamsScreen.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/trailer/TrailerPlayerControls.kt
+
+C7      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerSettingsRepository.kt
+C7      composeApp/src/commonTest/kotlin/com/nuvio/app/features/streams/StreamAutoPlayLoadingPolicyTest.kt
+
+C8      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerEngine.android.kt
+C8      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/PlaybackLifecyclePolicyTest.kt
+
+C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/NuvioCar*.kt
+C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerNowPlayingController.android.kt
+
+C11     README.md
+C11     AGENTS.md
+C11     CLAUDE.md
+C11     GEMINI.md
+C11     AAOS_*.md
+C11     .claude/*
+C11     .github/skills/*
+C11     aaos/*
+
+C12     .gitignore
+C12     settings.gradle.kts
+C12     gradle/libs.versions.toml
+C12     gradle/wrapper/gradle-wrapper.properties
+C12     gradle/gradle-daemon-jvm.properties

@@ -83,7 +83,7 @@ internal fun PlayerScreenContent(args: PlayerScreenArgs) {
         val horizontalSafePadding = playerHorizontalSafePadding()
         val automotive = getPlatform().isAutomotive
         val metrics = remember(maxWidth, automotive) {
-            PlayerLayoutMetrics.fromWidth(maxWidth, isAutomotive = automotive)
+            PlayerLayoutMetrics.aaosFromWidth(maxWidth, isAutomotive = automotive) // AAOS C5
         }
 
         runtime.scope = rememberCoroutineScope()

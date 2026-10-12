@@ -60,8 +60,8 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 ## Restore after every merge
 
 - Keep OUR version code and name in `iosApp/Configuration/Version.xcconfig` (take ours on any conflict); never copy the parent's. The release stage raises them.
-- Release `applicationId` is exactly `com.JF_Nuvio`, and the `com.JF_Nuvio` package rename is applied to every new or changed parent file, without a blind search-and-replace (C1).
-- The iOS identifier overrides are intact (`AAOS_FORK.md` section 8).
+- Release `applicationId` is exactly `com.JF_Nuvio` and debug `com.JF_Nuvio.debug` (C1). The code keeps the parent's package names: never rename packages.
+- `aaos/report.sh` shows no "NOT LABELLED" files; if the parent moved or renamed a file we change, update `aaos/customisations.txt`.
 - `AppFeaturePolicy.customServerConnectionsEnabled` is true for the Play Store build (C4).
 - The merged release manifest still has the AAOS features and activity settings, the car media service without `androidx.car.app.launchable`, and the artwork provider (C2, C9).
 - No stray ` 2` duplicate files (`AAOS_FORK.md` section 11).
@@ -76,20 +76,19 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full
 ./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*'
 git diff --check
+aaos/report.sh
 ```
 
 Run the lines one at a time. Also run focused tests for any other area touched. If a test run reports "Unsupported class file major version 71", rerun it with `JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"` in front (wrong Java, not real failures).
 
 ## Hotspots: files where our customisations live
 
-Paths are under `composeApp/src/commonMain/kotlin/com/JF_Nuvio/` unless they say otherwise.
+Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they say otherwise. The full, current list of every file we change is printed by `aaos/report.sh` (from `aaos/customisations.txt`); this table says what to do on a conflict. Files named `Aaos*.kt` and `NuvioCar*.kt` are fork-only and never conflict.
 
 | File / area | Customisation | What we changed | On conflict |
 | --- | --- | --- | --- |
-| All Kotlin packages | C1 | the parent's `com.nuvio.app` renamed to `com.JF_Nuvio` | Re-apply the rename to new or changed parent files; check store, signing and iOS config by hand |
 | `androidApp/build.gradle.kts` | C1, C10 | application ID, signing properties, ABI-split workaround | Keep ours for those; take the parent's for the rest |
 | `iosApp/Configuration/Version.xcconfig` | C1 | Play version code and name | Keep ours |
-| iOS `Config.xcconfig` and Xcode project | C1 | the fork's iOS identifier overrides | Keep the overrides |
 | `androidApp/src/main/AndroidManifest.xml` | C2, C9 | AAOS features, activity settings, car media service and provider | Keep every AAOS entry |
 | `Platform.kt`, `composeApp/src/androidMain/.../Platform.android.kt` | C2 | Automotive detection and early platform start | Keep |
 | `features/auth/AuthScreen.kt`, `DeviceLinkAuthSection.kt`, `core/auth/DeviceLinkAuthRepository.kt` | C3, C4 | automatic device-link sign-in on Automotive; server menu | Keep; re-run the sign-in check |
@@ -97,9 +96,10 @@ Paths are under `composeApp/src/commonMain/kotlin/com/JF_Nuvio/` unless they say
 | `core/network/ServerDiscovery.kt`, `ServerConfiguration.kt`, auth and official-config code | C4 | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
 | `core/ui/NavigationBar.kt`, `androidMain/.../core/ui/jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt` | C5 | larger navigation icons and labels | Re-apply Automotive-gated sizes |
 | `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | poster size, density and typography | Re-apply; re-run `HomePosterCardSizingTest` |
-| `features/search/SearchScreen.kt`, `features/details/`, `features/player/*`, `features/streams/StreamsScreen.kt` | C5 | larger controls and spacing | Re-apply Automotive-gated sizes (details buttons are shared) |
+| `core/ui/Theme.kt`, `features/search/SearchScreen.kt`, `features/details/`, `features/player/*`, `features/streams/StreamsScreen.kt`, `features/trailer/` | C5 | larger controls and spacing | Re-apply Automotive-gated sizes (details buttons are shared) |
 | `features/settings/PlaybackSettingsPage.kt`, `features/streams/StreamAutoPlay*` | C7 | playback defaults | Keep our defaults for unset values |
 | `androidMain/.../features/player/PlayerEngine.android.kt` | C8 | pause when leaving the foreground | Keep; re-run `PlaybackLifecyclePolicyTest` |
 | `androidMain/.../features/player/PlayerNowPlayingController.android.kt`, `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt`, `NuvioCarMediaArtworkProvider.android.kt` | C9 | shared session, card restore, `content://` artwork | Keep the controller on `NuvioCarMediaSession` (no private `MediaSession`) and publishing the `content://` artwork |
+| `gradle/libs.versions.toml`, `gradle/wrapper/gradle-wrapper.properties`, `settings.gradle.kts`, `.gitignore` | C12 | newer build tools; release files ignored | Take the parent's if it is the same or newer; otherwise keep ours |
 | `README.md`, `AGENTS.md` | C11 | owner README; fork-owned AGENTS | Keep ours |
 | `CLAUDE.md`, `GEMINI.md`, `.claude/skills`, `.github/skills/aaos-*`, `AAOS_*.md` | C11 | fork-owned agent entry points, recipes and docs | Keep ours |

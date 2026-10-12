@@ -39,7 +39,7 @@ Changes from the original Nuvio project (the "parent") are brought into this cop
 | ⏸️ | **Pauses when you leave the app**, so sound doesn't carry on behind other screens. | [More](AAOS_FORK.md#c8-playback-lifecycle) |
 | 🎵 | **The car's home screen media card** shows what Nuvio last played, even after you close it. | [More](AAOS_FORK.md#c9-car-media-card) |
 | 🚗 | **Works as a car app**: it appears in the car's app list and runs well in the car's window. | [More](AAOS_FORK.md#c2-aaos-manifest-and-runtime) |
-| 📦 | **Updates come through your own Play Store listing**, so they reach the car. | [More](AAOS_FORK.md#c1-play-identity-and-package-rename) |
+| 📦 | **Updates come through your own Play Store listing**, so they reach the car. | [More](AAOS_FORK.md#c1-play-identity) |
 
 **Known limit:** after a full restart of the car, the home screen media card stays blank. That is the price of the app icon opening the app properly; see the [car notes](AAOS_CAR_NOTES.md).
 
@@ -103,6 +103,7 @@ You don't need to read these files. They are the instructions that keep any AI a
 | `README.md` | This page |
 | [`AAOS_FORK.md`](AAOS_FORK.md) | Rules for AI assistants, and the full list of car customisations with technical detail |
 | [`AAOS_UPSTREAM_SYNC.md`](AAOS_UPSTREAM_SYNC.md) | How parent updates are done, and the report you get before approving |
+| [`aaos/`](aaos/) | A list of every file the car changes touch, and a tool that shows all of them grouped by customisation |
 | [`AAOS_RELEASE.md`](AAOS_RELEASE.md) | Release steps, the version number rule, and the last version uploaded |
 | [`AAOS_CAR_NOTES.md`](AAOS_CAR_NOTES.md) | Things learned on the real Polestar 3 (the same in both apps) |
 | `handover/` (on your Mac only, not on GitHub) | Where things stand, what's next, and a diary of every chat. See `handover/HOW-TO.md` for starting and finishing a Claude chat |

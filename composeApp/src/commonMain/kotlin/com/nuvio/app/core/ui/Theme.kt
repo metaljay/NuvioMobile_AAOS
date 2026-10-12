@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.dp
 import nuvio.composeapp.generated.resources.Res
 import nuvio.composeapp.generated.resources.jetbrains_sans_bold
 import nuvio.composeapp.generated.resources.jetbrains_sans_regular
@@ -215,7 +214,7 @@ fun NuvioTheme(
             density = density.density,
             fontScale = if (automotive) maxOf(density.fontScale, 1.15f) else 1f,
         ),
-        LocalNuvioThemeTokens provides if (automotive) tokens.withLargerIcons() else tokens,
+        LocalNuvioThemeTokens provides if (automotive) tokens.withLargerIcons() else tokens, // AAOS C5
         LocalNuvioTypeScale provides NuvioTypeTokens,
         LocalRippleConfiguration provides NuvioRippleConfiguration,
         LocalAppTheme provides appTheme,
@@ -229,16 +228,3 @@ fun NuvioTheme(
         }
     }
 }
-
-private fun NuvioThemeTokens.withLargerIcons(): NuvioThemeTokens =
-    copy(
-        icons = icons.copy(
-            xs = 16.dp,
-            sm = 20.dp,
-            md = 24.dp,
-            lg = 30.dp,
-            xl = 38.dp,
-            xxl = 48.dp,
-        ),
-        components = components.copy(navIconSize = 40.dp),
-    )

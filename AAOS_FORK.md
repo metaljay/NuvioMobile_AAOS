@@ -11,7 +11,7 @@ The owner's fork of [Nuvio](https://github.com/NuvioMedia/NuvioMobile), a film a
 | Parent project (upstream) | https://github.com/NuvioMedia/NuvioMobile, branch `cmp-rewrite` (the only parent branch ever synced) |
 | Our fork (origin) | https://github.com/metaljay/NuvioMobile_AAOS, branch `main` |
 | Play application ID (release) | `com.JF_Nuvio` |
-| Code namespace | `com.JF_Nuvio` / `com.JF_Nuvio.android`, renamed from the parent's `com.nuvio.app` (C1) |
+| Code namespace | the parent's `com.nuvio.app` / `com.nuvio.android`, unchanged: only the application ID is ours (C1) |
 | Debug build | `com.JF_Nuvio.debug`: emulator only, never on the car |
 | Release facts | `AAOS_RELEASE.md` (module, build variant, version file, last upload) |
 | Parent update facts | `AAOS_UPSTREAM_SYNC.md` (last merged parent commit, checks, hotspots) |
@@ -83,7 +83,7 @@ The owner has no coding experience, copy-pastes messages between chats, and depe
 
 | ID | Customisation | In one line |
 | --- | --- | --- |
-| C1 | Play identity and package rename | Release application ID `com.JF_Nuvio`; all code renamed from `com.nuvio.app` to `com.JF_Nuvio`. |
+| C1 | Play identity | Release application ID `com.JF_Nuvio`; the code keeps the parent's `com.nuvio.app` names. |
 | C2 | AAOS manifest and runtime | Automotive features optional, `distractionOptimized`, car-friendly activity settings, Automotive detected at start. |
 | C3 | Device-link sign-in | On the car, sign-in starts automatically and is completed on a phone at `nuvio.tv/link`. |
 | C4 | Custom-server fallback | "Connect to another server" stays available so `api.nuvio.tv` can be chosen if sign-in fails. |
@@ -93,9 +93,17 @@ The owner has no coding experience, copy-pastes messages between chats, and depe
 | C8 | Playback lifecycle | Playback pauses when the app leaves the screen. |
 | C9 | Car media card | The car's home screen card shows Nuvio's last item; no `androidx.car.app.launchable`. |
 | C10 | Bundle packaging | ABI splits are off for bundle tasks. |
-| C11 | Fork docs | README, AGENTS file, agent entry points, recipes and `AAOS_*.md` files stay. |
+| C11 | Fork docs | README, AGENTS file, agent entry points, recipes, `AAOS_*.md` files and the `aaos/` folder stay. |
+| C12 | Build tools | Newer Android Gradle Plugin and Gradle, Java toolchain download, and release files kept out of git. |
 
-Each one has a detail block in Part 2: what and why, where it lives, how to redo it after a parent update, and how to check it. Paths in Part 2 are under `composeApp/src/commonMain/kotlin/com/JF_Nuvio/` unless they say otherwise.
+Each one has a detail block in Part 2: what and why, where it lives, how to redo it after a parent update, and how to check it. Paths in Part 2 are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they say otherwise.
+
+**How our changes are kept apart from the parent's** (so parent updates merge with few conflicts and the fork can be reviewed on its own):
+
+- The code keeps the parent's package names; only the application ID differs (C1). Never rename packages again.
+- Car code that can stand alone lives in **fork-only files** next to the code it changes, named `Aaos*.kt` (for example `AaosPlayerLayout.kt`, `AaosTheme.kt`) or `NuvioCar*.kt` (the media card). The parent never has these files, so its updates never conflict with them.
+- In the parent's files, keep changes to the smallest hook possible; a new hook line ends with `// AAOS Cx` (the customisation ID). Single sizes inside the parent's screens (for example "68 dp on Automotive, else 44 dp") stay in place: moving them would not reduce conflicts.
+- `aaos/customisations.txt` maps every file that differs from the parent to its customisation ID. **`aaos/report.sh`** lists every difference from the parent grouped by ID (`aaos/report.sh C5` also shows the code for C5; `aaos/report.sh all` for all). It must show no "NOT LABELLED" files: when a change adds, moves or removes a fork change, update the map in the same commit.
 
 ## 8. Deliberately NOT customised
 
@@ -103,7 +111,7 @@ Each one has a detail block in Part 2: what and why, where it lives, how to redo
 - **Phone and tablet sizing**: stays the parent's. AAOS sizes are gated to Automotive; the shared details-screen buttons and search-field style in C5 are the only exceptions.
 - **Saved user preferences**: a saved value (poster width, playback settings) always wins over our defaults.
 - **MPVKit submodule**: stays at the parent-published commit (a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02). Its `libass-android` reference is dangling; the parent has the same dangling reference.
-- **iOS**: not deployed. The fork's iOS app, debug and widget identifier overrides in `Config.xcconfig` and the Xcode project are carried forward; the parent's identifiers in untouched Release configurations stay unchanged. `iosApp/Configuration/Version.xcconfig` holds the shared version numbers (`AAOS_RELEASE.md`).
+- **iOS**: not deployed, so its identifiers are the parent's (the fork's old iOS identifier overrides were dropped on 2026-10-12). Only `iosApp/Configuration/Version.xcconfig` is ours: it holds the shared version numbers (`AAOS_RELEASE.md`).
 
 ## 9. README contract (shared)
 
@@ -146,17 +154,17 @@ Nuvio only:
 
 Each block uses the same four headings. **After a parent update** is what the sync recipe must do to keep the customisation working in the parent's new code; **Check** is how to prove it.
 
-### C1. Play identity and package rename
+### C1. Play identity
 
-- **What and why:** the car installs Nuvio from our existing Play listing, which only accepts updates carrying the application ID `com.JF_Nuvio`. The fork also renamed the whole Android namespace and Kotlin packages from the parent's `com.nuvio.app` to `com.JF_Nuvio` / `com.JF_Nuvio.android`. The debug build is `com.JF_Nuvio.debug`, for the emulator only.
-- **Where:** `androidApp/build.gradle.kts` (application ID, signing properties); every Kotlin package; `iosApp/Configuration/Version.xcconfig` (version numbers, see `AAOS_RELEASE.md`); iOS overrides (section 8).
-- **After a parent update:** re-apply the rename to every new or changed parent file. Do not do a blind search-and-replace: check store, signing and iOS configuration files by hand, because some parent identifiers there must stay as they are (section 8). Keep our application ID and version numbers on any conflict.
-- **Check:** the merged **release** manifest shows `com.JF_Nuvio`; no `com.nuvio.app` package remains in Kotlin code.
+- **What and why:** the car installs Nuvio from our existing Play listing, which only accepts updates carrying the application ID `com.JF_Nuvio`. Only the application ID changes: the code keeps the parent's namespace and package names (`com.nuvio.app`, `com.nuvio.android`), so parent updates merge without a rename. (Until 2026-10-12 the fork had renamed every package to `com.JF_Nuvio`; that touched about 1,100 files for no benefit and was undone in release 147.) The debug build is `com.JF_Nuvio.debug`, for the emulator only.
+- **Where:** `androidApp/build.gradle.kts` (the two application ID lines, marked `// AAOS C1`; signing properties); `iosApp/Configuration/Version.xcconfig` (version numbers, see `AAOS_RELEASE.md`).
+- **After a parent update:** keep our two application ID lines and our version numbers on any conflict. Never rename packages. Everything that must match the installed app (provider authorities, file provider) uses `${applicationId}` or `context.packageName`, never a written-out package name.
+- **Check:** the merged **release** manifest shows package `com.JF_Nuvio`; `aaos/report.sh` lists only the expected files under C1.
 
 ### C2. AAOS manifest and runtime
 
 - **What and why:** lets the car recognise Nuvio as a car app and run it well in the car's window: Automotive and portrait/landscape screen features optional (so Play still allows the install); `distractionOptimized=true` on the application and all launcher activities; launcher and main activities resizable, `singleTask`, cutout-aware, picture-in-picture capable, and handling keyboard, navigation, UI mode, density and font changes themselves; Automotive detected at runtime and the platform initialised with the Android context before any UI.
-- **Where:** `androidApp/src/main/AndroidManifest.xml`; `Platform.kt` and `composeApp/src/androidMain/kotlin/com/JF_Nuvio/Platform.android.kt` (Automotive detection).
+- **Where:** `androidApp/src/main/AndroidManifest.xml`; `Platform.kt` and `composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt` (Automotive detection).
 - **After a parent update:** keep every AAOS entry; give any new parent launcher activity the same settings and metadata.
 - **Check:** merged release manifest; the app opens from the emulator's app grid.
 
@@ -170,7 +178,7 @@ Each block uses the same four headings. **After a parent update** is what the sy
 ### C4. Custom-server fallback
 
 - **What and why:** if the default sign-in path does not offer or complete device-code login, the owner taps **Connect to another server**, enters `api.nuvio.tv`, reviews the discovered server, chooses **I trust this server**, and device-code login becomes available.
-- **Where:** `composeApp/src/androidPlaystore/kotlin/com/JF_Nuvio/core/build/AppFeaturePolicy.android.kt` (`customServerConnectionsEnabled = true`); `core/network/ServerDiscovery.kt` (`ServerDiscoveryPolicy.isOfficial` must not reject the canonical `api.nuvio.tv`, while a distinct configured backend URL is still rejected); `core/network/ServerConfiguration.kt` (built-in backend default `https://api.nuvio.tv` when `NUVIO_SUPABASE_URL` is unset; without a publishable key, device-link sign-in reads it from the canonical API discovery document and validates the backend before use); the auth-observer rebinding and saved-session fixes in the auth code.
+- **Where:** `composeApp/src/androidPlaystore/kotlin/com/nuvio/app/core/build/AppFeaturePolicy.android.kt` (`customServerConnectionsEnabled = true`); `core/network/ServerDiscovery.kt` (`ServerDiscoveryPolicy.isOfficial` must not reject the canonical `api.nuvio.tv`, while a distinct configured backend URL is still rejected); `core/network/ServerConfiguration.kt` (built-in backend default `https://api.nuvio.tv` when `NUVIO_SUPABASE_URL` is unset; without a publishable key, device-link sign-in reads it from the canonical API discovery document and validates the backend before use); the auth-observer rebinding and saved-session fixes in the auth code.
 - **After a parent update:** keep the policy enabled and the `api.nuvio.tv` handling. Keep the parent's server discovery, trust screen, saved selection, server-switch reset and TV-login capability checks; never bypass the trust screen or force the server globally.
 - **Check:** `ServerDiscoveryPolicyTest` passes (it asserts the canonical API is not rejected).
 
@@ -184,7 +192,7 @@ Each block uses the same four headings. **After a parent update** is what the sy
   - **Player:** substantially larger controls and labels at wide layouts (768, 1024 and 1440 dp breakpoints); larger header, seek and skip, play/pause, action-pill and timeline icons and touch targets; seek controls use the dedicated side-icon size, not the play-icon size; trailers use the same sizes.
   - **Back controls:** the player exit arrow larger than the header icons next to it; 44 dp arrows in the source selector (68 dp target), player toolbar and opening overlay.
   - **Details (shared with phones and tablets):** 48 dp back controls with 28 dp arrows; 56 dp play/resume buttons (60 dp on tablets) with `titleMedium` text.
-- **Where:** `core/ui/NavigationBar.kt`; `composeApp/src/androidMain/kotlin/com/JF_Nuvio/core/ui/` (`jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt`); `features/home/HomeScreen.kt` and `features/home/components/` (`HomePosterCardSizing.kt`, `HomePosterCard.kt`, `HomeCatalogSection.kt`, `HomeCollectionRowSection.kt`, `HomeContinueWatchingSection.kt`, `HomeSkeletonLoading.kt`); `features/search/SearchScreen.kt`; `features/player/` (`PlayerControls.kt`, `PlayerControlActions.kt`, `OpeningOverlay.kt`); `features/streams/StreamsScreen.kt`; `features/details/MetaDetailsScreen.kt`, `features/details/components/DetailFloatingHeader.kt`, `DetailActionButtons.kt`.
+- **Where:** `core/ui/NavigationBar.kt`; `composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/` (`jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt`); `features/home/HomeScreen.kt` and `features/home/components/` (`HomePosterCardSizing.kt`, `HomePosterCard.kt`, `HomeCatalogSection.kt`, `HomeCollectionRowSection.kt`, `HomeContinueWatchingSection.kt`, `HomeSkeletonLoading.kt`); `features/search/SearchScreen.kt`; `core/ui/Theme.kt` with `core/ui/AaosTheme.kt` (larger icons, minimum text scale); `features/player/` (`AaosPlayerLayout.kt`: the player's size table, used through one marked line in `PlayerScreenContent.kt`; `PlayerControls.kt`, `PlayerControlActions.kt`, `PlayerTimeline.kt`, `OpeningOverlay.kt`); `features/trailer/TrailerPlayerControls.kt`; `features/streams/StreamsScreen.kt`; `features/details/MetaDetailsScreen.kt`, `features/details/components/DetailFloatingHeader.kt`, `DetailActionButtons.kt`.
 - **After a parent update:** re-apply our sizes on the parent's new layouts, gated to Automotive (except the details buttons); keep the parent's logic and structure.
 - **Check:** `HomePosterCardSizingTest` passes (five versus six cards at 1280 dp, non-AAOS unchanged); emulator: text, posters and controls visibly larger.
 
@@ -198,14 +206,14 @@ Each block uses the same four headings. **After a parent update** is what the sy
 ### C7. Playback defaults
 
 - **What and why:** to start playing with as few taps as possible, profiles with no saved value default to "Reuse last link" on and `FIRST_STREAM` autoplay. Saved values always win.
-- **Where:** `features/settings/PlaybackSettingsPage.kt`, `features/streams/StreamAutoPlayPolicy.kt`, `StreamAutoPlayModels.kt`.
+- **Where:** `features/player/PlayerSettingsRepository.kt` (the defaults); test `commonTest/.../features/streams/StreamAutoPlayLoadingPolicyTest.kt`.
 - **After a parent update:** keep both defaults for unset values.
 - **Check:** a fresh profile on the emulator shows both settings with our defaults.
 
 ### C8. Playback lifecycle
 
 - **What and why:** Android playback pauses when the app leaves the foreground, even though its now-playing media session is active (otherwise video audio carries on behind other car screens). Picture-in-picture playback may continue; finishing the activity always pauses.
-- **Where:** `composeApp/src/androidMain/kotlin/com/JF_Nuvio/features/player/PlayerEngine.android.kt`.
+- **Where:** `composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerEngine.android.kt`.
 - **After a parent update:** keep the pause rule.
 - **Check:** `PlaybackLifecyclePolicyTest` passes.
 
@@ -213,7 +221,7 @@ Each block uses the same four headings. **After a parent update** is what the sy
 
 - **What and why:** the car's home screen card (bottom left) shows Nuvio's last item with title, episode, poster and a play button, even after Nuvio is closed. AAOS only treats an app as a media source if it exposes a `MediaBrowserService`, and the card reads the session that service hands out. The player and that service share one process-wide `MediaSession`. The last title, subtitle, artwork, position and duration are saved; when the car connects with no player running, the session is refilled from disk as paused (never `STATE_NONE`, which hides the card), and when the player closes it keeps the item and switches to paused instead of clearing it. The card only shows artwork from a local `content://` address, so a provider serves the saved poster. Video cannot play without the app and Android blocks a background app from opening itself, so pressing play while Nuvio is closed shows the prompt "Open Nuvio to continue watching" with an "Open Nuvio" button, then returns to paused after 15 s. The car's media screen shows a "Continue watching" tab with the last item.
 - **Never** add `androidx.car.app.launchable` to the service: on the Polestar it makes the app icon open the car's media screen instead of Nuvio. Known, accepted limit: after a full car restart the card stays blank (`AAOS_CAR_NOTES.md`).
-- **Where:** `composeApp/src/androidMain/kotlin/com/JF_Nuvio/features/player/`: `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt` (declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter), `NuvioCarMediaArtworkProvider.android.kt` (authority `${applicationId}.carmediaart`), and `PlayerNowPlayingController.android.kt` (publishes to the shared session, with rich metadata and the `content://` artwork address); saved state in shared preferences `nuvio_car_media_card` and `files/car_media_card_artwork.png`.
+- **Where:** `composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/`: `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt` (declared in `androidApp/src/main/AndroidManifest.xml` with the `android.media.browse.MediaBrowserService` intent filter), `NuvioCarMediaArtworkProvider.android.kt` (authority `${applicationId}.carmediaart`), and `PlayerNowPlayingController.android.kt` (publishes to the shared session, with rich metadata and the `content://` artwork address); saved state in shared preferences `nuvio_car_media_card` and `files/car_media_card_artwork.png`.
 - **After a parent update:** keep the controller on `NuvioCarMediaSession` (no private `MediaSession` of its own) and publishing the `content://` artwork; keep the service and the provider in the manifest.
 - **Check:** `./gradlew :composeApp:testAndroidHostTest --tests '*PlayerNowPlaying*'` passes; then follow "Testing like the car" in `AAOS_CAR_NOTES.md`: open Nuvio from the app grid (one icon that opens Nuvio), play something, check the card, reboot the emulator, check the icon and the card again.
 
@@ -227,6 +235,13 @@ Each block uses the same four headings. **After a parent update** is what the sy
 ### C11. Fork docs
 
 - **What and why:** these files are the memory that survives between agent chats and the owner's only way to steer agents.
-- **Where:** `README.md` (contract in section 9); `AGENTS.md` (fully fork-owned in this repo); `CLAUDE.md`, `GEMINI.md`; `.claude/skills` (a link to `.github/skills`); `.github/skills/aaos-*`; every `AAOS_*.md` file. On the owner's Mac only (git-ignored, never committed): `handover/`, `CLAUDE.local.md`, `.github/skills/start-session` and `.github/skills/wrap-up`.
+- **Where:** `README.md` (contract in section 9); `AGENTS.md` (fully fork-owned in this repo); `CLAUDE.md`, `GEMINI.md`; `.claude/skills` (a link to `.github/skills`); `.github/skills/aaos-*`; every `AAOS_*.md` file; the `aaos/` folder (the customisation map and report, section 7). On the owner's Mac only (git-ignored, never committed): `handover/`, `CLAUDE.local.md`, `.github/skills/start-session` and `.github/skills/wrap-up`.
 - **After a parent update:** keep ours. If the parent adds its own `AGENTS.md` text, keep our block at the top and the parent's text below it.
 - **Check:** the files exist and the README banner is intact.
+
+### C12. Build tools
+
+- **What and why:** the fork builds with a newer Android Gradle Plugin (9.4.1) and Gradle (9.6.0) than the parent, lets Gradle download a matching Java automatically (the `foojay` plugin and `gradle/gradle-daemon-jvm.properties`), and keeps built `.apk`/`.aab` files, release folders and mapping files out of git. Added with the parent port of 2026-10-01; the reason was not recorded, most likely the owner's Android Studio version.
+- **Where:** `gradle/libs.versions.toml` (`agp`), `gradle/wrapper/gradle-wrapper.properties`, `settings.gradle.kts`, `gradle/gradle-daemon-jvm.properties`, `.gitignore`.
+- **After a parent update:** if the parent moves to the same or newer versions, take the parent's and drop ours. Otherwise keep ours; never go below the parent's versions.
+- **Check:** the "Checks to run" builds pass in `AAOS_UPSTREAM_SYNC.md`.
