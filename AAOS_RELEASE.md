@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| **Last uploaded to Play** | **146 (0.5.13)**, reported installed on the car by the owner on 2026-10-05 |
+| **Last uploaded to Play** | **147 (0.5.14)**, upload confirmed by the owner on 2026-10-12 |
 | App name for bundle files | `Nuvio` |
 | Release application ID | `com.JF_Nuvio` |
 | Version file | `iosApp/Configuration/Version.xcconfig` (`CURRENT_PROJECT_VERSION` is the Android version code, `MARKETING_VERSION` the version name; Android reads this file) |
