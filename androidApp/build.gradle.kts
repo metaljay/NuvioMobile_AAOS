@@ -53,7 +53,7 @@ val buildsReleaseApks = !buildsReleaseBundle && requestedTaskNames.any {
 }
 
 android {
-    namespace = "com.JF_Nuvio.android"
+    namespace = "com.nuvio.android"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileSdkMinor = libs.versions.android.compileSdkMinor.get().toInt()
 
@@ -69,7 +69,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.JF_Nuvio"
+        applicationId = "com.JF_Nuvio" // AAOS C1: must match our Play listing
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = releaseAppVersionCode
@@ -155,7 +155,7 @@ android {
 
 androidComponents {
     onVariants(selector().withBuildType("debug")) { variant ->
-        variant.applicationId.set("com.JF_Nuvio.debug")
+        variant.applicationId.set("com.JF_Nuvio.debug") // AAOS C1: emulator-only debug ID
     }
 }
 

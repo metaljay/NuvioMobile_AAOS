@@ -1,2 +1,2 @@
 headers = AppIconBridge.h
-package = com.JF_Nuvio.nativebridge
+package = com.nuvio.app.nativebridge
