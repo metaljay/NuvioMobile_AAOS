@@ -141,7 +141,7 @@ Keep code, file paths and jargon out of sections 1 to 5 apart from the prompts. 
 
 Shared (both repos):
 
-- Builds run on the owner's Mac with Android Studio. The Development folder holds both repos side by side; the release key `Key.jks` and the `For upload to Play Console` folder sit in `Android-Release` beside them for signed bundles (outside git).
+- Builds run on the owner's Mac with Android Studio. Both repos sit side by side in the owner's code folder (outside iCloud), with the `Play Console` folder beside them (outside git): the release key `Key.jks`, the signed bundles (one folder per app) and the store artwork.
 - Emulator used for checks: `Automotive_Large_Portrait` (1280 x 1606). It does not prove Polestar 3 behaviour. If `adb` or the emulator is unavailable, say so; never claim device verification from a compile.
 - If tests fail with "Unsupported class file major version 71", the default Java is too new: rerun with Android Studio's bundled Java (`JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"` in front). It is an environment problem, not real failures.
 
@@ -237,7 +237,7 @@ Each block uses the same four headings. **After a parent update** is what the sy
 ### C11. Fork docs
 
 - **What and why:** these files are the memory that survives between agent chats and the owner's only way to steer agents.
-- **Where:** `README.md` (contract in section 9); `AGENTS.md` (fully fork-owned in this repo); `CLAUDE.md`, `GEMINI.md`; `.claude/skills` (a link to `.github/skills`); `.github/skills/aaos-*`; every `AAOS_*.md` file; the `aaos/` folder (the customisation map and report, section 7). On the owner's Mac only (git-ignored, never committed): `handover/`, `CLAUDE.local.md`, `.github/skills/start-session` and `.github/skills/wrap-up`.
+- **Where:** `README.md` (contract in section 9); `AGENTS.md` (fully fork-owned in this repo); `CLAUDE.md`, `GEMINI.md`; `.claude/skills` (a link to `.github/skills`); `.github/skills/aaos-*`; every `AAOS_*.md` file; the `aaos/` folder (the customisation map and report, section 7). On the owner's Mac only (git-ignored, never committed): `handover/` and `CLAUDE.local.md`.
 - **After a parent update:** keep ours. If the parent adds its own `AGENTS.md` text, keep our block at the top and the parent's text below it.
 - **Check:** the files exist and the README banner is intact.
 
