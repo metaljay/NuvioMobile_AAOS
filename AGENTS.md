@@ -16,4 +16,18 @@ Before ANY code change, parent update, build or release, read `AAOS_FORK.md`: ru
 | Current state, open items, past changes | `handover/HANDOVER.md` and `handover/SESSION-LOG.md` (on the owner's Mac only, git-ignored; read the handover at the start of every chat if it exists) |
 
 Claude Code and GitHub Copilot also list the recipes as `/aaos-sync`, `/aaos-tweak`, `/aaos-release` and `/aaos-uploaded`. Any text below this block comes from the parent project; follow its coding rules too.
+
+## Agent skills
+
+### Issue tracker
+
+Tickets are private Markdown files in the owner's `handover/issues/` folder; GitHub Issues stay off. See `aaos/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage roles, used as-is as `Status:` values. See `aaos/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: the glossary is `AAOS_FORK.md` section 3, decision records go in `aaos/adr/`. See `aaos/agents/domain.md`.
 <!-- AAOS-FORK:END -->
