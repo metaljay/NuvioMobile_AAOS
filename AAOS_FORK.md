@@ -67,6 +67,8 @@ Agents may edit files, build, run tests, commit, push to `origin/main` once the 
 
 Commit with small, clear messages (`type(scope): description`). Stage files by name; do not use `git add -A`.
 
+If a pull request is ever merged on GitHub, merge it with `gh pr merge <number> --author-email "$(git config user.email)"`: without that, GitHub records the merge under the account's private email.
+
 ## 6. Talking to the owner (shared)
 
 The owner has no coding experience, copy-pastes messages between chats, and depends on the agent to do and check the work. Therefore:
