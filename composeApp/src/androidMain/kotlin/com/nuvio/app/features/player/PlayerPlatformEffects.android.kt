@@ -27,6 +27,7 @@ import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.nuvio.app.getPlatform
 import kotlin.math.roundToInt
 
 @Composable
@@ -151,7 +152,7 @@ private tailrec fun Context.findActivity(): Activity? =
     }
 
 private fun Activity.shouldForceLandscapePlayer(): Boolean {
-    if (resources.configuration.smallestScreenWidthDp >= 600) return false
+    if (getPlatform().isAutomotive) return false // AAOS C2: the car window must follow the car's own orientation
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode) return false
     return true
 }

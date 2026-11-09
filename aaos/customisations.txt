@@ -51,6 +51,7 @@ C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/trailer/TrailerP
 C7      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerSettingsRepository.kt
 C7      composeApp/src/commonTest/kotlin/com/nuvio/app/features/streams/StreamAutoPlayLoadingPolicyTest.kt
 
+C2      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerPlatformEffects.android.kt
 C8      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerEngine.android.kt
 C8      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/PlaybackLifecyclePolicyTest.kt
 

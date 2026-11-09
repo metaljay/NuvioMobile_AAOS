@@ -73,6 +73,7 @@ import com.nuvio.app.features.watchprogress.computeAirDateBadgeText
 import kotlin.math.roundToInt
 import nuvio.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
+import com.nuvio.app.core.i18n.localizedEpisodeTitle
 
 private val ContinueWatchingStatusBadgeShape = RoundedCornerShape(4.dp)
 private val ContinueWatchingNewEpisodeBadgeColor = Color(0xFF1D4ED8)
@@ -709,7 +710,7 @@ private fun ContinueWatchingCard(
     } else {
         null
     }
-    val episodeTitle = item.episodeTitle?.trim()?.takeIf { it.isNotBlank() } ?: airDateText
+    val episodeTitle = localizedEpisodeTitle(item.episodeTitle, item.episodeNumber) ?: airDateText
     val badgeText = continueWatchingCardBadgeText(item = item, airDateText = airDateText)
     val backgroundColor = MaterialTheme.colorScheme.background
     val badgeBackground = continueWatchingBadgeBackground(item)
@@ -940,7 +941,7 @@ private fun ContinueWatchingWideCard(
         ) {
             val isCompact = layout.wideCardWidth < 350.dp
             val wideMetaLine = localizedContinueWatchingMetaLine(item)
-            val episodeTitle = item.episodeTitle?.trim()?.takeIf { it.isNotBlank() }
+            val episodeTitle = localizedEpisodeTitle(item.episodeTitle, item.episodeNumber)
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

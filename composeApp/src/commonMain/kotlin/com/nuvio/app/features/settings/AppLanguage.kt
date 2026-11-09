@@ -1,9 +1,11 @@
 package com.nuvio.app.features.settings
 
+import com.nuvio.app.features.player.DeviceLanguagePreferences
 import nuvio.composeapp.generated.resources.Res
 import nuvio.composeapp.generated.resources.lang_arabic
 import nuvio.composeapp.generated.resources.lang_bengali
 import nuvio.composeapp.generated.resources.lang_bulgarian
+import nuvio.composeapp.generated.resources.lang_croatian
 import nuvio.composeapp.generated.resources.lang_czech
 import nuvio.composeapp.generated.resources.lang_english
 import nuvio.composeapp.generated.resources.lang_french
@@ -21,6 +23,7 @@ import nuvio.composeapp.generated.resources.lang_russian
 import nuvio.composeapp.generated.resources.lang_slovak
 import nuvio.composeapp.generated.resources.lang_spanish
 import nuvio.composeapp.generated.resources.lang_turkish
+import nuvio.composeapp.generated.resources.lang_tamil
 import nuvio.composeapp.generated.resources.lang_urdu
 import nuvio.composeapp.generated.resources.lang_norwegian
 import nuvio.composeapp.generated.resources.lang_dutch
@@ -37,6 +40,7 @@ enum class AppLanguage(
     ARABIC("ar", Res.string.lang_arabic),
     BENGALI("bn", Res.string.lang_bengali),
     BULGARIAN("bg", Res.string.lang_bulgarian),
+    CROATIAN("hr", Res.string.lang_croatian),
     CZECH("cs", Res.string.lang_czech),
     ENGLISH("en", Res.string.lang_english),
     FRENCH("fr", Res.string.lang_french),
@@ -53,6 +57,7 @@ enum class AppLanguage(
     RUSSIAN("ru", Res.string.lang_russian),
     SLOVAK("sk", Res.string.lang_slovak),
     SPANISH("es", Res.string.lang_spanish),
+    TAMIL("ta", Res.string.lang_tamil),
     TURKISH("tr", Res.string.lang_turkish),
     URDU("ur", Res.string.lang_urdu),
     NORWEGIAN("nb", Res.string.lang_norwegian),
@@ -60,6 +65,11 @@ enum class AppLanguage(
     JAPANESE("ja", Res.string.lang_japanese),
     VIETNAMESE("vi", Res.string.lang_vietnamese),
     ;
+
+    fun isRightToLeft(): Boolean {
+        val languageCode = if (this == DEVICE) DeviceLanguagePreferences.preferredLanguageCodes().firstOrNull() else code
+        return languageCode?.substringBefore('-') in setOf(ARABIC.code, HEBREW.code, URDU.code)
+    }
 
     companion object {
         fun fromCode(code: String?): AppLanguage =

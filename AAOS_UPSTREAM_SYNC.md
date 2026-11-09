@@ -10,7 +10,7 @@ The owner has no coding experience and relies on the agent to bring every custom
 | --- | --- |
 | Parent repository | https://github.com/NuvioMedia/NuvioMobile (git remote `upstream`) |
 | Parent branch synced | `cmp-rewrite` |
-| **Last merged parent commit** | `d667f4324b5f8fbcb5954dae6ee6b82885f9a9c4` (2026-09-30). Step 1 lists everything newer; step 11 updates this row. |
+| **Last merged parent commit** | `de60c5a1610c04882eac58be4355e0efdc0d1c03` (2026-11-08). Step 1 lists everything newer; step 11 updates this row. |
 
 ## Steps
 
