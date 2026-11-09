@@ -91,6 +91,7 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 | `iosApp/Configuration/Version.xcconfig` | C1 | Play version code and name | Keep ours |
 | `androidApp/src/main/AndroidManifest.xml` | C2, C9 | AAOS features, activity settings, car media service and provider | Keep every AAOS entry |
 | `Platform.kt`, `composeApp/src/androidMain/.../Platform.android.kt` | C2 | Automotive detection and early platform start | Keep |
+| `composeApp/src/androidMain/.../features/player/PlayerPlatformEffects.android.kt` | C2 | no forced landscape player on Automotive (one line in `shouldForceLandscapePlayer`) | Keep the line; the parent keeps changing that lock |
 | `features/auth/AuthScreen.kt`, `DeviceLinkAuthSection.kt`, `core/auth/DeviceLinkAuthRepository.kt` | C3, C4 | automatic device-link sign-in on Automotive; server menu | Keep; re-run the sign-in check |
 | `composeApp/src/androidPlaystore/.../AppFeaturePolicy.android.kt` | C4 | custom server connections enabled | Keep enabled |
 | `core/network/ServerDiscovery.kt`, `ServerConfiguration.kt`, auth and official-config code | C4 | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
