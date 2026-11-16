@@ -80,7 +80,7 @@ fun DetailActionButtons(
     onPlayLongClick: (() -> Unit)? = null,
 ) {
     val playPainter = appIconPainter(AppIconResource.PlayerPlay)
-    val buttonHeight = if (isTablet) 60.dp else 56.dp
+    val buttonHeight = if (isTablet) 56.dp else 52.dp
     val iconButtonSize = buttonHeight
     val playShape = RoundedCornerShape(40.dp)
     val hapticFeedback = LocalHapticFeedback.current
@@ -131,12 +131,16 @@ fun DetailActionButtons(
                     Icon(
                         painter = playPainter,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(if (isTablet) 20.dp else 18.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = playLabel,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = if (isTablet) {
+                            MaterialTheme.typography.titleMedium
+                        } else {
+                            MaterialTheme.typography.titleSmall
+                        },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

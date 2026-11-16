@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.nuvio.app.core.ui.NuvioBackButton
 import com.nuvio.app.core.ui.nuvioTypeScale
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.LocalVerticalBarPadding
 import com.nuvio.app.core.ui.centeredVerticalBarPadding
 import nuvio.composeapp.generated.resources.Res
@@ -127,8 +126,8 @@ internal fun OpeningOverlay(
                 .padding(top = 20.dp, start = horizontalSafePadding, end = horizontalSafePadding + 20.dp),
             containerColor = Color.Black.copy(alpha = 0.3f),
             contentColor = Color.White,
-            buttonSize = if (getPlatform().isAutomotive) 68.dp else 44.dp,
-            iconSize = if (getPlatform().isAutomotive) 40.dp else 24.dp,
+            buttonSize = 44.dp,
+            iconSize = 24.dp,
             contentDescription = stringResource(Res.string.compose_player_close),
         )
 

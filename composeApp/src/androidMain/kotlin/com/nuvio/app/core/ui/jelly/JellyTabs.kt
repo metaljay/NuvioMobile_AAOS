@@ -56,8 +56,8 @@ internal fun JellyTabRow(
     val tokens = MaterialTheme.nuvio
     val palette = MaterialTheme.themePalette
     val color = if (active) tokens.colors.accent else tokens.colors.textMuted
-    val iconSize = if (compactSize) 28.dp else 32.dp
-    val labelHeight = if (compactSize) 17.dp else 18.dp
+    val iconSize = if (compactSize) 24.dp else 28.dp
+    val labelHeight = if (compactSize) 14.dp else 16.dp
     val iconModifier = Modifier.size(iconSize)
         .then(if (active) Modifier.gradientMask(palette.accentBrush()) else Modifier)
     val iconTint = if (active) Color.White else color
@@ -86,8 +86,8 @@ internal fun JellyTabRow(
                             text = item.label,
                             color = color,
                             style = TextStyle(
-                                fontSize = if (compactSize) 14.sp else 15.sp,
-                                lineHeight = if (compactSize) 17.sp else 18.sp,
+                                fontSize = if (compactSize) 12.sp else 13.sp,
+                                lineHeight = if (compactSize) 14.sp else 16.sp,
                                 fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.Center,
                             ),
@@ -148,12 +148,12 @@ internal fun JellyTabTargets(
                     ) {
                         Box(
                             Modifier
-                                .then(if (compactSize) Modifier.size(28.dp) else Modifier)
+                                .then(if (compactSize) Modifier.size(24.dp) else Modifier)
                                 .graphicsLayer { translationY = 2.dp.toPx() * labelFraction },
                         ) {
                             item.content(onClick)
                         }
-                        Spacer(Modifier.height((if (compactSize) 17.dp else 18.dp) * labelFraction))
+                        Spacer(Modifier.height((if (compactSize) 14.dp else 16.dp) * labelFraction))
                     }
                 }
             }

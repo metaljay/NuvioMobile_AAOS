@@ -68,7 +68,6 @@ import com.nuvio.app.core.ui.NuvioModalBottomSheet
 import com.nuvio.app.core.ui.NuvioToastController
 import com.nuvio.app.core.ui.backdropControlColor
 import com.nuvio.app.core.ui.dismissNuvioBottomSheet
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.featherArtwork
 import com.nuvio.app.core.ui.rememberArtworkBackdrop
 import com.nuvio.app.features.downloads.DownloadsRepository
@@ -295,11 +294,10 @@ fun StreamsScreen(
         ) {
             NuvioBackButton(
                 onClick = onBack,
-                modifier = Modifier.size(if (getPlatform().isAutomotive) 68.dp else 40.dp),
+                modifier = Modifier
+                    .size(40.dp),
                 containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.45f),
                 contentColor = MaterialTheme.colorScheme.onBackground,
-                buttonSize = if (getPlatform().isAutomotive) 68.dp else 40.dp,
-                iconSize = if (getPlatform().isAutomotive) 44.dp else 24.dp,
             )
         }
 

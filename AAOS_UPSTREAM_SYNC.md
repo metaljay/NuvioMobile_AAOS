@@ -74,7 +74,7 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 ./gradlew :composeApp:compileAndroidMain
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full
-./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*'
+./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*AaosPlayerLayout*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*'
 git diff --check
 aaos/report.sh
 ```
@@ -95,9 +95,10 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 | `features/auth/AuthScreen.kt`, `DeviceLinkAuthSection.kt`, `core/auth/DeviceLinkAuthRepository.kt` | C3, C4 | automatic device-link sign-in on Automotive; server menu | Keep; re-run the sign-in check |
 | `composeApp/src/androidPlaystore/.../AppFeaturePolicy.android.kt` | C4 | custom server connections enabled | Keep enabled |
 | `core/network/ServerDiscovery.kt`, `ServerConfiguration.kt`, auth and official-config code | C4 | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
-| `core/ui/NavigationBar.kt`, `androidMain/.../core/ui/jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt` | C5 | larger navigation icons and labels | Re-apply Automotive-gated sizes |
-| `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | poster size, density and typography | Re-apply; re-run `HomePosterCardSizingTest` |
-| `core/ui/Theme.kt`, `features/search/SearchScreen.kt`, `features/details/`, `features/player/*`, `features/streams/StreamsScreen.kt`, `features/trailer/` | C5 | larger controls and spacing | Re-apply Automotive-gated sizes (details buttons are shared) |
+| `core/ui/Theme.kt` | C5 | one marked line: the 1.5x Automotive scale (`AaosScale.kt`) | Keep the line; take the parent's for the rest |
+| `core/ui/ShelfComponents.kt`, `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | Home poster minimum width and label scale (hooks into `HomePosterCardSizing.kt`) | Keep the hooks; re-run `HomePosterCardSizingTest` |
+| `features/player/PlayerScreenContent.kt`, `PlayerControls.kt`, `features/trailer/TrailerPlayerControls.kt` | C5 | one marked line each into `AaosPlayerLayout.kt` | Keep the lines; re-run `AaosPlayerLayoutTest` |
+| `features/settings/SettingsComponents.kt`, `features/details/MetaDetailsScreen.kt` | C6 | marked `aaosEdgeGap()` lines (sidebar rows, back arrows) | Keep the lines |
 | `features/settings/PlaybackSettingsPage.kt`, `features/streams/StreamAutoPlay*` | C7 | playback defaults | Keep our defaults for unset values |
 | `androidMain/.../features/player/PlayerEngine.android.kt` | C8 | pause when leaving the foreground | Keep; re-run `PlaybackLifecyclePolicyTest` |
 | `androidMain/.../features/player/PlayerNowPlayingController.android.kt`, `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt`, `NuvioCarMediaArtworkProvider.android.kt` | C9 | shared session, card restore, `content://` artwork | Keep the controller on `NuvioCarMediaSession` (no private `MediaSession`) and publishing the `content://` artwork |

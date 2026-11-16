@@ -37,13 +37,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.nuvioTypeScale
 import com.nuvio.app.features.player.PlayPauseControlButton
 import com.nuvio.app.features.player.PlayerHeaderIconButton
-import com.nuvio.app.features.player.automotivePlayerLayoutMetrics
 import com.nuvio.app.features.player.playerHorizontalSafePadding
 import com.nuvio.app.features.player.PlayerLayoutMetrics
+import com.nuvio.app.features.player.forAutomotive // AAOS C5
 import com.nuvio.app.features.player.PlayerSeekBar
 import kotlinx.coroutines.delay
 import nuvio.composeapp.generated.resources.Res
@@ -73,7 +72,7 @@ internal fun TrailerPlayerControls(
             } else Modifier,
         ),
     ) {
-        val metrics = automotivePlayerLayoutMetrics(maxWidth)
+        val metrics = PlayerLayoutMetrics.fromWidth(maxWidth).forAutomotive() // AAOS C5
         val horizontalPadding = if (fullscreen) {
             playerHorizontalSafePadding() + metrics.horizontalPadding
         } else {
@@ -109,7 +108,7 @@ internal fun TrailerPlayerControls(
                         PlayerHeaderIconButton(
                             icon = Icons.Rounded.FullscreenExit,
                             contentDescription = stringResource(Res.string.trailer_exit_fullscreen),
-                            buttonSize = metrics.headerIconSize + if (getPlatform().isAutomotive) 32.dp else 16.dp,
+                            buttonSize = metrics.headerIconSize + 16.dp,
                             iconSize = metrics.headerIconSize,
                             onClick = { onExitFullscreen?.invoke() },
                         )

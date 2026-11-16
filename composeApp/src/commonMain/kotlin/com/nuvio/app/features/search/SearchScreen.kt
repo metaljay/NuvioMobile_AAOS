@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nuvio.app.core.network.NetworkCondition
 import com.nuvio.app.core.network.NetworkStatusRepository
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.NuvioInputField
 import com.nuvio.app.core.ui.NuvioTokens
 import com.nuvio.app.core.ui.NuvioScreen
@@ -233,19 +232,11 @@ fun SearchScreen(
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
     ) {
-        val isAutomotive = getPlatform().isAutomotive
-        val isTabletLayout = maxWidth >= 768.dp
-        val topNavClearance = if (isTabletLayout || isAutomotive) 68.dp else 0.dp
         val discoverColumns = remember(maxWidth) {
-            posterGridColumnCountForWidth(maxWidth).coerceAtMost(4)
+            posterGridColumnCountForWidth(maxWidth)
         }
         val homeSectionPadding = remember(maxWidth) {
             homeSectionHorizontalPaddingForWidth(maxWidth.value)
-        }
-        val searchBottomSpacing = when {
-            isAutomotive -> 64.dp
-            query.isNotBlank() -> 16.dp
-            else -> 0.dp
         }
         val headerTitle = when {
             query.isNotBlank() -> stringResource(Res.string.compose_nav_search)
@@ -269,9 +260,6 @@ fun SearchScreen(
                 androidx.compose.foundation.layout.Column(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    if (topNavClearance > 0.dp) {
-                        Spacer(modifier = Modifier.height(topNavClearance))
-                    }
                     NuvioScreenHeader(
                         title = headerTitle,
                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -285,9 +273,7 @@ fun SearchScreen(
                             shape = RoundedCornerShape(NuvioTokens.Radius.xl),
                             modifier = Modifier
                                 .focusRequester(focusRequester)
-                                .onFocusChanged { isSearchFocused = it.isFocused }
-                                .height(64.dp),
-                            textStyle = MaterialTheme.typography.titleMedium,
+                                .onFocusChanged { isSearchFocused = it.isFocused },
                             trailingContent = if (query.isNotBlank()) {
                                 {
                                     IconButton(onClick = { query = "" }) {
@@ -303,11 +289,7 @@ fun SearchScreen(
                             },
                         )
                     }
-                    androidx.compose.foundation.layout.Spacer(
-                        modifier = Modifier.height(
-                            if (isAutomotive) 30.dp else if (query.isNotBlank()) 22.dp else 14.dp,
-                        ),
-                    )
+                    androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(14.dp))
                 }
             }
         }
@@ -414,11 +396,6 @@ fun SearchScreen(
                             }
                         }
                     }
-                }
-            }
-            if (searchBottomSpacing > 0.dp) {
-                item(key = "search_results_bottom_spacing") {
-                    Spacer(modifier = Modifier.height(searchBottomSpacing))
                 }
             }
         }

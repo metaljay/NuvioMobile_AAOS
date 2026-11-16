@@ -37,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.accentBrush
 import com.nuvio.app.core.ui.themePalette
 import com.nuvio.app.core.ui.nuvioTypeScale
@@ -120,9 +119,8 @@ internal fun PlayerTimeline(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isDragged by interactionSource.collectIsDraggedAsState()
     val isInteracting = enabled && durationMs > 0L && (isPressed || isDragged)
-    val automotive = getPlatform().isAutomotive
     val trackThickness by animateDpAsState(
-        targetValue = if (isInteracting) 12.dp else if (automotive) 9.dp else 6.dp,
+        targetValue = if (isInteracting) 10.dp else 6.dp,
         animationSpec = tween(durationMillis = if (isInteracting) 140 else 180),
         label = "playerTimelineThickness",
     )
@@ -149,13 +147,10 @@ internal fun PlayerTimeline(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(if (automotive) 56.dp else 48.dp)
+                        .height(48.dp)
                         .drawBehind {
                             val trackHeight = trackThickness.toPx()
-                            val trackOrigin = Offset(
-                                0f,
-                                (if (automotive) 42.dp else 35.dp).toPx() - trackHeight / 2,
-                            )
+                            val trackOrigin = Offset(0f, 35.dp.toPx() - trackHeight / 2)
                             val radius = CornerRadius(trackHeight / 2)
                             drawRoundRect(
                                 color = Color.White.copy(alpha = 0.3f),
@@ -192,9 +187,9 @@ internal fun PlayerTimeline(
             },
             modifier = modifier
                 .fillMaxWidth()
-                .height(if (automotive) 28.dp else 24.dp)
+                .height(24.dp)
                 .wrapContentHeight(Alignment.Bottom, unbounded = true)
-                .requiredHeight(if (automotive) 56.dp else 48.dp)
+                .requiredHeight(48.dp)
                 .semantics { contentDescription = description },
         )
     }

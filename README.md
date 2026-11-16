@@ -32,7 +32,7 @@ Changes from the original Nuvio project (the "parent") are brought into this cop
 
 | | Change | Details |
 | --- | --- | --- |
-| 👀 | **Bigger text, icons, posters, search and player controls** on the car, easy to read and tap at a glance. Phones and tablets keep the normal sizes. | [More](AAOS_FORK.md#c5-aaos-readability-automotive-only) |
+| 👀 | **Everything one and a half times bigger** on the car (text, buttons, menus, player controls), with posters kept at a comfortable five a row, so it is easy to read and tap at a glance. Phones and tablets keep the normal sizes. | [More](AAOS_FORK.md#c5-aaos-readability-automotive-only) |
 | 🔐 | **Sign in without a browser**: the car shows a code and you finish signing in on your phone at nuvio.tv/link. | [More](AAOS_FORK.md#c3-device-link-sign-in) |
 | 🛟 | **A backup way to sign in** ("Connect to another server", then `api.nuvio.tv`) if the normal one fails. | [More](AAOS_FORK.md#c4-custom-server-fallback) |
 | ▶️ | **Starts playing quickly**: new profiles reuse the last link and auto-play the first stream. | [More](AAOS_FORK.md#c7-playback-defaults) |

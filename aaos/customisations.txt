@@ -22,31 +22,20 @@ C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/network/ServerConfig
 C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/network/ServerDiscovery.kt
 C4      composeApp/src/commonTest/kotlin/com/nuvio/app/core/network/ServerDiscoveryPolicyTest.kt
 
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/AaosTheme.kt
+C5,C6   composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/AaosScale.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/Theme.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/Components.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/NavigationBar.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/PosterCardStyleRepository.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/ShelfComponents.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/MainTabsDestination.kt
-C5      composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/FloatingNavigationBar.android.kt
-C5      composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/jelly/JellyTabs.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/HomeScreen.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/components/Home*.kt
 C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/home/HomePosterCardSizingTest.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/search/SearchScreen.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/MetaDetailsScreen.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/components/DetailActionButtons.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/components/DetailFloatingHeader.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/AaosPlayerLayout.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/OpeningOverlay.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControlActions.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControls.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerScreenContent.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerTimeline.kt
-C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/PlayerLayoutMetricsTest.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/streams/StreamsScreen.kt
+C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/AaosPlayerLayoutTest.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/trailer/TrailerPlayerControls.kt
+
+C6      composeApp/src/commonMain/kotlin/com/nuvio/app/features/details/MetaDetailsScreen.kt
+C6      composeApp/src/commonMain/kotlin/com/nuvio/app/features/settings/SettingsComponents.kt
 
 C7      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerSettingsRepository.kt
 C7      composeApp/src/commonTest/kotlin/com/nuvio/app/features/streams/StreamAutoPlayLoadingPolicyTest.kt

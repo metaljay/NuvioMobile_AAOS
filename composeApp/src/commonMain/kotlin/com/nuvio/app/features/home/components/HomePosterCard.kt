@@ -33,6 +33,7 @@ fun HomePosterCard(
         item.rawPosterUrl
     }
 
+    AaosHomeCardText(enabled = posterWidthDp != null) { // AAOS C5
     NuvioPosterCard(
         title = item.name,
         imageUrl = imageUrl,
@@ -48,6 +49,7 @@ fun HomePosterCard(
         onClick = onClick,
         onLongClick = onLongClick,
     )
+    } // AAOS C5
 }
 
 private fun PosterShape.toNuvioPosterShape(): NuvioPosterShape =

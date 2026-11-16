@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.AppIconResource
 import com.nuvio.app.core.ui.NuvioBackButton
 import com.nuvio.app.core.ui.appIconPainter
@@ -95,8 +94,8 @@ internal fun PlayerToolbar(
             onClick = onBack,
             containerColor = Color.Transparent,
             contentColor = Color.White,
-            buttonSize = if (getPlatform().isAutomotive) 68.dp else 48.dp,
-            iconSize = if (getPlatform().isAutomotive) 40.dp else 24.dp,
+            buttonSize = 48.dp,
+            iconSize = 24.dp,
             contentDescription = stringResource(Res.string.compose_player_close),
         )
     }
@@ -215,13 +214,11 @@ private fun PlayerAction(
     iconSize: Dp = 24.dp,
     tint: Color = Color.White,
 ) {
-    val automotive = getPlatform().isAutomotive
-    val actionIconSize = if (automotive) maxOf(iconSize, 32.dp) else iconSize
-    IconButton(onClick = onClick, modifier = Modifier.size(if (automotive) 56.dp else 48.dp)) {
+    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
         if (painter != null) {
-            Icon(painter, description, tint = tint, modifier = Modifier.size(actionIconSize))
+            Icon(painter, description, tint = tint, modifier = Modifier.size(iconSize))
         } else if (icon != null) {
-            Icon(icon, description, tint = tint, modifier = Modifier.size(actionIconSize))
+            Icon(icon, description, tint = tint, modifier = Modifier.size(iconSize))
         }
     }
 }

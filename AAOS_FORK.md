@@ -89,8 +89,8 @@ The owner has no coding experience, copy-pastes messages between chats, and depe
 | C2 | AAOS manifest and runtime | Automotive features optional, `distractionOptimized`, car-friendly activity settings, Automotive detected at start. |
 | C3 | Device-link sign-in | On the car, sign-in starts automatically and is completed on a phone at `nuvio.tv/link`. |
 | C4 | Custom-server fallback | "Connect to another server" stays available so `api.nuvio.tv` can be chosen if sign-in fails. |
-| C5 | AAOS readability | Larger text, icons, posters, search and player controls, only on Automotive. |
-| C6 | Display safe area | Touch targets at least 16 dp from the left and right window edges (not yet audited in Nuvio). |
+| C5 | AAOS readability | One whole-app 1.5x scale on Automotive (text, buttons, menus, spacing); Home artwork kept at its on-car size. |
+| C6 | Display safe area | Touch targets at least 24 px (16 dp under the C5 scale) from the left and right window edges. |
 | C7 | Playback defaults | New profiles default to "Reuse last link" on and first-stream autoplay. |
 | C8 | Playback lifecycle | Playback pauses when the app leaves the screen. |
 | C9 | Car media card | The car's home screen card shows Nuvio's last item; no `androidx.car.app.launchable`. |
@@ -103,14 +103,14 @@ Each one has a detail block in Part 2: what and why, where it lives, how to redo
 **How our changes are kept apart from the parent's** (so parent updates merge with few conflicts and the fork can be reviewed on its own):
 
 - The code keeps the parent's package names; only the application ID differs (C1). Never rename packages again.
-- Car code that can stand alone lives in **fork-only files** next to the code it changes, named `Aaos*.kt` (for example `AaosPlayerLayout.kt`, `AaosTheme.kt`) or `NuvioCar*.kt` (the media card). The parent never has these files, so its updates never conflict with them.
-- In the parent's files, keep changes to the smallest hook possible; a new hook line ends with `// AAOS Cx` (the customisation ID). Single sizes inside the parent's screens (for example "68 dp on Automotive, else 44 dp") stay in place: moving them would not reduce conflicts.
+- Car code that can stand alone lives in **fork-only files** next to the code it changes, named `Aaos*.kt` (for example `AaosScale.kt`, `AaosPlayerLayout.kt`) or `NuvioCar*.kt` (the media card). The parent never has these files, so its updates never conflict with them.
+- In the parent's files, keep changes to the smallest hook possible; a new hook line ends with `// AAOS Cx` (the customisation ID). Sizes are not edited inside the parent's screens: the C5 scale enlarges them all at once, and the few exceptions live in the fork-only files.
 - `aaos/customisations.txt` maps every file that differs from the parent to its customisation ID. **`aaos/report.sh`** lists every difference from the parent grouped by ID (`aaos/report.sh C5` also shows the code for C5; `aaos/report.sh all` for all). It must show no "NOT LABELLED" files: when a change adds, moves or removes a fork change, update the map in the same commit.
 
 ## 8. Deliberately NOT customised
 
 - **The parent's Play Store feature policy**: the Play Store build keeps the parent's disabled features, except custom-server connections (C4). Do not delete policy files.
-- **Phone and tablet sizing**: stays the parent's. AAOS sizes are gated to Automotive; the shared details-screen buttons and search-field style in C5 are the only exceptions.
+- **Phone and tablet sizing**: stays the parent's, with no exceptions: the C5 scale and every C5/C6 size are gated to Automotive.
 - **Saved user preferences**: a saved value (poster width, playback settings) always wins over our defaults.
 - **MPVKit submodule**: stays at the parent-published commit (a stale `d5cf091` checkout was reset to `bb1d0250` on 2026-10-02). Its `libass-android` reference is dangling; the parent has the same dangling reference.
 - **iOS**: not deployed, so its identifiers are the parent's (the fork's old iOS identifier overrides were dropped on 2026-10-12). Only `iosApp/Configuration/Version.xcconfig` is ours: it holds the shared version numbers (`AAOS_RELEASE.md`).
@@ -187,24 +187,21 @@ Each block uses the same four headings. **After a parent update** is what the sy
 
 ### C5. AAOS readability (Automotive only)
 
-- **What and why:** makes Nuvio readable at a glance and easy to tap on the car display, without changing phone or tablet sizing:
-  - **Text and icons:** a 1.15 minimum text scale and larger shared icon tokens on Automotive screens.
-  - **Navigation:** 40 dp home navigation icons with a larger vertical hit area on Automotive, including compact layouts; larger floating navigation icons and labels. The parent's 24/28 dp sizing stays off Automotive.
-  - **Home posters:** 185 x 278 dp default poster cards with 14 dp corners, 16 dp shelf spacing and larger shelf and poster text (`headlineSmall` headings, `titleMedium` titles, `bodySmall` details); the parent had reduced these to 126 x 189 dp, 10 dp and smaller text. A 230 dp minimum width for home poster, catalogue and folder tiles, poster-style Continue Watching cards and loading skeletons, so a 1280 dp screen fits five tiles instead of six (not landscape cards, library or detail rails, or global poster settings). 230 dp is a minimum: a larger saved width wins; placeholders match the content width; landscape Continue Watching sizes come from the user's poster width. Do not bring back the old fork's `>=160dp` reload cutoff (it breaks the valid 104 to 140 dp presets).
-  - **Search:** a 64 dp search field with `titleMedium` text; Discover capped at four columns; on Automotive and tablet layouts, 68 dp of top clearance above the search header (below the floating navigation pill), 30 dp below the field and 64 dp at the end of the list. Non-Automotive result spacing is unchanged.
-  - **Player:** substantially larger controls and labels at wide layouts (768, 1024 and 1440 dp breakpoints); larger header, seek and skip, play/pause, action-pill and timeline icons and touch targets; seek controls use the dedicated side-icon size, not the play-icon size; trailers use the same sizes.
-  - **Back controls:** the player exit arrow larger than the header icons next to it; 44 dp arrows in the source selector (68 dp target), player toolbar and opening overlay.
-  - **Details (shared with phones and tablets):** 48 dp back controls with 28 dp arrows; 56 dp play/resume buttons (60 dp on tablets) with `titleMedium` text.
-- **Where:** `core/ui/NavigationBar.kt`; `composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/` (`jelly/JellyTabs.kt`, `FloatingNavigationBar.android.kt`); `features/home/HomeScreen.kt` and `features/home/components/` (`HomePosterCardSizing.kt`, `HomePosterCard.kt`, `HomeCatalogSection.kt`, `HomeCollectionRowSection.kt`, `HomeContinueWatchingSection.kt`, `HomeSkeletonLoading.kt`); `features/search/SearchScreen.kt`; `core/ui/Theme.kt` with `core/ui/AaosTheme.kt` (larger icons, minimum text scale); `features/player/` (`AaosPlayerLayout.kt`: the player's size table, used through one marked line in `PlayerScreenContent.kt`; `PlayerControls.kt`, `PlayerControlActions.kt`, `PlayerTimeline.kt`, `OpeningOverlay.kt`); `features/trailer/TrailerPlayerControls.kt`; `features/streams/StreamsScreen.kt`; `features/details/MetaDetailsScreen.kt`, `features/details/components/DetailFloatingHeader.kt`, `DetailActionButtons.kt`.
-- **After a parent update:** re-apply our sizes on the parent's new layouts, gated to Automotive (except the details buttons); keep the parent's logic and structure.
-- **Check:** `HomePosterCardSizingTest` passes (five versus six cards at 1280 dp, non-AAOS unchanged); emulator: text, posters and controls visibly larger.
+- **What and why:** makes Nuvio readable at a glance and easy to tap on the car display, without changing phone or tablet sizing. Redone on 2026-11-16: the earlier hand-enlarged sizes (about 30 files) were removed and replaced by one scale, so the parent's own proportions are kept and new parent screens are covered automatically.
+  - **The scale:** on Automotive, `NuvioTheme` multiplies the screen density by 1.5 (`AaosUiScale`), so every dp and sp in the parent's layouts (text, buttons, menus, the top menu pill, settings rows, player panels, spacing) is drawn 1.5 times larger. The layouts therefore see a narrower screen (1280 px = about 853 dp) and the parent's breakpoints pick its smaller-tablet layouts. System font scaling stays off, as in the parent.
+  - **Home artwork keeps its on-car size:** Home poster, catalogue and folder tiles, poster-style Continue Watching cards and loading skeletons have a 153 dp minimum width (about 230 px), so a 1280 px row shows five posters and the edge of a sixth, as before the redo. It is a minimum: a larger saved poster width wins. Labels under Home row posters use a 0.875 font scale (about 18 px titles) so long titles are not cut off. Not applied to Search, Library or detail rails, which follow the scale (Discover shows four posters a row).
+  - **Player:** the parent's size table under the scale, with Automotive minimums for the sizes that came out too small: play icon 56 dp (84 px), skip icons 44 dp (66 px), header icons 30 dp, time and metadata text 14 sp, seek bar touch height 32 dp. Trailers use the same sizes.
+  - **Grown with the scale, not held back:** cast photos, trailer and episode thumbnails and Discover posters are 1.5 times their parent size.
+- **Where:** `core/ui/AaosScale.kt` (the scale; one marked line in `core/ui/Theme.kt`); `features/home/components/HomePosterCardSizing.kt` (poster minimum and Home label scale) with its hooks in `core/ui/ShelfComponents.kt` (`posterWidthDp`), `features/home/HomeScreen.kt` and `features/home/components/` (`HomePosterCard.kt`, `HomeCatalogSection.kt`, `HomeCollectionRowSection.kt`, `HomeContinueWatchingSection.kt`, `HomeSkeletonLoading.kt`); `features/player/AaosPlayerLayout.kt` with one marked line each in `PlayerScreenContent.kt`, `PlayerControls.kt` and `features/trailer/TrailerPlayerControls.kt`.
+- **After a parent update:** keep the marked line in `Theme.kt` and the hooks above; take the parent's version of everything else. Do not re-add per-screen sizes: if a new parent screen looks wrong on the emulator, fix that one thing in a fork-only `Aaos*.kt` file with a one-line hook.
+- **Check:** `HomePosterCardSizingTest` (scale is 1.5 and off elsewhere; five posters, not six, on a 1280 px row; saved width wins) and `AaosPlayerLayoutTest` pass; emulator: Home posters about 230 px wide, top menu buttons about 110 x 72 px, settings rows at least 80 px tall.
 
 ### C6. Display safe area
 
-- **What and why:** the Polestar 3 screen's rounded corners and bezel cover the outer edge of the app window (`AAOS_CAR_NOTES.md`). Every touch target (not just its icon) sits at least 16 dp from the left and right window edges, and icons about 24 to 28 dp in. Learned from Flow, whose top bar settings cog was only partly tappable at 4 dp (owner report 2026-10-05). **Nuvio has not been audited against this yet.**
-- **Where:** any top bar, side button or player control near the edges.
-- **After a parent update:** check new or moved edge controls against the rule.
-- **Check:** emulator screenshot of the screen in question, measuring the distance to the edge.
+- **What and why:** the Polestar 3 screen's rounded corners and bezel cover the outer edge of the app window (`AAOS_CAR_NOTES.md`). Every touch target (not just its icon) sits at least 24 px from the left and right window edges: that is 16 dp under the C5 scale. Learned from Flow, whose top bar settings cog was only partly tappable at 4 dp (owner report 2026-10-05). Audited on the emulator on 2026-11-16 (Home, Search, Library, Settings, details, player): the scale brought most gaps to 24 px or more; two needed a hand fix (the settings sidebar rows and the details back arrow, both 18 px before).
+- **Where:** `aaosEdgeGap()` in `core/ui/AaosScale.kt`, used by one marked line in `features/settings/SettingsComponents.kt` (sidebar rows) and two in `features/details/MetaDetailsScreen.kt` (back arrows). Any other top bar, side button or player control near the edges follows the rule.
+- **After a parent update:** keep the marked lines; check new or moved edge controls against the rule and wrap their edge padding in `aaosEdgeGap()` if they fall short.
+- **Check:** emulator: read the control's bounds from the accessibility tree (or measure a screenshot); nothing tappable starts closer than 24 px to the left or right edge, apart from row items scrolling off the edge.
 
 ### C7. Playback defaults
 

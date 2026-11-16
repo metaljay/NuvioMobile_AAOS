@@ -12,7 +12,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalDensity
-import com.nuvio.app.getPlatform
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
@@ -208,13 +207,12 @@ fun NuvioTheme(
     val tokens = defaultNuvioThemeTokens(palette, amoled = amoled, colorScheme = colorScheme)
 
     val density = LocalDensity.current
-    val automotive = getPlatform().isAutomotive
     CompositionLocalProvider(
         LocalDensity provides Density(
-            density = density.density,
-            fontScale = if (automotive) maxOf(density.fontScale, 1.15f) else 1f,
+            density = density.density * aaosUiScale(), // AAOS C5
+            fontScale = 1f,
         ),
-        LocalNuvioThemeTokens provides if (automotive) tokens.withLargerIcons() else tokens, // AAOS C5
+        LocalNuvioThemeTokens provides tokens,
         LocalNuvioTypeScale provides NuvioTypeTokens,
         LocalRippleConfiguration provides NuvioRippleConfiguration,
         LocalAppTheme provides appTheme,

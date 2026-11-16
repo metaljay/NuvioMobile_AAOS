@@ -16,7 +16,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import com.nuvio.app.getPlatform
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntSize
@@ -117,10 +116,7 @@ internal fun PlayerScreenContent(args: PlayerScreenArgs) {
         )
         val partyPanelInset = if (dockPartyPanel) animatedPartyPanelInset else 0.dp
         val playerWidth = maxWidth - partyPanelInset
-        val automotive = getPlatform().isAutomotive
-        val metrics = remember(playerWidth, automotive) {
-            PlayerLayoutMetrics.aaosFromWidth(playerWidth, isAutomotive = automotive) // AAOS C5
-        }
+        val metrics = remember(playerWidth) { PlayerLayoutMetrics.fromWidth(playerWidth).forAutomotive() } // AAOS C5
 
         runtime.scope = rememberCoroutineScope()
         runtime.hapticFeedback = LocalHapticFeedback.current

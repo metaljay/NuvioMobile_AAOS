@@ -71,7 +71,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.LayoutDirection
-import com.nuvio.app.getPlatform
 import com.nuvio.app.core.ui.AppIconResource
 import com.nuvio.app.core.ui.NuvioBackButton
 import com.nuvio.app.core.ui.themePalette
@@ -410,8 +409,6 @@ private fun PlayerHeader(
     modifier: Modifier = Modifier,
 ) {
     val typeScale = MaterialTheme.nuvioTypeScale
-    val automotive = getPlatform().isAutomotive
-    val headerButtonExtraSize = if (automotive) 32.dp else 28.dp
     val metadataAlpha by animateFloatAsState(
         targetValue = if (!showParentalGuide && showActions) 1f else 0f,
         animationSpec = tween(durationMillis = if (!showParentalGuide && showActions) 260 else 160),
@@ -496,14 +493,14 @@ private fun PlayerHeader(
 
             if (showActions) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(if (automotive) 20.dp else 14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (onSubmitIntroClick != null) {
                         PlayerHeaderIconButton(
                             icon = Icons.Rounded.Flag,
                             contentDescription = stringResource(Res.string.submit_intro_action),
-                            buttonSize = metrics.headerIconSize + headerButtonExtraSize,
+                            buttonSize = metrics.headerIconSize + 16.dp,
                             iconSize = metrics.headerIconSize,
                             onClick = onSubmitIntroClick,
                         )
@@ -512,7 +509,7 @@ private fun PlayerHeader(
                         PlayerHeaderIconButton(
                             icon = Icons.Filled.SwapHoriz,
                             contentDescription = stringResource(Res.string.streams_open_external_player),
-                            buttonSize = metrics.headerIconSize + headerButtonExtraSize,
+                            buttonSize = metrics.headerIconSize + 16.dp,
                             iconSize = metrics.headerIconSize,
                             onClick = onOpenInExternalPlayer,
                         )
@@ -534,7 +531,7 @@ private fun PlayerHeader(
                         } else {
                             stringResource(Res.string.compose_player_lock_controls)
                         },
-                        buttonSize = metrics.headerIconSize + headerButtonExtraSize,
+                        buttonSize = metrics.headerIconSize + 16.dp,
                         iconSize = metrics.headerIconSize,
                         onClick = onLockToggle,
                     )
@@ -542,7 +539,7 @@ private fun PlayerHeader(
                         PlayerHeaderIconButton(
                             icon = Icons.Rounded.Build,
                             contentDescription = stringResource(Res.string.player_action_video_settings),
-                            buttonSize = metrics.headerIconSize + headerButtonExtraSize,
+                            buttonSize = metrics.headerIconSize + 16.dp,
                             iconSize = metrics.headerIconSize,
                             onClick = onVideoSettingsClick,
                         )
@@ -551,8 +548,8 @@ private fun PlayerHeader(
                         onClick = onBack,
                         containerColor = Color.Black.copy(alpha = 0.35f),
                         contentColor = Color.White,
-                        buttonSize = metrics.headerIconSize + headerButtonExtraSize + if (automotive) 8.dp else 0.dp,
-                        iconSize = metrics.headerIconSize + if (automotive) 8.dp else 0.dp,
+                        buttonSize = metrics.headerIconSize + 16.dp,
+                        iconSize = metrics.headerIconSize,
                         contentDescription = stringResource(Res.string.compose_player_close),
                     )
                 }
@@ -640,7 +637,7 @@ private fun SideControlButton(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = Color.White,
-            modifier = Modifier.size(metrics.sideIconSize),
+            modifier = Modifier.size(metrics.aaosSideIconSize()), // AAOS C5
         )
     }
 }
@@ -725,16 +722,16 @@ private fun ProgressControls(
             horizontalArrangement = Arrangement.Center,
         ) {
             Surface(
-                color = Color.Black.copy(alpha = 0.55f),
-                shape = RoundedCornerShape(36.dp),
+                color = Color.Black.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.border(
                     width = 1.dp,
-                    color = Color.White.copy(alpha = 0.25f),
-                    shape = RoundedCornerShape(36.dp),
+                    color = Color.White.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(24.dp),
                 ),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -917,7 +914,7 @@ internal fun LockedPlayerOverlay(
         ) {
             Box(
                 modifier = Modifier
-                    .size(if (getPlatform().isAutomotive) 96.dp else 78.dp)
+                    .size(78.dp)
                     .clip(CircleShape)
                     .background(Color.Black.copy(alpha = 0.52f))
                     .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
@@ -928,7 +925,7 @@ internal fun LockedPlayerOverlay(
                     imageVector = Icons.Rounded.Lock,
                     contentDescription = stringResource(Res.string.compose_player_unlock_controls),
                     tint = Color.White,
-                    modifier = Modifier.size(if (getPlatform().isAutomotive) 44.dp else 34.dp),
+                    modifier = Modifier.size(34.dp),
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -1020,17 +1017,12 @@ private fun PlayerActionPillButton(
     icon: ImageVector? = null,
     painter: Painter? = null,
 ) {
-    val automotive = getPlatform().isAutomotive
-    val iconSize = if (automotive) 38.dp else 28.dp
-    val horizontalPadding = if (automotive) 26.dp else 22.dp
-    val verticalPadding = if (automotive) 22.dp else 18.dp
-    val actionSpacing = if (automotive) 16.dp else 12.dp
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(30.dp))
+            .clip(RoundedCornerShape(22.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = horizontalPadding, vertical = verticalPadding),
-        horizontalArrangement = Arrangement.spacedBy(actionSpacing),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         when {
@@ -1038,23 +1030,19 @@ private fun PlayerActionPillButton(
                 painter = painter,
                 contentDescription = label,
                 tint = Color.White,
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(18.dp),
             )
 
             icon != null -> Icon(
                 imageVector = icon,
                 contentDescription = label,
                 tint = Color.White,
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(18.dp),
             )
         }
         Text(
             text = label,
-            style = MaterialTheme.nuvioTypeScale.bodyMd.copy(
-                fontSize = if (automotive) 20.sp else 18.sp,
-                lineHeight = if (automotive) 24.sp else 22.sp,
-                fontWeight = FontWeight.Bold,
-            ),
+            style = MaterialTheme.nuvioTypeScale.labelSm,
             color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

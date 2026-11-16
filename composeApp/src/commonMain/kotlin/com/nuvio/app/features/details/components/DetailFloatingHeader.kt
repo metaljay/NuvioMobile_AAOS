@@ -111,17 +111,17 @@ fun DetailFloatingHeader(
                 if (interactive && !useNativeNavigation) {
                     NuvioBackButton(
                         onClick = onBack,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(40.dp),
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
-                        buttonSize = 48.dp,
-                        iconSize = 28.dp,
+                        buttonSize = 40.dp,
+                        iconSize = 24.dp,
                     )
                 } else {
                     // Native iOS navigation owns the back button, but retaining
                     // this slot keeps the Compose logo centered as the floating
                     // header replaces the hero while scrolling.
-                    Box(modifier = Modifier.size(48.dp))
+                    Box(modifier = Modifier.size(40.dp))
                 }
 
                 Box(

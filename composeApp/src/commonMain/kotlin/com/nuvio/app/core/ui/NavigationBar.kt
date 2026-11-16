@@ -41,7 +41,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
-import com.nuvio.app.getPlatform
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -213,10 +212,8 @@ private class NuvioNavigationBarScopeImpl(
     private val labelFraction: Float,
     private val compactSize: Boolean,
 ) : NuvioNavigationBarScope {
-    private val isAutomotive = getPlatform().isAutomotive
-    private val iconSize = if (isAutomotive) 40.dp else if (compactSize) 28.dp else 32.dp
-    private val itemVerticalPadding =
-        if (isAutomotive || !compactSize) NuvioTokens.Space.s6 else 4.dp
+    private val iconSize = if (compactSize) 24.dp else 28.dp
+    private val itemVerticalPadding = if (compactSize) 4.dp else NuvioTokens.Space.s6
 
     @Composable
     override fun NavItem(
@@ -351,7 +348,7 @@ private class NuvioNavigationBarScopeImpl(
                     .padding(vertical = itemVerticalPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (compactSize || isAutomotive) {
+                if (compactSize) {
                     Box(Modifier.size(iconSize), contentAlignment = Alignment.Center) { content() }
                 } else {
                     content()
@@ -374,14 +371,14 @@ private fun NavItemLabel(
     Spacer(modifier = Modifier.height((if (compactSize) 2.dp else NuvioTokens.Space.s3) * labelFraction))
     Box(
         modifier = Modifier
-            .height(NuvioTokens.Space.s16 * labelFraction)
+            .height(NuvioTokens.Space.s14 * labelFraction)
             .alpha(labelFraction),
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = NuvioTokens.Type.labelSm,
-                lineHeight = NuvioTokens.LineHeight.labelSm,
+                fontSize = NuvioTokens.Type.labelXs,
+                lineHeight = NuvioTokens.LineHeight.labelXs,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             ),
             color = iconColor,

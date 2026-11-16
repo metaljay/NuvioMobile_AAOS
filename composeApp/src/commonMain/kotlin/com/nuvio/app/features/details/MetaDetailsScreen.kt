@@ -84,6 +84,7 @@ import com.nuvio.app.core.network.NetworkStatusRepository
 import com.nuvio.app.core.i18n.localizedEpisodeTitle
 import com.nuvio.app.core.i18n.localizedSeasonEpisodeCode
 import com.nuvio.app.core.ui.ArtworkBackdrop
+import com.nuvio.app.core.ui.aaosEdgeGap // AAOS C6
 import com.nuvio.app.core.ui.LocalOnBackdrop
 import com.nuvio.app.core.ui.NuvioBackButton
 import com.nuvio.app.core.ui.LocalVerticalBarPadding
@@ -1646,13 +1647,11 @@ fun MetaDetailsScreen(
             NuvioBackButton(
                 onClick = onBack,
                 modifier = Modifier.padding(
-                    start = 12.dp,
+                    start = aaosEdgeGap(12.dp, minimum = 20.dp), // AAOS C6
                     top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp,
                 ),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onBackground,
-                buttonSize = 48.dp,
-                iconSize = 28.dp,
             )
         }
         }
@@ -1875,14 +1874,12 @@ private fun DetailHeaderOverlay(
             modifier = Modifier
                 .padding(LocalVerticalBarPadding.current)
                 .padding(
-                    start = 12.dp,
+                    start = aaosEdgeGap(12.dp, minimum = 20.dp), // AAOS C6
                     top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp,
                 )
                 .zIndex(2f),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
-                buttonSize = 48.dp,
-                iconSize = 28.dp,
         )
     }
 
