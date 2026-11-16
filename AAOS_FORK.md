@@ -86,7 +86,7 @@ The owner has no coding experience, copy-pastes messages between chats, and depe
 | ID | Customisation | In one line |
 | --- | --- | --- |
 | C1 | Play identity | Release application ID `com.JF_Nuvio`; the code keeps the parent's `com.nuvio.app` names. |
-| C2 | AAOS manifest and runtime | Automotive features optional, `distractionOptimized`, car-friendly activity settings, Automotive detected at start. |
+| C2 | AAOS manifest and runtime | Automotive features optional, `distractionOptimized` on every activity, car-friendly activity settings, Automotive detected at start. |
 | C3 | Device-link sign-in | On the car, sign-in starts automatically and is completed on a phone at `nuvio.tv/link`. |
 | C4 | Custom-server fallback | "Connect to another server" stays available so `api.nuvio.tv` can be chosen if sign-in fails. |
 | C5 | AAOS readability | One whole-app 1.5x scale on Automotive (text, buttons, menus, spacing); Home artwork kept at its on-car size. |
@@ -165,11 +165,11 @@ Each block uses the same four headings. **After a parent update** is what the sy
 
 ### C2. AAOS manifest and runtime
 
-- **What and why:** lets the car recognise Nuvio as a car app and run it well in the car's window: Automotive and portrait/landscape screen features optional (so Play still allows the install); `distractionOptimized=true` on the application and all launcher activities; launcher and main activities resizable, `singleTask`, cutout-aware, picture-in-picture capable, and handling keyboard, navigation, UI mode, density and font changes themselves; Automotive detected at runtime and the platform initialised with the Android context before any UI.
+- **What and why:** lets the car recognise Nuvio as a car app and run it well in the car's window: Automotive and portrait/landscape screen features optional (so Play still allows the install); `distractionOptimized=true` on the application and on **every** activity in our manifest, launcher or not (owner's rule, 2026-11-16: the car blocks an untagged activity while driving, and the parent's link-opening `LinkActivity` had been missed); launcher and main activities resizable, `singleTask`, cutout-aware, picture-in-picture capable, and handling keyboard, navigation, UI mode, density and font changes themselves; Automotive detected at runtime and the platform initialised with the Android context before any UI.
 - **Also:** the player must not force landscape on the car. Since 2026-11-09 the parent locks the player to landscape on every screen, including large ones; `PlayerPlatformEffects.android.kt` skips that lock on Automotive (one marked line), so the car window keeps the car's own orientation (Google asks car apps to support portrait and landscape).
 - **Where:** `androidApp/src/main/AndroidManifest.xml` (the parent moved its deep-link filters to a separate `LinkActivity`; our settings stay on `MainActivity`); `Platform.kt` and `composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt` (Automotive detection); `composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerPlatformEffects.android.kt` (no landscape lock).
-- **After a parent update:** keep every AAOS entry; give any new parent launcher activity the same settings and metadata.
-- **Check:** merged release manifest; the app opens from the emulator's app grid.
+- **After a parent update:** keep every AAOS entry; give any new parent launcher activity the same settings and metadata, and give **every** new parent activity of any kind the `distractionOptimized` tag.
+- **Check:** merged release manifest; in `androidApp/src/main/AndroidManifest.xml` the number of `distractionOptimized` tags is the number of `<activity` entries plus one (the application); the app opens from the emulator's app grid.
 
 ### C3. Device-link sign-in
 
