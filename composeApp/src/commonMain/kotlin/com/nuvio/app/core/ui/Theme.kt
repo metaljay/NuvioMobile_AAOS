@@ -209,7 +209,7 @@ fun NuvioTheme(
     val density = LocalDensity.current
     CompositionLocalProvider(
         LocalDensity provides Density(
-            density = density.density * aaosUiScale(), // AAOS C5
+            density = density.density,
             fontScale = 1f,
         ),
         LocalNuvioThemeTokens provides tokens,

@@ -7,7 +7,7 @@ C1,C10  androidApp/build.gradle.kts
 C1      iosApp/Configuration/Version.xcconfig
 
 C2,C9   androidApp/src/main/AndroidManifest.xml
-C2      composeApp/src/androidMain/kotlin/com/nuvio/app/MainActivity.kt
+C2,C5   composeApp/src/androidMain/kotlin/com/nuvio/app/MainActivity.kt
 C2      composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt
 C2      composeApp/src/commonMain/kotlin/com/nuvio/app/Platform.kt
 
@@ -23,7 +23,7 @@ C4      composeApp/src/commonMain/kotlin/com/nuvio/app/core/network/ServerDiscov
 C4      composeApp/src/commonTest/kotlin/com/nuvio/app/core/network/ServerDiscoveryPolicyTest.kt
 
 C5,C6   composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/AaosScale.kt
-C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/Theme.kt
+C5      composeApp/src/androidMain/kotlin/com/nuvio/app/core/ui/AaosScale.android.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/core/ui/ShelfComponents.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/HomeScreen.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/components/Home*.kt

@@ -5,11 +5,11 @@ import androidx.compose.ui.unit.dp
 import com.nuvio.app.getPlatform
 
 // AAOS fork-owned file (C5 AAOS readability): the one whole-app scale used on Automotive.
-// NuvioTheme multiplies the screen density by this, so every dp and sp in the parent's layouts
-// (text, buttons, menus, spacing) is drawn 1.5 times larger on the car and unchanged elsewhere.
-// The layouts then see a screen 1.5 times narrower in dp (1280 px wide = about 853 dp), so the
-// parent's own breakpoints pick a smaller-tablet layout. Artwork that must keep its on-car size
-// is sized separately (HomePosterCardSizing.kt).
+// The Android activity raises its screen density by this (AaosScale.android.kt), so every dp and sp
+// in the parent's layouts (text, buttons, menus, dialogs, spacing) is drawn 1.5 times larger on the
+// car and unchanged elsewhere. The layouts then see a screen 1.5 times narrower in dp (1280 px wide
+// = about 853 dp), so the parent's own breakpoints pick a smaller-tablet layout. Artwork that must
+// keep its on-car size is sized separately (HomePosterCardSizing.kt).
 
 internal const val AaosUiScale = 1.5f
 

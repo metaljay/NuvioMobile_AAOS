@@ -11,6 +11,7 @@ import androidx.activity.SystemBarStyle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.nuvio.app.core.auth.AuthStorage
+import com.nuvio.app.core.ui.withAaosUiScale // AAOS C5
 import com.nuvio.app.core.network.ServerConfigurationStorage
 import com.nuvio.app.core.diagnostics.SentryInitializer
 import com.nuvio.app.core.deeplink.handleAppUrl
@@ -75,6 +76,8 @@ import com.nuvio.app.features.watchprogress.WatchProgressStorage
 
 open class MainActivity : AppCompatActivity() {
     private var pipRemoteActionReceiver: PipRemoteActionReceiver? = null
+
+    override fun attachBaseContext(newBase: android.content.Context) = super.attachBaseContext(newBase.withAaosUiScale()) // AAOS C5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initializePlatform(applicationContext)

@@ -95,7 +95,7 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 | `features/auth/AuthScreen.kt`, `DeviceLinkAuthSection.kt`, `core/auth/DeviceLinkAuthRepository.kt` | C3, C4 | automatic device-link sign-in on Automotive; server menu | Keep; re-run the sign-in check |
 | `composeApp/src/androidPlaystore/.../AppFeaturePolicy.android.kt` | C4 | custom server connections enabled | Keep enabled |
 | `core/network/ServerDiscovery.kt`, `ServerConfiguration.kt`, auth and official-config code | C4 | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
-| `core/ui/Theme.kt` | C5 | one marked line: the 1.5x Automotive scale (`AaosScale.kt`) | Keep the line; take the parent's for the rest |
+| `composeApp/src/androidMain/.../MainActivity.kt` | C2, C5 | early platform start; one marked `attachBaseContext` line: the 1.5x Automotive scale (`AaosScale.android.kt`) | Keep both lines; take the parent's for the rest |
 | `core/ui/ShelfComponents.kt`, `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | Home poster minimum width and label scale (hooks into `HomePosterCardSizing.kt`) | Keep the hooks; re-run `HomePosterCardSizingTest` |
 | `features/player/PlayerScreenContent.kt`, `PlayerControls.kt`, `features/trailer/TrailerPlayerControls.kt` | C5 | one marked line each into `AaosPlayerLayout.kt` | Keep the lines; re-run `AaosPlayerLayoutTest` |
 | `features/settings/SettingsComponents.kt`, `features/details/MetaDetailsScreen.kt` | C6 | marked `aaosEdgeGap()` lines (sidebar rows, back arrows) | Keep the lines |
