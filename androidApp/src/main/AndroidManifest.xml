@@ -254,8 +254,42 @@
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
-            <!-- No androidx.car.app.launchable here: on the Polestar launcher it makes the app icon open the car's media screen instead of the app. -->
+            <!-- No androidx.car.app.launchable on this always-on service: alone it makes the app icon open the car's media screen. See the gated service below. -->
         </service>
+
+        <!-- AAOS C9: the same service, opted in to the car's media card so it refills after a full restart.
+             Off here; switched on at start (instead of the one above) only on cars reporting
+             android.software.car.templates_host.media, whose media app then opens the entry activity
+             below instead of its own media screen. The value must be package/class. -->
+        <service
+            android:name="com.nuvio.app.features.player.NuvioCarMediaLaunchableService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.car.app.launchable"
+                android:value="true" />
+            <meta-data
+                android:name="androidx.car.app.media.CalMediaActivityComponent"
+                android:value="${applicationId}/com.nuvio.app.features.player.NuvioCarMediaEntryActivity" />
+        </service>
+
+        <!-- AAOS C9: opened by the car's media app in place of its media screen; opens Nuvio and closes. No launcher entry. -->
+        <activity
+            android:name="com.nuvio.app.features.player.NuvioCarMediaEntryActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <!-- AAOS C2: every activity carries this tag, or the car blocks it while driving. -->
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
+        </activity>
 
         <!-- AAOS fork: read-only artwork for the car media card (AAOS needs a content:// URI). -->
         <provider

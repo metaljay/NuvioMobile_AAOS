@@ -1,6 +1,8 @@
 package com.nuvio.app.features.player
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaDescription
@@ -35,6 +37,10 @@ internal object NuvioCarMediaSession {
     // Car.CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION: tells CarMediaService which browse service owns this session.
     private const val CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION = "android.media.session.BROWSE_SERVICE"
 
+    // Cars with this feature run a car media app that opens the activity named in the service's
+    // androidx.car.app.media.CalMediaActivityComponent meta-data instead of its own media screen.
+    internal const val FEATURE_CAR_TEMPLATES_HOST_MEDIA = "android.software.car.templates_host.media"
+
     // androidx.media.utils.MediaConstants: AAOS shows a button that launches this PendingIntent.
     private const val EXTRA_ERROR_RESOLUTION_ACTION_LABEL = "android.media.extras.ERROR_RESOLUTION_ACTION_LABEL"
     private const val EXTRA_ERROR_RESOLUTION_ACTION_INTENT = "android.media.extras.ERROR_RESOLUTION_ACTION_INTENT"
@@ -66,11 +72,7 @@ internal object NuvioCarMediaSession {
                 MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or
                     MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS,
             )
-            setExtras(
-                Bundle().apply {
-                    putString(CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION, NuvioCarMediaBrowserService::class.java.name)
-                },
-            )
+            setExtras(browseServiceExtras(appContext))
             buildLaunchIntent(appContext)?.let { intent ->
                 setSessionActivity(
                     android.app.PendingIntent.getActivity(
@@ -84,6 +86,54 @@ internal object NuvioCarMediaSession {
             setCallback(idleCallback(appContext), mainHandler)
             session = this
         }
+    }
+
+    /**
+     * Switches on exactly one of the two browse services: the opted-in (launchable) one on cars
+     * whose media app redirects to NuvioCarMediaEntryActivity, otherwise the plain one, so the app
+     * icon always opens Nuvio. Only writes when the state differs. Called when Nuvio opens
+     * (initializePlatform), never from a service the car is binding, which it could switch off.
+     */
+    fun selectBrowseService(context: Context) {
+        val packageManager = context.packageManager
+        val optIn = packageManager.hasSystemFeature(FEATURE_CAR_TEMPLATES_HOST_MEDIA)
+        setComponentState(
+            context,
+            NuvioCarMediaLaunchableService::class.java,
+            if (optIn) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
+        )
+        setComponentState(
+            context,
+            NuvioCarMediaBrowserService::class.java,
+            if (optIn) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
+        )
+        session?.setExtras(browseServiceExtras(context))
+    }
+
+    /** The browse service that is switched on now (the opted-in one only after selectBrowseService). */
+    internal fun activeBrowseServiceClass(context: Context): Class<out NuvioCarMediaBrowserService> {
+        val launchable = ComponentName(context.packageName, NuvioCarMediaLaunchableService::class.java.name)
+        val state = runCatching { context.packageManager.getComponentEnabledSetting(launchable) }
+            .getOrDefault(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+        return if (state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            NuvioCarMediaLaunchableService::class.java
+        } else {
+            NuvioCarMediaBrowserService::class.java
+        }
+    }
+
+    private fun browseServiceExtras(context: Context) = Bundle().apply {
+        putString(CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION, activeBrowseServiceClass(context).name)
+    }
+
+    private fun setComponentState(context: Context, service: Class<*>, state: Int) {
+        val component = ComponentName(context.packageName, service.name)
+        val packageManager = context.packageManager
+        runCatching {
+            if (packageManager.getComponentEnabledSetting(component) != state) {
+                packageManager.setComponentEnabledSetting(component, state, PackageManager.DONT_KILL_APP)
+            }
+        }.onFailure { error -> Log.w(TAG, "Failed to set $component to $state", error) }
     }
 
     /** The in-app player takes over the session's transport controls. Main thread only. */
@@ -281,7 +331,7 @@ internal object NuvioCarMediaSession {
         )
     }
 
-    private fun buildLaunchIntent(context: Context): Intent? =
+    internal fun buildLaunchIntent(context: Context): Intent? =
         context.packageManager.getLaunchIntentForPackage(context.packageName)
             ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 

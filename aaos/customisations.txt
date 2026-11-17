@@ -8,7 +8,7 @@ C1      iosApp/Configuration/Version.xcconfig
 
 C2,C9   androidApp/src/main/AndroidManifest.xml
 C2,C5   composeApp/src/androidMain/kotlin/com/nuvio/app/MainActivity.kt
-C2      composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt
+C2,C9   composeApp/src/androidMain/kotlin/com/nuvio/app/Platform.android.kt
 C2      composeApp/src/commonMain/kotlin/com/nuvio/app/Platform.kt
 
 C3,C4   composeApp/src/commonMain/kotlin/com/nuvio/app/core/auth/DeviceLinkAuthRepository.kt
@@ -46,6 +46,7 @@ C8      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/Play
 
 C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/NuvioCar*.kt
 C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerNowPlayingController.android.kt
+C9      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/NuvioCarMediaBrowseServiceSelectionTest.kt
 
 C11     README.md
 C11     AGENTS.md

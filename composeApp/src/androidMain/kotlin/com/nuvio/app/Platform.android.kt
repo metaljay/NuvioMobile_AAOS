@@ -16,6 +16,7 @@ fun initializePlatform(context: Context) {
     if (platformInstance == null) {
         platformInstance = AndroidPlatform(context)
     }
+    com.nuvio.app.features.player.NuvioCarMediaSession.selectBrowseService(context) // AAOS C9
 }
 
 actual fun getPlatform(): Platform = platformInstance ?: AndroidPlatform()

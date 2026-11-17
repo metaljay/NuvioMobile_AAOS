@@ -4,9 +4,10 @@
 
 ## The car and its launcher
 
-- The Polestar 3 runs Google's car launcher, but it does **not** look exactly like the emulator. Example: the Polestar app list shows **one icon per app**; the emulator showed two when an app had a media entry (2026-10-05).
+- The Polestar 3 runs Volvo's own car launcher (see the readout below), which does **not** look exactly like the emulator's Google launcher. Example: the Polestar app list shows **one icon per app**; the emulator showed two when an app had a media entry (2026-10-05).
 - Apps run in a window below the Polestar's own top bar (it shows "Google Maps" and shortcuts), not full screen.
 - A forced full restart (hold the play/pause button for about 20 s) is not the same as the car's normal overnight sleep. Test both when it matters.
+- The car's own readout (Settings, About, Device Info in Flow 46, 2026-11-17): Android 15, both `android.software.car.templates_host.media` and `android.software.car.templates_host` Supported, home screen `com.volvocars.launcher` 2.5.126 (Volvo's own launcher, not Google's CarLauncher), media screen `com.android.car.media` 36 (Google's car media app). The emulator reports both features too, but runs Google's CarLauncher.
 
 ## Media card (home screen, bottom left)
 

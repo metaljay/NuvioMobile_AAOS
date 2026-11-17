@@ -37,11 +37,11 @@ Changes from the original Nuvio project (the "parent") are brought into this cop
 | 🛟 | **A backup way to sign in** ("Connect to another server", then `api.nuvio.tv`) if the normal one fails. | [More](AAOS_FORK.md#c4-custom-server-fallback) |
 | ▶️ | **Starts playing quickly**: new profiles reuse the last link and auto-play the first stream. | [More](AAOS_FORK.md#c7-playback-defaults) |
 | ⏸️ | **Pauses when you leave the app**, so sound doesn't carry on behind other screens. | [More](AAOS_FORK.md#c8-playback-lifecycle) |
-| 🎵 | **The car's home screen media card** shows what Nuvio last played, even after you close it. | [More](AAOS_FORK.md#c9-car-media-card) |
+| 🎵 | **The car's home screen media card** shows what Nuvio last played, even after you close it, and (being tried) after a full restart of the car. | [More](AAOS_FORK.md#c9-car-media-card) |
 | 🚗 | **Works as a car app**: it appears in the car's app list and runs well in the car's window. | [More](AAOS_FORK.md#c2-aaos-manifest-and-runtime) |
 | 📦 | **Updates come through your own Play Store listing**, so they reach the car. | [More](AAOS_FORK.md#c1-play-identity) |
 
-**Known limit:** after a full restart of the car, the home screen media card stays blank. That is the price of the app icon opening the app properly; see the [car notes](AAOS_CAR_NOTES.md).
+**Being tried:** keeping the home screen media card filled after a full restart of the car, while the app icon still opens the app. It works on the emulator; until it is confirmed in the car, the card may stay blank after a restart. See the [car notes](AAOS_CAR_NOTES.md).
 
 ## 📲 Getting it on the car
 

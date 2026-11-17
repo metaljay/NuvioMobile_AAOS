@@ -7,7 +7,7 @@ import android.service.media.MediaBrowserService
 // AAOS fork: makes Nuvio a media source for the car (CarMediaService only accepts apps that
 // expose a MediaBrowserService) and refills the shared session from disk when the car binds
 // after the app was closed, so the home screen media card keeps showing the last item.
-class NuvioCarMediaBrowserService : MediaBrowserService() {
+open class NuvioCarMediaBrowserService : MediaBrowserService() {
     override fun onCreate() {
         super.onCreate()
         NuvioCarMediaSession.restoreIfIdle(this)
@@ -35,3 +35,10 @@ class NuvioCarMediaBrowserService : MediaBrowserService() {
         const val RECENT_ROOT_ID = "nuvio_recent"
     }
 }
+
+// AAOS fork: the same service, declared off in the manifest with androidx.car.app.launchable and
+// androidx.car.app.media.CalMediaActivityComponent. NuvioCarMediaSession.selectBrowseService switches
+// it on (and the plain one off) only on cars reporting android.software.car.templates_host.media,
+// where the car's media app opens NuvioCarMediaEntryActivity instead of its own media screen.
+// Opted-in sources are what lets the car's media card refill after a full restart.
+class NuvioCarMediaLaunchableService : NuvioCarMediaBrowserService()
