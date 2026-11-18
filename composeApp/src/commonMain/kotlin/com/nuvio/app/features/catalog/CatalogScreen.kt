@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.nuvio.app.core.ui.aaosButtonTouchSize // AAOS C5
 import com.nuvio.app.core.ui.NuvioBackButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -267,7 +268,7 @@ private fun CatalogHeader(
         NuvioBackButton(
             onClick = onBack,
             modifier = Modifier
-                .size(40.dp),
+                .size(aaosButtonTouchSize(40.dp)), // AAOS C5
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface,
             iconSize = 24.dp,

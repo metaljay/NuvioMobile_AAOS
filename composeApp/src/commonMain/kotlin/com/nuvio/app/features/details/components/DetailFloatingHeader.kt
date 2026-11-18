@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import coil3.compose.AsyncImage
+import com.nuvio.app.core.ui.aaosButtonTouchSize // AAOS C5
 import com.nuvio.app.core.ui.ArtworkBackdrop
 import com.nuvio.app.core.ui.NuvioBackButton
 import com.nuvio.app.core.ui.platformPhysicalTopInset
@@ -111,7 +112,7 @@ fun DetailFloatingHeader(
                 if (interactive && !useNativeNavigation) {
                     NuvioBackButton(
                         onClick = onBack,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(aaosButtonTouchSize(40.dp)), // AAOS C5
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         buttonSize = 40.dp,

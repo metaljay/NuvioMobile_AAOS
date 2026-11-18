@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nuvio.app.core.ui.FloatingNavigationItem
+import com.nuvio.app.core.ui.aaosNavIconSize // AAOS C5
 import com.nuvio.app.core.ui.accentBrush
 import com.nuvio.app.core.ui.gradientMask
 import com.nuvio.app.core.ui.nuvio
@@ -56,7 +57,7 @@ internal fun JellyTabRow(
     val tokens = MaterialTheme.nuvio
     val palette = MaterialTheme.themePalette
     val color = if (active) tokens.colors.accent else tokens.colors.textMuted
-    val iconSize = if (compactSize) 24.dp else 28.dp
+    val iconSize = aaosNavIconSize(if (compactSize) 24.dp else 28.dp) // AAOS C5
     val labelHeight = if (compactSize) 14.dp else 16.dp
     val iconModifier = Modifier.size(iconSize)
         .then(if (active) Modifier.gradientMask(palette.accentBrush()) else Modifier)
@@ -148,7 +149,7 @@ internal fun JellyTabTargets(
                     ) {
                         Box(
                             Modifier
-                                .then(if (compactSize) Modifier.size(24.dp) else Modifier)
+                                .then(if (compactSize) Modifier.size(aaosNavIconSize(24.dp)) else Modifier) // AAOS C5
                                 .graphicsLayer { translationY = 2.dp.toPx() * labelFraction },
                         ) {
                             item.content(onClick)

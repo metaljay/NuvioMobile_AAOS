@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.nuvio.app.core.ui.aaosButtonTouchSize // AAOS C5
 import com.nuvio.app.core.ui.NuvioTokens
 import com.nuvio.app.core.ui.aaosEdgeGap // AAOS C6
 import com.nuvio.app.core.ui.NuvioActionLabel
@@ -138,7 +139,7 @@ internal fun TabletPageHeader(
                 NuvioBackButton(
                     onClick = onBack,
                     modifier = Modifier
-                        .size(36.dp),
+                        .size(aaosButtonTouchSize(36.dp)), // AAOS C5
                     shape = tokens.shapes.compactCard,
                     containerColor = tokens.colors.surface,
                     contentColor = tokens.colors.textPrimary,

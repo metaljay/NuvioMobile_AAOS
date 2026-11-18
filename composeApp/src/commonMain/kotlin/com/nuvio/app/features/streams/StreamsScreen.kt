@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.nuvio.app.core.build.AppFeaturePolicy
+import com.nuvio.app.core.ui.aaosButtonTouchSize // AAOS C5
 import com.nuvio.app.core.ui.ArtworkBackdrop
 import com.nuvio.app.core.ui.LocalOnBackdrop
 import com.nuvio.app.core.ui.NuvioBackButton
@@ -295,7 +296,7 @@ fun StreamsScreen(
             NuvioBackButton(
                 onClick = onBack,
                 modifier = Modifier
-                    .size(40.dp),
+                    .size(aaosButtonTouchSize(40.dp)), // AAOS C5
                 containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.45f),
                 contentColor = MaterialTheme.colorScheme.onBackground,
             )

@@ -179,11 +179,12 @@ fun NuvioScreenHeader(
                 horizontalArrangement = Arrangement.spacedBy(tokens.spacing.controlGap),
             ) {
                 if (onBack != null) {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.aaosButtonTouch()) { // AAOS C5
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = stringResource(Res.string.action_back),
                             tint = tokens.colors.textPrimary,
+                            modifier = Modifier.aaosButtonIcon(), // AAOS C5
                         )
                     }
                 }
@@ -285,7 +286,7 @@ fun NuvioBackButton(
 
     Box(
         modifier = modifier
-            .size(buttonSize)
+            .size(aaosButtonTouchSize(buttonSize)) // AAOS C5
             .clip(shape)
             .background(containerColor)
             .clickable(onClick = onClick),
@@ -295,7 +296,7 @@ fun NuvioBackButton(
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
             contentDescription = contentDescription,
             tint = contentColor,
-            modifier = Modifier.size(iconSize),
+            modifier = Modifier.size(aaosButtonIconSize(iconSize)), // AAOS C5
         )
     }
 }

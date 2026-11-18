@@ -74,7 +74,7 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 ./gradlew :composeApp:compileAndroidMain
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full
-./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*AaosPlayerLayout*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*' --tests '*NuvioCarMediaBrowseServiceSelection*' --tests '*NuvioCarMediaRelink*'
+./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*AaosPlayerLayout*' --tests '*AaosButtonSizes*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*' --tests '*NuvioCarMediaBrowseServiceSelection*' --tests '*NuvioCarMediaRelink*'
 git diff --check
 aaos/report.sh
 ```
@@ -98,6 +98,7 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 | `composeApp/src/androidMain/.../MainActivity.kt` | C2, C5 | early platform start; one marked `attachBaseContext` line: the 1.5x Automotive scale (`AaosScale.android.kt`) | Keep both lines; take the parent's for the rest |
 | `core/ui/ShelfComponents.kt`, `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | Home poster minimum width and label scale (hooks into `HomePosterCardSizing.kt`) | Keep the hooks; re-run `HomePosterCardSizingTest` |
 | `features/player/PlayerScreenContent.kt`, `PlayerControls.kt`, `PlayerControlActions.kt`, `PlayerScreenSupport.kt`, `features/trailer/TrailerPlayerControls.kt` | C5 | marked lines into `AaosPlayerLayout.kt` (sizes of player buttons and the action row) | Keep the lines; re-run `AaosPlayerLayoutTest` |
+| `core/ui/Components.kt`, `features/streams/StreamsScreen.kt`, `features/catalog/CatalogScreen.kt`, `features/details/components/DetailFloatingHeader.kt`, `features/settings/SettingsComponents.kt` (back-arrow lines), `composeApp/src/androidMain/.../core/ui/FloatingNavigationBar.android.kt`, `core/ui/jelly/JellyTabs.kt` | C5 | marked lines into `core/ui/AaosButtonSizes.kt` (back arrows 56 dp touch, 32 dp icon; top navigation pill 56 dp tall, 32 dp icons) | Keep the lines; re-run `AaosButtonSizesTest` |
 | `features/settings/SettingsComponents.kt`, `features/details/MetaDetailsScreen.kt` | C6 | marked `aaosEdgeGap()` lines (sidebar rows, back arrows) | Keep the lines |
 | `features/settings/PlaybackSettingsPage.kt`, `features/streams/StreamAutoPlay*` | C7 | playback defaults | Keep our defaults for unset values |
 | `androidMain/.../features/player/PlayerEngine.android.kt` | C8 | pause when leaving the foreground | Keep; re-run `PlaybackLifecyclePolicyTest` |
