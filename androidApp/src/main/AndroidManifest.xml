@@ -277,6 +277,25 @@
                 android:value="${applicationId}/com.nuvio.app.features.player.NuvioCarMediaEntryActivity" />
         </service>
 
+        <!-- AAOS C9: identical twin of the service above, also off here. Only one twin is on at a time; the app
+             swaps them once per process when the car has not linked, so the car sees a new media source and
+             rebuilds the media card's link after a force-stop or update. -->
+        <service
+            android:name="com.nuvio.app.features.player.NuvioCarMediaLaunchableServiceB"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.car.app.launchable"
+                android:value="true" />
+            <meta-data
+                android:name="androidx.car.app.media.CalMediaActivityComponent"
+                android:value="${applicationId}/com.nuvio.app.features.player.NuvioCarMediaEntryActivity" />
+        </service>
+
         <!-- AAOS C9: opened by the car's media app in place of its media screen; opens Nuvio and closes. No launcher entry. -->
         <activity
             android:name="com.nuvio.app.features.player.NuvioCarMediaEntryActivity"

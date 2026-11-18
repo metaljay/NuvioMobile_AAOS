@@ -268,6 +268,9 @@ internal class AndroidPlayerNowPlayingController(
             PlaybackState.ACTION_REWIND or
             PlaybackState.ACTION_STOP
 
+        if (state == PlaybackState.STATE_PLAYING || state == PlaybackState.STATE_BUFFERING) {
+            NuvioCarMediaSession.relinkIfNeeded(appContext) // AAOS C9
+        }
         mediaSession.setPlaybackState(
             PlaybackState.Builder()
                 .setActions(actions)

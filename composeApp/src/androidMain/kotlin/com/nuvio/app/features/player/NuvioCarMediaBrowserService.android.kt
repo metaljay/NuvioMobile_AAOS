@@ -15,6 +15,7 @@ open class NuvioCarMediaBrowserService : MediaBrowserService() {
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
+        if (clientPackageName != packageName) NuvioCarMediaSession.markCarLinked()
         val wantsRecent = rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) == true
         val extras = if (wantsRecent) Bundle().apply { putBoolean(BrowserRoot.EXTRA_RECENT, true) } else null
         return BrowserRoot(if (wantsRecent) RECENT_ROOT_ID else ROOT_ID, extras)
@@ -42,3 +43,8 @@ open class NuvioCarMediaBrowserService : MediaBrowserService() {
 // where the car's media app opens NuvioCarMediaEntryActivity instead of its own media screen.
 // Opted-in sources are what lets the car's media card refill after a full restart.
 class NuvioCarMediaLaunchableService : NuvioCarMediaBrowserService()
+
+// AAOS C9: an identical twin, also off in the manifest. After a force-stop or update the car's link to
+// the service is dead; naming a different switched-on service in the session (relinkIfNeeded) makes the
+// car see a new media source and rebuild the card's link. Only one twin is on at a time.
+class NuvioCarMediaLaunchableServiceB : NuvioCarMediaBrowserService()

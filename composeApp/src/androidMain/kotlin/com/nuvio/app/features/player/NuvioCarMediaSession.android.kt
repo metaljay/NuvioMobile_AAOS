@@ -72,7 +72,7 @@ internal object NuvioCarMediaSession {
                 MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or
                     MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS,
             )
-            setExtras(browseServiceExtras(appContext))
+            setExtras(browseServiceExtras(appContext).also { lastNamedBrowseService = namedService(it) })
             buildLaunchIntent(appContext)?.let { intent ->
                 setSessionActivity(
                     android.app.PendingIntent.getActivity(
@@ -89,38 +89,97 @@ internal object NuvioCarMediaSession {
     }
 
     /**
-     * Switches on exactly one of the two browse services: the opted-in (launchable) one on cars
-     * whose media app redirects to NuvioCarMediaEntryActivity, otherwise the plain one, so the app
-     * icon always opens Nuvio. Only writes when the state differs. Called when Nuvio opens
-     * (initializePlatform), never from a service the car is binding, which it could switch off.
+     * Start-up choice of browse service. On cars whose media app redirects to NuvioCarMediaEntryActivity
+     * (feature android.software.car.templates_host.media) one of the two launchable twins is on and the
+     * plain service is off: whichever twin is on now is kept (neither: twin A). It never swaps twins,
+     * because the car may be binding at this moment; that is relinkIfNeeded's job. Without the feature
+     * all three go back to their manifest default, so the app icon always opens Nuvio. Only writes when
+     * the state differs. Called when Nuvio opens (initializePlatform), never from a service the car is binding.
      */
     fun selectBrowseService(context: Context) {
-        val packageManager = context.packageManager
-        val optIn = packageManager.hasSystemFeature(FEATURE_CAR_TEMPLATES_HOST_MEDIA)
-        setComponentState(
-            context,
-            NuvioCarMediaLaunchableService::class.java,
-            if (optIn) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
-        )
-        setComponentState(
-            context,
-            NuvioCarMediaBrowserService::class.java,
-            if (optIn) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
-        )
-        session?.setExtras(browseServiceExtras(context))
+        val optIn = context.packageManager.hasSystemFeature(FEATURE_CAR_TEMPLATES_HOST_MEDIA)
+        if (optIn) {
+            val current = currentTwin(context)
+            setComponentState(context, current, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+            setComponentState(context, otherTwin(current), PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+            setComponentState(context, NuvioCarMediaBrowserService::class.java, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+        } else {
+            setComponentState(context, NuvioCarMediaLaunchableService::class.java, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+            setComponentState(context, NuvioCarMediaLaunchableServiceB::class.java, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+            setComponentState(context, NuvioCarMediaBrowserService::class.java, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+        }
+        session?.setExtras(browseServiceExtras(context).also { lastNamedBrowseService = namedService(it) })
     }
 
-    /** The browse service that is switched on now (the opted-in one only after selectBrowseService). */
-    internal fun activeBrowseServiceClass(context: Context): Class<out NuvioCarMediaBrowserService> {
-        val launchable = ComponentName(context.packageName, NuvioCarMediaLaunchableService::class.java.name)
-        val state = runCatching { context.packageManager.getComponentEnabledSetting(launchable) }
-            .getOrDefault(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
-        return if (state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-            NuvioCarMediaLaunchableService::class.java
-        } else {
-            NuvioCarMediaBrowserService::class.java
-        }
+    /** The browse service that is switched on now (a launchable twin only after selectBrowseService). */
+    internal fun activeBrowseServiceClass(context: Context): Class<out NuvioCarMediaBrowserService> = when {
+        isEnabled(context, NuvioCarMediaLaunchableServiceB::class.java) -> NuvioCarMediaLaunchableServiceB::class.java
+        isEnabled(context, NuvioCarMediaLaunchableService::class.java) -> NuvioCarMediaLaunchableService::class.java
+        else -> NuvioCarMediaBrowserService::class.java
     }
+
+    /** Set by NuvioCarMediaBrowserService.onGetRoot when a client other than this app binds (the car). */
+    @Volatile
+    private var carLinked = false
+    private var relinkDone = false
+
+    /** The browse service class name last written to the session extras (kept for the host tests). */
+    internal var lastNamedBrowseService: String? = null
+        private set
+
+    private fun namedService(extras: Bundle) = extras.getString(CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION)
+
+    internal fun markCarLinked() {
+        carLinked = true
+    }
+
+    /**
+     * Google's CarMediaService only treats a session as a new media source (so the launcher rebuilds
+     * the home-screen card's link) when it names a different switched-on browse service than the current
+     * source. After a force-stop or app update that link is dead and the card stays blank, so the first
+     * time this process is about to publish a playing or buffering state and the car has not bound our
+     * service, switch on the other twin, name it in the session extras, then switch the old one off.
+     * Once per process; cars without the feature are untouched. Main thread only.
+     */
+    fun relinkIfNeeded(context: Context) {
+        if (relinkDone) return
+        relinkDone = true
+        if (carLinked) return
+        if (!context.packageManager.hasSystemFeature(FEATURE_CAR_TEMPLATES_HOST_MEDIA)) return
+        val old = currentTwin(context)
+        val new = otherTwin(old)
+        setComponentState(context, new, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+        val extras = Bundle().apply { putString(CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION, new.name) }
+        get(context).setExtras(extras)
+        lastNamedBrowseService = new.name
+        setComponentState(context, old, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+    }
+
+    internal fun resetRelinkStateForTest() {
+        carLinked = false
+        relinkDone = false
+    }
+
+    private fun isEnabled(context: Context, service: Class<*>): Boolean {
+        val component = ComponentName(context.packageName, service.name)
+        return runCatching { context.packageManager.getComponentEnabledSetting(component) }
+            .getOrDefault(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+    }
+
+    /** The launchable twin that is on now; twin A when neither is (first install). */
+    private fun currentTwin(context: Context): Class<out NuvioCarMediaBrowserService> =
+        if (isEnabled(context, NuvioCarMediaLaunchableServiceB::class.java)) {
+            NuvioCarMediaLaunchableServiceB::class.java
+        } else {
+            NuvioCarMediaLaunchableService::class.java
+        }
+
+    private fun otherTwin(twin: Class<out NuvioCarMediaBrowserService>): Class<out NuvioCarMediaBrowserService> =
+        if (twin == NuvioCarMediaLaunchableService::class.java) {
+            NuvioCarMediaLaunchableServiceB::class.java
+        } else {
+            NuvioCarMediaLaunchableService::class.java
+        }
 
     private fun browseServiceExtras(context: Context) = Bundle().apply {
         putString(CAR_EXTRA_BROWSE_SERVICE_FOR_SESSION, activeBrowseServiceClass(context).name)
