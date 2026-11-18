@@ -57,7 +57,7 @@ internal fun sliderOverlayBottomPadding(metrics: PlayerLayoutMetrics) =
     metrics.sliderBottomOffset +
         metrics.sliderTouchHeight +
         PlayerTimeRowHeight +
-        PlayerActionRowHeight +
+        aaosActionRowHeight(PlayerActionRowHeight) + // AAOS C5
         PlayerSliderOverlayGap
 
 internal enum class PlayerSideGesture {

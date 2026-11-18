@@ -94,8 +94,8 @@ internal fun PlayerToolbar(
             onClick = onBack,
             containerColor = Color.Transparent,
             contentColor = Color.White,
-            buttonSize = 48.dp,
-            iconSize = 24.dp,
+            buttonSize = aaosActionButtonSize(48.dp), // AAOS C5
+            iconSize = aaosToolbarIconSize(24.dp), // AAOS C5
             contentDescription = stringResource(Res.string.compose_player_close),
         )
     }
@@ -182,7 +182,7 @@ internal fun PlayerControlActions(
                 }
             }
             Box(
-                modifier = Modifier.height(48.dp).widthIn(min = 48.dp).clickable(
+                modifier = Modifier.height(aaosActionButtonSize(48.dp)).widthIn(min = 48.dp).clickable( // AAOS C5
                     role = Role.Button,
                     onClickLabel = stringResource(
                         if (showRemainingTime) Res.string.compose_player_show_elapsed_time else Res.string.compose_player_show_remaining_time,
@@ -214,11 +214,11 @@ private fun PlayerAction(
     iconSize: Dp = 24.dp,
     tint: Color = Color.White,
 ) {
-    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
+    IconButton(onClick = onClick, modifier = Modifier.size(aaosActionButtonSize(48.dp))) { // AAOS C5
         if (painter != null) {
-            Icon(painter, description, tint = tint, modifier = Modifier.size(iconSize))
+            Icon(painter, description, tint = tint, modifier = Modifier.size(aaosActionIconSize(iconSize))) // AAOS C5
         } else if (icon != null) {
-            Icon(icon, description, tint = tint, modifier = Modifier.size(iconSize))
+            Icon(icon, description, tint = tint, modifier = Modifier.size(aaosActionIconSize(iconSize))) // AAOS C5
         }
     }
 }

@@ -16,11 +16,30 @@ class AaosPlayerLayoutTest {
     }
 
     @Test
-    fun automotiveKeepsPlayAndSkipIconsAtTheirOnCarSize() {
+    fun automotiveUsesBiggerPlayerButtons() {
         val car = parent.forAutomotive(isAutomotive = true)
-        assertEquals(56.dp, car.playIconSize)
-        assertEquals(44.dp, car.aaosSideIconSize(isAutomotive = true))
-        assertTrue(car.headerIconSize >= 30.dp)
+        assertEquals(72.dp, car.playIconSize)
+        assertEquals(56.dp, car.aaosSideIconSize(isAutomotive = true))
+        assertTrue(car.headerIconSize >= 40.dp)
+        // Header buttons are the icon plus 16 dp: touch area at least 56 dp.
+        assertTrue(car.headerIconSize + 16.dp >= 56.dp)
         assertTrue(car.sliderTouchHeight >= 32.dp)
+    }
+
+    @Test
+    fun automotiveActionRowAndToolbarAreBigger() {
+        assertEquals(56.dp, aaosActionButtonSize(48.dp, isAutomotive = true))
+        assertEquals(36.dp, aaosActionIconSize(24.dp, isAutomotive = true))
+        assertEquals(40.dp, aaosActionIconSize(40.dp, isAutomotive = true))
+        assertEquals(32.dp, aaosToolbarIconSize(24.dp, isAutomotive = true))
+        assertEquals(56.dp, aaosActionRowHeight(50.dp, isAutomotive = true))
+    }
+
+    @Test
+    fun nonAutomotiveKeepsTheParentActionSizes() {
+        assertEquals(48.dp, aaosActionButtonSize(48.dp, isAutomotive = false))
+        assertEquals(24.dp, aaosActionIconSize(24.dp, isAutomotive = false))
+        assertEquals(24.dp, aaosToolbarIconSize(24.dp, isAutomotive = false))
+        assertEquals(50.dp, aaosActionRowHeight(50.dp, isAutomotive = false))
     }
 }
