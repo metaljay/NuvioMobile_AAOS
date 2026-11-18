@@ -41,7 +41,7 @@ Changes from the original Nuvio project (the "parent") are brought into this cop
 | 🚗 | **Works as a car app**: it appears in the car's app list and runs well in the car's window. | [More](AAOS_FORK.md#c2-aaos-manifest-and-runtime) |
 | 📦 | **Updates come through your own Play Store listing**, so they reach the car. | [More](AAOS_FORK.md#c1-play-identity) |
 
-**Being tried:** keeping the home screen media card filled after a full restart of the car, while the app icon still opens the app. It works on the emulator; until it is confirmed in the car, the card may stay blank after a restart. See the [car notes](AAOS_CAR_NOTES.md).
+**Being tried:** keeping the home screen media card filled after a full restart of the car, while the app icon still opens the app. It works on the emulator; until it is confirmed in the car, the card may stay blank after a restart. A fix for the card staying blank after a force-stop or update is also built in but untested on the car. See the [car notes](AAOS_CAR_NOTES.md).
 
 ## 📲 Getting it on the car
 

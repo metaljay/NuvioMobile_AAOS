@@ -29,8 +29,10 @@ C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/HomeScreen.
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/home/components/Home*.kt
 C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/home/HomePosterCardSizingTest.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/AaosPlayerLayout.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControlActions.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerControls.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerScreenContent.kt
+C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/player/PlayerScreenSupport.kt
 C5      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/AaosPlayerLayoutTest.kt
 C5      composeApp/src/commonMain/kotlin/com/nuvio/app/features/trailer/TrailerPlayerControls.kt
 
@@ -47,6 +49,7 @@ C8      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/Play
 C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/NuvioCar*.kt
 C9      composeApp/src/androidMain/kotlin/com/nuvio/app/features/player/PlayerNowPlayingController.android.kt
 C9      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/NuvioCarMediaBrowseServiceSelectionTest.kt
+C9      composeApp/src/androidHostTest/kotlin/com/nuvio/app/features/player/NuvioCarMediaRelinkTest.kt
 
 C11     README.md
 C11     AGENTS.md

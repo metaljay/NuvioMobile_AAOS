@@ -63,7 +63,7 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 - Release `applicationId` is exactly `com.JF_Nuvio` and debug `com.JF_Nuvio.debug` (C1). The code keeps the parent's package names: never rename packages.
 - `aaos/report.sh` shows no "NOT LABELLED" files; if the parent moved or renamed a file we change, update `aaos/customisations.txt`.
 - `AppFeaturePolicy.customServerConnectionsEnabled` is true for the Play Store build (C4).
-- The merged release manifest still has the AAOS features and activity settings, the always-on car media service without `androidx.car.app.launchable`, the second car media service switched off with `launchable` and `CalMediaActivityComponent` (`<application ID>/com.nuvio.app.features.player.NuvioCarMediaEntryActivity`), the entry activity, and the artwork provider (C2, C9).
+- The merged release manifest still has the AAOS features and activity settings, the always-on car media service without `androidx.car.app.launchable`, both launchable twin car media services (`NuvioCarMediaLaunchableService` and `...ServiceB`) switched off, each with `launchable` and `CalMediaActivityComponent` (`<application ID>/com.nuvio.app.features.player.NuvioCarMediaEntryActivity`), the entry activity, and the artwork provider (C2, C9).
 - No stray ` 2` duplicate files (`AAOS_FORK.md` section 11).
 - MPVKit stays at the parent-published commit (`AAOS_FORK.md` section 8).
 - `README.md` and `AGENTS.md` are ours (C11).
@@ -74,7 +74,7 @@ The owner cannot read code, so this report is how they decide. Write it in plain
 ./gradlew :composeApp:compileAndroidMain
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=playstore
 ./gradlew :androidApp:assembleDebug -Pnuvio.android.distribution=full
-./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*AaosPlayerLayout*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*' --tests '*NuvioCarMediaBrowseServiceSelection*'
+./gradlew :composeApp:testAndroidHostTest --tests '*HomePosterCardSizing*' --tests '*AaosPlayerLayout*' --tests '*ServerDiscoveryPolicy*' --tests '*PlayerNowPlaying*' --tests '*PlaybackLifecyclePolicy*' --tests '*NuvioCarMediaBrowseServiceSelection*' --tests '*NuvioCarMediaRelink*'
 git diff --check
 aaos/report.sh
 ```
@@ -97,11 +97,11 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 | `core/network/ServerDiscovery.kt`, `ServerConfiguration.kt`, auth and official-config code | C4 | `api.nuvio.tv` handling, session fixes | Keep; re-run `ServerDiscoveryPolicyTest` |
 | `composeApp/src/androidMain/.../MainActivity.kt` | C2, C5 | early platform start; one marked `attachBaseContext` line: the 1.5x Automotive scale (`AaosScale.android.kt`) | Keep both lines; take the parent's for the rest |
 | `core/ui/ShelfComponents.kt`, `features/home/` (`HomeScreen.kt`, `components/Home*`) | C5 | Home poster minimum width and label scale (hooks into `HomePosterCardSizing.kt`) | Keep the hooks; re-run `HomePosterCardSizingTest` |
-| `features/player/PlayerScreenContent.kt`, `PlayerControls.kt`, `features/trailer/TrailerPlayerControls.kt` | C5 | one marked line each into `AaosPlayerLayout.kt` | Keep the lines; re-run `AaosPlayerLayoutTest` |
+| `features/player/PlayerScreenContent.kt`, `PlayerControls.kt`, `PlayerControlActions.kt`, `PlayerScreenSupport.kt`, `features/trailer/TrailerPlayerControls.kt` | C5 | marked lines into `AaosPlayerLayout.kt` (sizes of player buttons and the action row) | Keep the lines; re-run `AaosPlayerLayoutTest` |
 | `features/settings/SettingsComponents.kt`, `features/details/MetaDetailsScreen.kt` | C6 | marked `aaosEdgeGap()` lines (sidebar rows, back arrows) | Keep the lines |
 | `features/settings/PlaybackSettingsPage.kt`, `features/streams/StreamAutoPlay*` | C7 | playback defaults | Keep our defaults for unset values |
 | `androidMain/.../features/player/PlayerEngine.android.kt` | C8 | pause when leaving the foreground | Keep; re-run `PlaybackLifecyclePolicyTest` |
-| `androidMain/.../features/player/PlayerNowPlayingController.android.kt`, `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt`, `NuvioCarMediaEntryActivity.android.kt`, `NuvioCarMediaArtworkProvider.android.kt` | C9 | shared session, card restore, `content://` artwork, the gated opted-in service and its entry activity | Keep the controller on `NuvioCarMediaSession` (no private `MediaSession`) and publishing the `content://` artwork |
+| `androidMain/.../features/player/PlayerNowPlayingController.android.kt`, `NuvioCarMediaSession.android.kt`, `NuvioCarMediaBrowserService.android.kt`, `NuvioCarMediaEntryActivity.android.kt`, `NuvioCarMediaArtworkProvider.android.kt` | C9 | shared session, card restore, `content://` artwork, the gated opted-in twin services, the force-stop relink and the entry activity | Keep the controller on `NuvioCarMediaSession` (no private `MediaSession`), publishing the `content://` artwork, and the marked `relinkIfNeeded` line before the first playing state |
 | `gradle/libs.versions.toml`, `gradle/wrapper/gradle-wrapper.properties`, `settings.gradle.kts`, `.gitignore` | C12 | newer build tools; release files ignored | Take the parent's if it is the same or newer; otherwise keep ours |
 | `README.md`, `AGENTS.md` | C11 | owner README; fork-owned AGENTS | Keep ours |
 | `CLAUDE.md`, `GEMINI.md`, `.claude/skills`, `.github/skills/aaos-*`, `AAOS_*.md` | C11 | fork-owned agent entry points, recipes and docs | Keep ours |
