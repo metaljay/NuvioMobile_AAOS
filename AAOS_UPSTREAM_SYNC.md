@@ -87,7 +87,7 @@ Paths are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they sa
 
 | File / area | Customisation | What we changed | On conflict |
 | --- | --- | --- | --- |
-| `androidApp/build.gradle.kts` | C1, C10 | application ID, signing properties, ABI-split workaround | Keep ours for those; take the parent's for the rest |
+| `androidApp/build.gradle.kts` | C1, C10, C13 | application ID, signing properties, ABI-split workaround; the `// AAOS C13` block that reads the signing details from the Keychain (`nuvio-release`) before `local.properties` | Keep ours for those; take the parent's for the rest; re-check the signing block, then run `aaos/release.sh --bogus` and a signed bundle build |
 | `iosApp/Configuration/Version.xcconfig` | C1 | Play version code and name | Keep ours |
 | `androidApp/src/main/AndroidManifest.xml` | C2, C9 | AAOS features, activity settings, car media service and provider | Keep every AAOS entry |
 | `Platform.kt`, `composeApp/src/androidMain/.../Platform.android.kt` | C2, C9 | Automotive detection and early platform start; the marked `selectBrowseService` line (C9) | Keep |

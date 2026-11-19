@@ -8,6 +8,6 @@ This is optional housekeeping: the version rule does not depend on it. Read `AAO
 
 - In `AAOS_RELEASE.md` update the "Last uploaded to Play" row (code and name, confirmed by the owner today; add "and working on the car" only if the owner said so).
 - Note in this chat's entry in `handover/SESSION-LOG.md` that the upload was confirmed by the owner, and update B1 of `handover/HANDOVER.md`. Do not claim any emulator or real-car verification unless the owner says it was done.
-- Optionally create and push a git tag named `play-<code>`, with the real code filled in.
+- The release script already made the local tag `play-<code>`; push it (create it first if the fallback was used). Optional.
 - Do not change app code or the version file. Stage only the docs by name, commit and push to origin main, no force-push.
 - Finish with the standard report from `AAOS_FORK.md` section 6. "What you need to do next" is "nothing" unless Play rejected the upload.

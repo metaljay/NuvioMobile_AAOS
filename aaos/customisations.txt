@@ -3,7 +3,7 @@
 # Files named Aaos*.kt or NuvioCar*.kt, the tests listed here and everything under aaos/ are fork-only.
 # When a change adds, moves or removes a fork file, update this list in the same commit.
 
-C1,C10  androidApp/build.gradle.kts
+C1,C10,C13  androidApp/build.gradle.kts
 C1      iosApp/Configuration/Version.xcconfig
 
 C2,C9   androidApp/src/main/AndroidManifest.xml
@@ -67,6 +67,11 @@ C11     AAOS_*.md
 C11     .claude/*
 C11     .github/skills/*
 C11     aaos/*
+
+C13     aaos/release.sh
+C13     aaos/play-upload.mjs
+C13     aaos/setup-release.sh
+C13     aaos/test/*
 
 C12     .gitignore
 C12     settings.gradle.kts

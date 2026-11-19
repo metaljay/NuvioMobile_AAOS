@@ -97,6 +97,7 @@ The owner has no coding experience, copy-pastes messages between chats, and depe
 | C10 | Bundle packaging | ABI splits are off for bundle tasks. |
 | C11 | Fork docs | README, AGENTS file, agent entry points, recipes, `AAOS_*.md` files and the `aaos/` folder stay. |
 | C12 | Build tools | Newer Android Gradle Plugin and Gradle, Java toolchain download, and release files kept out of git. |
+| C13 | One-command release | `aaos/release.sh` tests, builds, signs (key details from the owner's Keychain) and releases to Play Internal testing only. |
 
 Each one has a detail block in Part 2: what and why, where it lives, how to redo it after a parent update, and how to check it. Paths in Part 2 are under `composeApp/src/commonMain/kotlin/com/nuvio/app/` unless they say otherwise.
 
@@ -248,3 +249,10 @@ Each block uses the same four headings. **After a parent update** is what the sy
 - **Where:** `gradle/libs.versions.toml` (`agp`), `gradle/wrapper/gradle-wrapper.properties`, `settings.gradle.kts`, `gradle/gradle-daemon-jvm.properties`, `.gitignore`.
 - **After a parent update:** if the parent moves to the same or newer versions, take the parent's and drop ours. Otherwise keep ours; never go below the parent's versions.
 - **Check:** the "Checks to run" builds pass in `AAOS_UPSTREAM_SYNC.md`.
+
+### C13. One-command release
+
+- **What and why:** the owner no longer signs in Android Studio and uploads in Play Console by hand. `aaos/release.sh` runs the fork's own host tests, checks every fork file is labelled, builds `:androidApp:bundlePlaystoreRelease`, signs it with the upload-key details the owner stored once in the login Keychain (service `nuvio-release`, set by `aaos/setup-release.sh`), checks the signature and application ID, and `aaos/play-upload.mjs` (which stops if Play reports a different version code) releases it to Play **Internal testing only** (only `automotive:internal`, `automotive:qa`, `internal`, `qa` can be written; any other track is refused; a version code not above Play's highest is refused). It never raises the version. Modes: none = real release, `--check` = sign in and look, `--dry-run` = upload to a throwaway edit and discard. After a real release it saves `Nuvio-v<name>-build<code>.aab` (and its mapping file) in the Play Console folder and makes the local tag `play-<code>`. Added 2026-11-19; copied from the car app's script. The Play service-account key is the shared file `~/.config/claude-car-play/key.json` (override: env `CLAUDE_CAR_PLAY_KEY`).
+- **Where:** `aaos/release.sh`, `aaos/play-upload.mjs`, `aaos/setup-release.sh`, `aaos/test/play-upload.test.mjs` (fork-only; they live in `aaos/` because the parent ignores `scripts/*`), and one marked block (`// AAOS C13`) in `androidApp/build.gradle.kts` that reads the Keychain first and falls back to `local.properties`.
+- **After a parent update:** keep the marked block when the parent changes the signing lines; take the parent's code around it. Never log the values.
+- **Check:** `node --test aaos/test/play-upload.test.mjs` passes (14 tests); `bash -n` on the two shell scripts; `aaos/release.sh --bogus` exits 2; `./gradlew :androidApp:bundlePlaystoreRelease` builds and `jarsigner -verify` on the bundle says "jar verified" (with and without the Keychain items).

@@ -24,10 +24,19 @@ val localProps = Properties().apply {
     val propsFile = rootProject.file("local.properties")
     if (propsFile.exists()) propsFile.inputStream().use { load(it) }
 }
-val releaseStoreFile = localProps.getProperty("NUVIO_RELEASE_STORE_FILE")?.takeIf { it.isNotBlank() }
-val releaseStorePassword = localProps.getProperty("NUVIO_RELEASE_STORE_PASSWORD")?.takeIf { it.isNotBlank() }
-val releaseKeyAlias = localProps.getProperty("NUVIO_RELEASE_KEY_ALIAS")?.takeIf { it.isNotBlank() }
-val releaseKeyPassword = localProps.getProperty("NUVIO_RELEASE_KEY_PASSWORD")?.takeIf { it.isNotBlank() }
+// AAOS C13: signing details come from the login Keychain (service "nuvio-release", set once by aaos/setup-release.sh)
+// first, then from local.properties as before. A missing item or a Mac without `security` gives null. Never logged.
+fun keychainItem(account: String): String? =
+    runCatching {
+        providers.exec {
+            commandLine("security", "find-generic-password", "-s", "nuvio-release", "-a", account, "-w")
+            isIgnoreExitValue = true
+        }.standardOutput.asText.get().trim().ifEmpty { null }
+    }.getOrNull()
+val releaseStoreFile = keychainItem("store-file") ?: localProps.getProperty("NUVIO_RELEASE_STORE_FILE")?.takeIf { it.isNotBlank() }
+val releaseStorePassword = keychainItem("store-password") ?: localProps.getProperty("NUVIO_RELEASE_STORE_PASSWORD")?.takeIf { it.isNotBlank() }
+val releaseKeyAlias = keychainItem("key-alias") ?: localProps.getProperty("NUVIO_RELEASE_KEY_ALIAS")?.takeIf { it.isNotBlank() }
+val releaseKeyPassword = keychainItem("key-password") ?: localProps.getProperty("NUVIO_RELEASE_KEY_PASSWORD")?.takeIf { it.isNotBlank() }
 val releaseKeystore = releaseStoreFile?.let(rootProject::file)
 fun envOrLocalProperty(key: String): String? =
     providers.environmentVariable(key).orNull?.trim()?.takeIf { it.isNotBlank() }
